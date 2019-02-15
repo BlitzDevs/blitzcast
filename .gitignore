@@ -43,3 +43,8 @@ sysinfo.txt
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+
+# ZiosThemes for Unity Editor
+BlitzCast/Assets/@Themes
+BlitzCast/Assets/@Themes.meta

@@ -16,4 +16,4 @@ MonoBehaviour:
   art: {fileID: 21300000, guid: 3b507f8d506c640548ca36ccd13f0e30, type: 3}
   timeCost: 4
   status: 0
-  castable: {fileID: 11400000, guid: 0d695ef3d86a24ddcbd16bcd9c4e0201, type: 2}
+  castable: {fileID: 11400000, guid: cf658fe0a8ece4f3ab0706729b345a3c, type: 2}

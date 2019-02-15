@@ -636,8 +636,8 @@ PlayerSettings:
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
   cloudProjectId: d8c1a85c-b5ef-4865-89b9-04291b380215
-  projectName: Blitzcast
-  organizationId: competent3
+  projectName: BlitzCast
+  organizationId: blitzdevs
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
