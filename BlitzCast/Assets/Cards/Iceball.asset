@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Name: Iceball
   m_EditorClassIdentifier: 
   name: Iceball
-  description: Deal 3 damage
+  description: Deal 3 damage.
   art: {fileID: 0}
-  timeCost: 2
-  status: 3
-  castable: {fileID: 11400000, guid: cf658fe0a8ece4f3ab0706729b345a3c, type: 2}
+  timeCost: 1
+  status: 0
+  behaviors: 00000000
+  behaviorValues: 03000000

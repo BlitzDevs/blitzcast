@@ -6,6 +6,7 @@ public class Player : MonoBehaviour {
 
     public string username;
     public GameObject cardPrefab;
+    public GameObject handArea;
     public List<Card> deck; // original deck
     public List<string> enchantments;
     public int handCount = 4;
@@ -43,7 +44,7 @@ public class Player : MonoBehaviour {
         CardUtilities.Draw(playingDeck, hand, handCount);
         for (var i = 0; i < handCount; i++)
         {
-            GameObject newCard = Instantiate(cardPrefab, new Vector3(200 + 400*i, 100, 0), Quaternion.identity, transform);
+            GameObject newCard = Instantiate(cardPrefab, handArea.transform);
             newCard.GetComponent<CardManager>().card = hand[i];
         }
 

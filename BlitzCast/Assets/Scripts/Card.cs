@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class Card : ScriptableObject
 {
@@ -12,15 +13,22 @@ public abstract class Card : ScriptableObject
         Active
     }
 
+    public enum CardBehavior
+    {
+        DamageTarget,
+        DamageAll,
+        BuffAttack,
+        Counter
+    }
+
     public new string name;
     public string description;
     public Sprite art;
     public int timeCost;
     public CardStatus status;
-    public Castable castable;
-
-
-    //public abstract void Cast();
+    public List<CardBehavior> behaviors;
+    public List<int> behaviorValues;
+    
     public abstract Card Clone();
 
 }

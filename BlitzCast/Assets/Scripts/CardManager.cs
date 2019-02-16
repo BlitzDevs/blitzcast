@@ -51,22 +51,14 @@ public class CardManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         {
             transform.position = originalPosition;
 
-<<<<<<< Updated upstream:Blitzcast/Assets/Scripts/CardManager.cs
-            StartCoroutine(Cast());
-=======
-            StartCoroutine(cast());
->>>>>>> Stashed changes:BlitzCast/Assets/Scripts/CardManager.cs
+            StartCoroutine(PlayCard());
         }
 
 
     }
 
 
-<<<<<<< Updated upstream:Blitzcast/Assets/Scripts/CardManager.cs
-    IEnumerator Cast()
-=======
-    IEnumerator cast()
->>>>>>> Stashed changes:BlitzCast/Assets/Scripts/CardManager.cs
+    IEnumerator PlayCard()
     {
         Debug.Log("Casting " + card.name);
 
@@ -79,11 +71,7 @@ public class CardManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             timeText.text = i.ToString();
         }
 
-<<<<<<< Updated upstream:Blitzcast/Assets/Scripts/CardManager.cs
-        card.castable.Cast(gm.opponent);
-=======
-        card.cast();
->>>>>>> Stashed changes:BlitzCast/Assets/Scripts/CardManager.cs
+        gm.Cast(card);
         card.status = Card.CardStatus.Recharging;
         tint.color = new Color32(0, 0, 0, 100);
 
