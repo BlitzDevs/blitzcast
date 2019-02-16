@@ -12,8 +12,14 @@ MonoBehaviour:
   m_Name: Fireball
   m_EditorClassIdentifier: 
   name: Fireball
-  description: Deal 6 damage.
+  description: Deal 6 damage, supposedly.
   art: {fileID: 21300000, guid: 3b507f8d506c640548ca36ccd13f0e30, type: 3}
   timeCost: 4
   status: 0
+<<<<<<< Updated upstream:Blitzcast/Assets/Cards/Fireball.asset
   castable: {fileID: 11400000, guid: cf658fe0a8ece4f3ab0706729b345a3c, type: 2}
+=======
+  behaviors:
+  - {fileID: 0}
+  behaviorValues: 06000000
+>>>>>>> Stashed changes:BlitzCast/Assets/Cards/Fireball.asset

@@ -325,6 +325,7 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 871129533}
     m_Modifications:
+<<<<<<< Updated upstream:Blitzcast/Assets/Scenes/test.unity
     - target: {fileID: 4532630287727316, guid: 6e4f85b437a444bd3a58d27e94ce203f, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -464,6 +465,48 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0478844808d4844a9a03da320b9f47e4, type: 2}
+=======
+    - target: {fileID: 4263835065904276, guid: 99bf9e13fbc8d4eb0a7a12ca381cb2fb, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263835065904276, guid: 99bf9e13fbc8d4eb0a7a12ca381cb2fb, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263835065904276, guid: 99bf9e13fbc8d4eb0a7a12ca381cb2fb, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263835065904276, guid: 99bf9e13fbc8d4eb0a7a12ca381cb2fb, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263835065904276, guid: 99bf9e13fbc8d4eb0a7a12ca381cb2fb, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263835065904276, guid: 99bf9e13fbc8d4eb0a7a12ca381cb2fb, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263835065904276, guid: 99bf9e13fbc8d4eb0a7a12ca381cb2fb, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263835065904276, guid: 99bf9e13fbc8d4eb0a7a12ca381cb2fb, type: 2}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114030215330159996, guid: 99bf9e13fbc8d4eb0a7a12ca381cb2fb,
+        type: 2}
+      propertyPath: cardPrefab
+      value: 
+      objectReference: {fileID: 1243322330585536, guid: 0478844808d4844a9a03da320b9f47e4,
+        type: 2}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 99bf9e13fbc8d4eb0a7a12ca381cb2fb, type: 2}
+>>>>>>> Stashed changes:BlitzCast/Assets/Scenes/test.unity
   m_IsPrefabParent: 0
 --- !u!1 &871129529
 GameObject:
@@ -612,11 +655,19 @@ MonoBehaviour:
   username: evilmonkey
   cardPrefab: {fileID: 1804925507257346, guid: 0478844808d4844a9a03da320b9f47e4, type: 2}
   deck:
+<<<<<<< Updated upstream:Blitzcast/Assets/Scenes/test.unity
   - {fileID: 11400000, guid: 6473da4a8efe349ad9e8de08959766a3, type: 2}
   - {fileID: 11400000, guid: 93faf0611375f4281bfa117f0c49ff1a, type: 2}
   - {fileID: 11400000, guid: 6473da4a8efe349ad9e8de08959766a3, type: 2}
   - {fileID: 11400000, guid: 93faf0611375f4281bfa117f0c49ff1a, type: 2}
   - {fileID: 11400000, guid: 6473da4a8efe349ad9e8de08959766a3, type: 2}
+=======
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+>>>>>>> Stashed changes:BlitzCast/Assets/Scenes/test.unity
   enchantments: []
   handCount: 4
   usernameText: {fileID: 1980764570}
@@ -625,12 +676,20 @@ MonoBehaviour:
   hand: []
 --- !u!4 &1241854415 stripped
 Transform:
+<<<<<<< Updated upstream:Blitzcast/Assets/Scenes/test.unity
   m_PrefabParentObject: {fileID: 4532630287727316, guid: 6e4f85b437a444bd3a58d27e94ce203f,
+=======
+  m_PrefabParentObject: {fileID: 4263835065904276, guid: 99bf9e13fbc8d4eb0a7a12ca381cb2fb,
+>>>>>>> Stashed changes:BlitzCast/Assets/Scenes/test.unity
     type: 2}
   m_PrefabInternal: {fileID: 559285318}
 --- !u!114 &1241854416 stripped
 MonoBehaviour:
+<<<<<<< Updated upstream:Blitzcast/Assets/Scenes/test.unity
   m_PrefabParentObject: {fileID: 114309496760424924, guid: 6e4f85b437a444bd3a58d27e94ce203f,
+=======
+  m_PrefabParentObject: {fileID: 114030215330159996, guid: 99bf9e13fbc8d4eb0a7a12ca381cb2fb,
+>>>>>>> Stashed changes:BlitzCast/Assets/Scenes/test.unity
     type: 2}
   m_PrefabInternal: {fileID: 559285318}
   m_Script: {fileID: 11500000, guid: 3e62b77acee0f4a2bb6dea5c8524b291, type: 3}
@@ -754,11 +813,14 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1504235496}
+<<<<<<< Updated upstream:Blitzcast/Assets/Scenes/test.unity
 --- !u!224 &1541197994 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224332428366727122, guid: 0478844808d4844a9a03da320b9f47e4,
     type: 2}
   m_PrefabInternal: {fileID: 754113486}
+=======
+>>>>>>> Stashed changes:BlitzCast/Assets/Scenes/test.unity
 --- !u!1 &1590906729
 GameObject:
   m_ObjectHideFlags: 0

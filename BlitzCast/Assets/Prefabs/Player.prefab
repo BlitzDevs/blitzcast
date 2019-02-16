@@ -9,18 +9,30 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
+<<<<<<< Updated upstream
   m_RootGameObject: {fileID: 1433867988090588}
   m_IsPrefabParent: 1
 --- !u!1 &1028731724987154
+=======
+  m_RootGameObject: {fileID: 1987800479171246}
+  m_IsPrefabParent: 1
+--- !u!1 &1229887602925906
+>>>>>>> Stashed changes
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
+<<<<<<< Updated upstream
   - component: {fileID: 224523034825085784}
   - component: {fileID: 222981046503534958}
   - component: {fileID: 114979352240919394}
+=======
+  - component: {fileID: 224444822013499384}
+  - component: {fileID: 222308571523572422}
+  - component: {fileID: 114599417750157964}
+>>>>>>> Stashed changes
   m_Layer: 0
   m_Name: Health
   m_TagString: Untagged
@@ -28,60 +40,104 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+<<<<<<< Updated upstream
 --- !u!1 &1433867988090588
+=======
+--- !u!1 &1833317748140450
+>>>>>>> Stashed changes
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
+<<<<<<< Updated upstream
   - component: {fileID: 4532630287727316}
   - component: {fileID: 114309496760424924}
   m_Layer: 0
   m_Name: Player
+=======
+  - component: {fileID: 224769751327257138}
+  - component: {fileID: 222180909679874058}
+  - component: {fileID: 114008373320334462}
+  m_Layer: 0
+  m_Name: Username
+>>>>>>> Stashed changes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+<<<<<<< Updated upstream
 --- !u!1 &1627884078477136
+=======
+--- !u!1 &1987800479171246
+>>>>>>> Stashed changes
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
+<<<<<<< Updated upstream
   - component: {fileID: 224587832383847098}
   - component: {fileID: 222292869056553932}
   - component: {fileID: 114297412829695716}
   m_Layer: 0
   m_Name: Username
+=======
+  - component: {fileID: 4263835065904276}
+  - component: {fileID: 114030215330159996}
+  m_Layer: 0
+  m_Name: Player
+>>>>>>> Stashed changes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+<<<<<<< Updated upstream
 --- !u!4 &4532630287727316
+=======
+--- !u!4 &4263835065904276
+>>>>>>> Stashed changes
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
+<<<<<<< Updated upstream
   m_GameObject: {fileID: 1433867988090588}
+=======
+  m_GameObject: {fileID: 1987800479171246}
+>>>>>>> Stashed changes
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+<<<<<<< Updated upstream
   - {fileID: 224587832383847098}
   - {fileID: 224523034825085784}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114297412829695716
+=======
+  - {fileID: 224769751327257138}
+  - {fileID: 224444822013499384}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114008373320334462
+>>>>>>> Stashed changes
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
+<<<<<<< Updated upstream
   m_GameObject: {fileID: 1627884078477136}
+=======
+  m_GameObject: {fileID: 1833317748140450}
+>>>>>>> Stashed changes
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
@@ -109,12 +165,20 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Player 1
+<<<<<<< Updated upstream
 --- !u!114 &114309496760424924
+=======
+--- !u!114 &114030215330159996
+>>>>>>> Stashed changes
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
+<<<<<<< Updated upstream
   m_GameObject: {fileID: 1433867988090588}
+=======
+  m_GameObject: {fileID: 1987800479171246}
+>>>>>>> Stashed changes
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e62b77acee0f4a2bb6dea5c8524b291, type: 3}
@@ -123,6 +187,7 @@ MonoBehaviour:
   username: goodmonkey
   cardPrefab: {fileID: 1243322330585536, guid: 0478844808d4844a9a03da320b9f47e4, type: 2}
   deck:
+<<<<<<< Updated upstream
   - {fileID: 11400000, guid: 6473da4a8efe349ad9e8de08959766a3, type: 2}
   - {fileID: 11400000, guid: 93faf0611375f4281bfa117f0c49ff1a, type: 2}
   - {fileID: 11400000, guid: 6473da4a8efe349ad9e8de08959766a3, type: 2}
@@ -135,11 +200,29 @@ MonoBehaviour:
   playingDeck: []
   hand: []
 --- !u!114 &114979352240919394
+=======
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  enchantments: []
+  handCount: 4
+  usernameText: {fileID: 114008373320334462}
+  healthText: {fileID: 114599417750157964}
+  playingDeck: []
+  hand: []
+--- !u!114 &114599417750157964
+>>>>>>> Stashed changes
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
+<<<<<<< Updated upstream
   m_GameObject: {fileID: 1028731724987154}
+=======
+  m_GameObject: {fileID: 1229887602925906}
+>>>>>>> Stashed changes
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
@@ -167,29 +250,51 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 0
+<<<<<<< Updated upstream
 --- !u!222 &222292869056553932
+=======
+--- !u!222 &222180909679874058
+>>>>>>> Stashed changes
 CanvasRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
+<<<<<<< Updated upstream
   m_GameObject: {fileID: 1627884078477136}
 --- !u!222 &222981046503534958
+=======
+  m_GameObject: {fileID: 1833317748140450}
+--- !u!222 &222308571523572422
+>>>>>>> Stashed changes
 CanvasRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
+<<<<<<< Updated upstream
   m_GameObject: {fileID: 1028731724987154}
 --- !u!224 &224523034825085784
+=======
+  m_GameObject: {fileID: 1229887602925906}
+--- !u!224 &224444822013499384
+>>>>>>> Stashed changes
 RectTransform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
+<<<<<<< Updated upstream
   m_GameObject: {fileID: 1028731724987154}
+=======
+  m_GameObject: {fileID: 1229887602925906}
+>>>>>>> Stashed changes
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
   m_Children: []
+<<<<<<< Updated upstream
   m_Father: {fileID: 4532630287727316}
+=======
+  m_Father: {fileID: 4263835065904276}
+>>>>>>> Stashed changes
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -197,17 +302,29 @@ RectTransform:
   m_AnchoredPosition: {x: 271.01, y: -121.62}
   m_SizeDelta: {x: 87.12, y: 31.24}
   m_Pivot: {x: 0.5, y: 0.5}
+<<<<<<< Updated upstream
 --- !u!224 &224587832383847098
+=======
+--- !u!224 &224769751327257138
+>>>>>>> Stashed changes
 RectTransform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
+<<<<<<< Updated upstream
   m_GameObject: {fileID: 1627884078477136}
+=======
+  m_GameObject: {fileID: 1833317748140450}
+>>>>>>> Stashed changes
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
+<<<<<<< Updated upstream
   m_Father: {fileID: 4532630287727316}
+=======
+  m_Father: {fileID: 4263835065904276}
+>>>>>>> Stashed changes
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
