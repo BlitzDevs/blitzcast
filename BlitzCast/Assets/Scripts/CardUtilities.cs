@@ -9,11 +9,6 @@ public static class CardUtilities
     {
         List<Card> newList = new List<Card>(original.Count);
 
-        /*
-        for (var i = 0; i < newList.Count; i++)
-            newList[i] = original[i].Clone();
-        */
-
         original.ForEach((item) =>
         {
             newList.Add(item);
@@ -25,7 +20,7 @@ public static class CardUtilities
 
     public static void Draw(this List<Card> deck, List<Card> hand, int amount)
     {
-        for (var i = 0; i < amount; i++)
+        for (int i = 0; i < amount; i++)
             Draw(deck, hand);
     }
 
@@ -40,7 +35,7 @@ public static class CardUtilities
             hand.Add(newCard);
         else
         {
-            var redrawCardSlot = hand.FindIndex(card => card.status == Card.CardStatus.Deck);
+            int redrawCardSlot = hand.FindIndex(card => card.status == Card.CardStatus.Deck);
             if (redrawCardSlot != -1)
                 hand[redrawCardSlot] = newCard;
             else
@@ -52,8 +47,7 @@ public static class CardUtilities
 
     public static void Shuffle(this List<Card> deck, System.Random random)
     {
-        Debug.Log(deck.Count);
-        for (var i = 0; i < deck.Count; i++)
+        for (int i = 0; i < deck.Count; i++)
             deck.Swap(i, random.Next(i, deck.Count));
     }
 

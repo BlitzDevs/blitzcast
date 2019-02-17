@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour, IEntity {
 
     public string username;
     public GameObject cardPrefab;
@@ -50,12 +50,17 @@ public class Player : MonoBehaviour {
 
     }
 
-    public void AddHealth(int hp)
+    public void Damage(int hp)
     {
-        health += hp;
+        SetHealth(health -= hp);
     }
 
-    private void SetHealth(int hp)
+    public void Heal(int hp)
+    {
+        SetHealth(health += hp);
+    }
+
+    public void SetHealth(int hp)
     {
         health = hp;
         healthText.text = health.ToString();

@@ -3,7 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class CardManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class CardManager : MonoBehaviour,
+                           IPointerEnterHandler, IPointerExitHandler,
+                           IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Card card;
     public Text nameText;
@@ -14,13 +16,17 @@ public class CardManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public Image tint;
 
     private GameManager gm;
+    private RaycastTargeter targeter;
     private Vector2 originalPosition = new Vector2();
     private Vector2 dragOffset = new Vector2();
+    private const int hoverMovePixels = 50;
 
     // Use this for initialization
     void Start()
     {
         gm = FindObjectOfType<GameManager>();
+        targeter = FindObjectOfType<RaycastTargeter>();
+
         nameText.text = card.name;
         descriptionText.text = card.description;
         artImage.sprite = card.art;
@@ -30,13 +36,31 @@ public class CardManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     }
 
 
-    public void OnBeginDrag(PointerEventData eventData)
+    public void OnPointerEnter(PointerEventData eventData)
     {
+        Debug.Log("entering " + card.name);
         if (card.status == Card.CardStatus.Held)
         {
             originalPosition = transform.position;
-            dragOffset = originalPosition - eventData.position;
+            transform.position = new Vector3(
+                originalPosition.x,
+                originalPosition.y + hoverMovePixels,
+                0);
         }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        Debug.Log("exiting " + card.name);
+        if (card.status == Card.CardStatus.Held)
+            transform.position = originalPosition;
+    }
+
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (card.status == Card.CardStatus.Held)
+            dragOffset = originalPosition - eventData.position;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -47,11 +71,13 @@ public class CardManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (card.status == Card.CardStatus.Held)
+        if (card.status == Card.CardStatus.Held && targeter.inCastZone())
+        {
+            StartCoroutine(PlayCard());
+        }
+        else
         {
             transform.position = originalPosition;
-
-            StartCoroutine(PlayCard());
         }
 
 
@@ -60,7 +86,10 @@ public class CardManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     IEnumerator PlayCard()
     {
-        Debug.Log("Casting " + card.name);
+        GameObject target = targeter.GetTarget();
+        transform.position = target.transform.position;
+
+        Debug.Log("Casting " + card.name + " on " + target.name);
 
         card.status = Card.CardStatus.Casting;
         tint.color = new Color32(255, 255, 255, 100);
@@ -71,7 +100,7 @@ public class CardManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             timeText.text = i.ToString();
         }
 
-        gm.Cast(card);
+        gm.Cast(card, target);
         card.status = Card.CardStatus.Recharging;
         tint.color = new Color32(0, 0, 0, 100);
 
@@ -86,4 +115,5 @@ public class CardManager : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         Destroy(this.gameObject);
         
     }
+
 }

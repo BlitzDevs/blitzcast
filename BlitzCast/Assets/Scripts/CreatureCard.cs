@@ -1,13 +1,30 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Creature Card", menuName = "Creature Card")]
-public class CreatureCard : Card {
+public class CreatureCard : Card, IEntity {
 
-    public int damage;
-    public int speed;
-    public int health;
+    private int damage;
+    private int speed;
+    private int health;
     //public Vector2Int size;
     //private Vector2Int place;
+
+    public void Damage(int hp)
+    {
+        SetHealth(health -= hp);
+    }
+
+    public void Heal(int hp)
+    {
+        SetHealth(health += hp);
+    }
+
+    public void SetHealth(int hp)
+    {
+        health = hp;
+        // change health display
+        //healthText.text = health.ToString();
+    }
 
     public override Card Clone()
     {
