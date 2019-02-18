@@ -26,10 +26,20 @@ public static class CardUtilities
 
     public static void Draw(this List<Card> deck, List<Card> hand)
     {
+        Debug.Log("Entering CardUtilities Draw");
+        
+        //debug
+        foreach (Card c in hand) {
+            Debug.Log(c.status);
+        }
+
         Card newCard = deck[0].Clone();
         newCard.status = Card.CardStatus.Held;
 
         deck.RemoveAt(0);
+        
+        //debug
+        Debug.Log("newCard generated");
 
         if (hand.Count < 4)
             hand.Add(newCard);

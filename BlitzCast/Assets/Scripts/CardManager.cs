@@ -112,7 +112,7 @@ public class CardManager : MonoBehaviour,
 
         card.status = Card.CardStatus.Deck;
         gm.player.Draw();
-        Destroy(this.gameObject);
+        //Destroy(this.gameObject);
         
     }
 

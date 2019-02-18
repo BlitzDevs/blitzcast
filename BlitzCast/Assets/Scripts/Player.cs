@@ -30,18 +30,26 @@ public class Player : MonoBehaviour, IEntity {
 
         playingDeck = CardUtilities.Clone(deck);
         CardUtilities.Shuffle(playingDeck, randomGenerator);
-        Draw();
+        CardUtilities.Draw(playingDeck, hand, handCount);
+        for (var i = 0; i < handCount; i++)
+        {
+            GameObject newCard = Instantiate(cardPrefab, handArea.transform);
+            newCard.GetComponent<CardManager>().card = hand[i];
+        }
     }
 
     public void Draw()
     {
+        Debug.Log("Entering Player Draw");
         if (playingDeck.Count == 0)
         {
             Debug.Log("Reshuffle");
             playingDeck = CardUtilities.Clone(deck);
             CardUtilities.Shuffle(playingDeck, randomGenerator);
         }
-        CardUtilities.Draw(playingDeck, hand, handCount);
+
+        CardUtilities.Draw(playingDeck, hand);
+        
         for (var i = 0; i < handCount; i++)
         {
             GameObject newCard = Instantiate(cardPrefab, handArea.transform);
