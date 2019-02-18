@@ -30,33 +30,55 @@ public class Player : MonoBehaviour, IEntity {
 
         playingDeck = CardUtilities.Clone(deck);
         CardUtilities.Shuffle(playingDeck, randomGenerator);
-        CardUtilities.Draw(playingDeck, hand, handCount);
-        for (var i = 0; i < handCount; i++)
-        {
-            GameObject newCard = Instantiate(cardPrefab, handArea.transform);
-            newCard.GetComponent<CardManager>().card = hand[i];
-        }
+        Draw(handCount);
     }
 
     public void Draw()
     {
         Debug.Log("Entering Player Draw");
+        //debug
+        foreach (Card c in hand) {
+            Debug.Log(c.status);
+        }
+
         if (playingDeck.Count == 0)
         {
             Debug.Log("Reshuffle");
             playingDeck = CardUtilities.Clone(deck);
             CardUtilities.Shuffle(playingDeck, randomGenerator);
         }
+        Card newCard = deck[0].Clone();
+        newCard.status = Card.CardStatus.Held;
+        deck.RemoveAt(0);
 
-        CardUtilities.Draw(playingDeck, hand);
-        
-        for (var i = 0; i < handCount; i++)
+        //debug
+        Debug.Log("newCard generated");
+
+        int drawIndex;
+        if (hand.Count < 4)
         {
-            GameObject newCard = Instantiate(cardPrefab, handArea.transform);
-            newCard.GetComponent<CardManager>().card = hand[i];
+            drawIndex = hand.Count;
+            hand.Add(newCard);
+        }
+        else
+        {
+            drawIndex = hand.FindIndex(card => card.status == Card.CardStatus.Deck);
+            if (drawIndex != -1)
+                hand[drawIndex] = newCard;
+            else
+                Debug.LogError("Disaster in CardUtilities::Draw()");
         }
 
+        GameObject newCardInstance = Instantiate(cardPrefab, handArea.transform);
+        newCardInstance.GetComponent<CardManager>().card = hand[drawIndex];
     }
+
+    public void Draw(int amount)
+    {
+        for (int i = 0; i < amount; i++)
+            Draw();
+    }
+
 
     public void Damage(int hp)
     {

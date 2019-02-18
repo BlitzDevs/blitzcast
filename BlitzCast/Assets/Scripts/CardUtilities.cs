@@ -17,44 +17,6 @@ public static class CardUtilities
         return newList;
     }
 
-
-    public static void Draw(this List<Card> deck, List<Card> hand, int amount)
-    {
-        for (int i = 0; i < amount; i++)
-            Draw(deck, hand);
-    }
-
-    public static void Draw(this List<Card> deck, List<Card> hand)
-    {
-        Debug.Log("Entering CardUtilities Draw");
-        
-        //debug
-        foreach (Card c in hand) {
-            Debug.Log(c.status);
-        }
-
-        Card newCard = deck[0].Clone();
-        newCard.status = Card.CardStatus.Held;
-
-        deck.RemoveAt(0);
-        
-        //debug
-        Debug.Log("newCard generated");
-
-        if (hand.Count < 4)
-            hand.Add(newCard);
-        else
-        {
-            int redrawCardSlot = hand.FindIndex(card => card.status == Card.CardStatus.Deck);
-            if (redrawCardSlot != -1)
-                hand[redrawCardSlot] = newCard;
-            else
-                Debug.LogError("Disaster in CardUtilities::Draw()");
-        }
-
-    }
-
-
     public static void Shuffle(this List<Card> deck, System.Random random)
     {
         for (int i = 0; i < deck.Count; i++)
