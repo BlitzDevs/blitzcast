@@ -15,35 +15,48 @@ public class RaycastTargeter : MonoBehaviour
         eventSystem = GetComponent<EventSystem>();
     }
 
-
-    public bool inCastZone()
+    public bool InCastZone()
     {
         pointerEventData = new PointerEventData(eventSystem);
         pointerEventData.position = Input.mousePosition;
 
         List<RaycastResult> results = new List<RaycastResult>();
         raycaster.Raycast(pointerEventData, results);
-
-        Debug.Log("amt of results: " + results.Count);
 
         return results.Count > 0;
     }
 
     public GameObject GetTarget()
     {
+        return Raycast()[0].gameObject.GetComponent<CastZone>().GetTargetObject();
+    }
+
+    public Transform GetCastingSlot()
+    {
+        return Raycast()[0].gameObject.GetComponent<CastZone>().GetCastingSlot();
+    }
+
+    //TODO: Target specific layer (Cast Zone, Card Targetable, ...)
+    private List<RaycastResult> Raycast()
+    {
         pointerEventData = new PointerEventData(eventSystem);
         pointerEventData.position = Input.mousePosition;
 
         List<RaycastResult> results = new List<RaycastResult>();
         raycaster.Raycast(pointerEventData, results);
 
-        foreach (RaycastResult result in results)
-        {
-            Debug.Log("Hit " + result.gameObject.name);
-        }
+        //foreach (RaycastResult result in results)
+        //{
+        //    Debug.Log("Hit " + result.gameObject.name);
+        //}
 
-        // 1 to pass through the card itself; FIX make better later pls
-        return results[1].gameObject;
+        results.RemoveAt(0); // remove first, which is card itself; lazy way
+
+        if (results.Count == 0)
+        {
+            return null;
+        }
+        return results;
     }
 
 }

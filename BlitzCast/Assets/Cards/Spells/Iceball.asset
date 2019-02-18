@@ -9,12 +9,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 053e37f551ec5414bb72685ccf3de814, type: 3}
-  m_Name: Fireball
+  m_Name: Iceball
   m_EditorClassIdentifier: 
-  name: Fireball
-  description: Deal 6 damage.
-  art: {fileID: 21300000, guid: 3b507f8d506c640548ca36ccd13f0e30, type: 3}
-  timeCost: 4
+  name: Iceball
+  description: Deal 3 damage.
+  art: {fileID: 21300000, guid: d8fa9f9aa9a7441fba9ae9eee5412257, type: 3}
+  castTime: 1
+  redrawTime: 1
+  behaviors: 01000000
+  behaviorValues: 03000000
   status: 0
-  behaviors: 00000000
-  behaviorValues: 06000000
+  team: 0
