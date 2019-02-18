@@ -6,12 +6,21 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
+    public enum Team
+    {
+        A,
+        B,
+        Neutral
+    }
+
     public Player playerA;
     public Player playerB;
     public GameObject spellCardPrefab;
     public GameObject creatureCardPrefab;
     public RaycastTargeter targeter;
     public Text timerText;
+
+    public Team userTeam; // client
 
     private bool gameEnd = false;
 
@@ -20,17 +29,13 @@ public class GameManager : MonoBehaviour {
     {
         targeter = FindObjectOfType<RaycastTargeter>();
 
-        playerA.Initialize(Card.Team.A);
-        playerB.Initialize(Card.Team.B);
+        playerA.Initialize(Team.A);
+        playerB.Initialize(Team.B);
 
-        StartCoroutine(Timer(Time.fixedTime));
+        userTeam = Team.A; // temporary
+
+    StartCoroutine(Timer(Time.fixedTime));
     }
-	
-	// Update is called once per frame
-	void Update ()
-    {
-       
-	}
 
 
     public IEnumerator Timer(float startTime)

@@ -14,7 +14,7 @@ public class Player : MonoBehaviour, IEntity
     public Text usernameText;
     public Text healthText;
 
-    private Card.Team team;
+    private GameManager.Team team;
     private int health;
     private int attack;
     private int speed;
@@ -25,7 +25,7 @@ public class Player : MonoBehaviour, IEntity
     private GameManager gm;
     private System.Random randomGenerator = new System.Random();
 
-    public void Initialize(Card.Team team)
+    public void Initialize(GameManager.Team team)
     {
         gm = FindObjectOfType<GameManager>();
 
@@ -46,6 +46,7 @@ public class Player : MonoBehaviour, IEntity
         for (int i = 0; i < cardSlots.Count; i++)
         {
             cardSlots[i].index = i + 1; // +1 so index is natural counting nums
+            cardSlots[i].SetTeam(team);
         }
 
         // draw first cards
@@ -96,8 +97,18 @@ public class Player : MonoBehaviour, IEntity
             cardPrefab = gm.creatureCardPrefab;
         }
         GameObject newCardObject = Instantiate(cardPrefab);
-        newCardObject.GetComponent<CardManager>().card = hand[drawIndex];
+        CardManager newCardManager = newCardObject.GetComponent<CardManager>();
+        newCardManager.card = hand[drawIndex];
         cardSlots[drawIndex].SetCard(newCardObject);
+
+        if (team == gm.userTeam)
+        {
+            newCardManager.ShowFront();
+        }
+        else
+        {
+            newCardManager.ShowBack();
+        }
     }
 
     public void Draw(int amount)

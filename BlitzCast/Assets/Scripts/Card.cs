@@ -22,13 +22,6 @@ public abstract class Card : ScriptableObject
         Counter
     }
 
-    public enum Team
-    {
-        A,
-        B,
-        Neutral
-    }
-
     public new string name;
     public string description;
     public Sprite art;
@@ -38,7 +31,7 @@ public abstract class Card : ScriptableObject
     public List<int> behaviorValues;
 
     public CardStatus status;
-    public Team team;
+    public GameManager.Team team;
 
     public abstract Card Clone();
 
@@ -46,11 +39,11 @@ public abstract class Card : ScriptableObject
     {
         switch (team)
         {
-            case Team.A:
+            case GameManager.Team.A:
                 return FindObjectOfType<GameManager>().playerA;
-            case Team.B:
+            case GameManager.Team.B:
                 return FindObjectOfType<GameManager>().playerB;
-            case Team.Neutral:
+            case GameManager.Team.Neutral:
                 return null;
             default:
                 Debug.LogError("Team is null");

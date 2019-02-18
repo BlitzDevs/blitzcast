@@ -7,13 +7,16 @@ public class CardManager : MonoBehaviour,
                            IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Card card;
-    public Text nameText;
-    public Text descriptionText;
-    public Image artImage;
-    public Text castTimeText;
-    public Text redrawTimeText;
-    public Image cardBack;
-    public Image tint;
+    public bool showingFront;
+
+    [SerializeField] private Text nameText;
+    [SerializeField] private Text descriptionText;
+    [SerializeField] private Image artImage;
+    [SerializeField] private Text castTimeText;
+    [SerializeField] private Text redrawTimeText;
+    [SerializeField] private GameObject cardFront;
+    [SerializeField] private GameObject cardBack;
+    [SerializeField] private Image tint;
 
     private GameManager gm;
     private Vector2 originalPosition;
@@ -30,13 +33,12 @@ public class CardManager : MonoBehaviour,
         castTimeText.text = card.castTime.ToString();
         redrawTimeText.text = card.redrawTime.ToString();
         tint.color = Color.clear;
-        cardBack.enabled = false;
     }
 
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (card.status == Card.CardStatus.Held)
+        if (card.status == Card.CardStatus.Held && showingFront)
         {
             originalPosition = transform.position;
             dragOffset = originalPosition - eventData.position;
@@ -45,13 +47,14 @@ public class CardManager : MonoBehaviour,
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (card.status == Card.CardStatus.Held)
+        if (card.status == Card.CardStatus.Held && showingFront)
             transform.position = eventData.position + dragOffset;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (card.status == Card.CardStatus.Held && gm.targeter.InCastZone())
+        if (card.status == Card.CardStatus.Held && showingFront &&
+            gm.targeter.InCastZone())
         {
             StartCoroutine(PlayCard());
         }
@@ -59,8 +62,21 @@ public class CardManager : MonoBehaviour,
         {
             transform.localPosition = Vector3.zero;
         }
+    }
 
 
+    public void ShowFront()
+    {
+        showingFront = true;
+        cardBack.SetActive(false);
+        cardFront.SetActive(true);
+    }
+
+    public void ShowBack()
+    {
+        showingFront = false;
+        cardBack.SetActive(true);
+        cardFront.SetActive(false);
     }
 
 
@@ -70,6 +86,9 @@ public class CardManager : MonoBehaviour,
         if (target != null)
         {
             transform.SetParent(gm.targeter.GetCastingSlot());
+            transform.localScale = Vector3.one;
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
         }
 
         Debug.Log("Casting " + card.name + " on " + target.name);

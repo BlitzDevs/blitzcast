@@ -45,10 +45,10 @@ public class RaycastTargeter : MonoBehaviour
         List<RaycastResult> results = new List<RaycastResult>();
         raycaster.Raycast(pointerEventData, results);
 
-        //foreach (RaycastResult result in results)
-        //{
-        //    Debug.Log("Hit " + result.gameObject.name);
-        //}
+        foreach (RaycastResult result in results)
+        {
+            Debug.Log("Hit " + result.gameObject.name);
+        }
 
         results.RemoveAt(0); // remove first, which is card itself; lazy way
 
