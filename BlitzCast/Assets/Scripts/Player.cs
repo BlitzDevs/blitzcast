@@ -50,8 +50,8 @@ public class Player : MonoBehaviour, IEntity
         }
 
         // draw first cards
-        playingDeck = CardUtilities.Clone(deck);
-        CardUtilities.Shuffle(playingDeck, randomGenerator);
+        playingDeck = Clone(deck);
+        Shuffle();
         Draw(handSize);
     }
 
@@ -59,8 +59,8 @@ public class Player : MonoBehaviour, IEntity
     {
         if (playingDeck.Count == 0) // Reshuffle if empty
         {
-            playingDeck = CardUtilities.Clone(deck);
-            CardUtilities.Shuffle(playingDeck, randomGenerator);
+            playingDeck = Clone(deck);
+            Shuffle();
         }
 
         // Copy card from playingDeck, take out of playingDeck
@@ -96,6 +96,7 @@ public class Player : MonoBehaviour, IEntity
         {
             cardPrefab = gm.creatureCardPrefab;
         }
+
         GameObject newCardObject = Instantiate(cardPrefab);
         CardManager newCardManager = newCardObject.GetComponent<CardManager>();
         newCardManager.card = hand[drawIndex];
@@ -113,8 +114,32 @@ public class Player : MonoBehaviour, IEntity
 
     public void Draw(int amount)
     {
-        for (int i = 0; i < amount; i++) {
+        for (int i = 0; i < amount; i++)
+        {
             Draw();
+        }
+    }
+
+    public List<Card> Clone(List<Card> original)
+    {
+        List<Card> newList = new List<Card>(original.Count);
+
+        original.ForEach((item) =>
+        {
+            newList.Add(item);
+        });
+
+        return newList;
+    }
+
+    public void Shuffle()
+    {
+        for (int i = 0; i < playingDeck.Count; i++)
+        {
+            int j = randomGenerator.Next(0, playingDeck.Count);
+            var temp = playingDeck[i];
+            playingDeck[i] = playingDeck[j];
+            playingDeck[j] = temp;
         }
     }
 
