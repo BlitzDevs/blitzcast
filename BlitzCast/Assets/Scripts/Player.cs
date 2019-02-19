@@ -25,7 +25,7 @@ public class Player : MonoBehaviour, IEntity
     private GameManager gm;
     private System.Random randomGenerator = new System.Random();
 
-    public void Initialize(GameManager.Team team)
+    public void Initialize(GameManager.Team team) // Shouldn't this be a constructor named Player()?
     {
         gm = FindObjectOfType<GameManager>();
 
