@@ -2,11 +2,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CreatureManager : MonoBehaviour {
+public class CreatureManager : MonoBehaviour
+{
 
     public Text healthText;
     public Text attackText;
     public Text speedText;
+    public GameObject sprite;
+    public Animator animator;
     public CardManager cardManager;
 
     private CreatureCard creatureCard; // stats x=health, y=attack, z=speed
@@ -14,21 +17,34 @@ public class CreatureManager : MonoBehaviour {
     void Start()
     {
         creatureCard = (CreatureCard) cardManager.card;
-        healthText.text = creatureCard.GetStats().x.ToString();
-        attackText.text = creatureCard.GetStats().y.ToString();
-        speedText.text = creatureCard.GetStats().z.ToString();
+        creatureCard.SetCreatureManager(this);
+        SetStatsTexts(creatureCard.GetStats());
     }
 
-    public IEnumerator ActivateCreature()
+    public void SetStatsTexts(Vector3Int stats)
     {
-        while (creatureCard.GetStats().x > 0) // health > 0
-        {
-            yield return new WaitForSecondsRealtime(creatureCard.GetStats().y);
-            Debug.Log(creatureCard.name + " attack placeholder");
-        }
-
-        // health < 0
-        Destroy(this.gameObject);
-
+        healthText.text = stats.x.ToString();
+        attackText.text = stats.y.ToString();
+        speedText.text = stats.z.ToString();
     }
+
+    public void CardIntoSprite()
+    {
+        gameObject.name = "Creature";
+        RectTransform rt = (RectTransform)gameObject.transform;
+        rt.sizeDelta = new Vector2(64f, 64f);
+
+        sprite.SetActive(true);
+        Debug.Log(sprite.activeInHierarchy);
+        Debug.Log(creatureCard.animator.name);
+        animator.runtimeAnimatorController = creatureCard.animator;
+        cardManager.enabled = false;
+    }
+
+    public void DestroySelf()
+    {
+        Debug.Log(creatureCard.cardName + " died.");
+        Destroy(this.gameObject);
+    }
+
 }
