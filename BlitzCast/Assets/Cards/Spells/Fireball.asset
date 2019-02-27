@@ -11,12 +11,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 053e37f551ec5414bb72685ccf3de814, type: 3}
   m_Name: Fireball
   m_EditorClassIdentifier: 
-  name: Fireball
+  cardName: Fireball
   description: Deal 6 damage.
   art: {fileID: 21300000, guid: 1c7bc148ef4cd49c2bb639b06afaab69, type: 3}
-  castTime: 2
-  redrawTime: 1
-  behaviors: 01000000
-  behaviorValues: 06000000
-  status: 0
-  team: 0
+  castTime: 1
+  redrawTime: 3
+  behavior:
+    action: 1
+    value: 6

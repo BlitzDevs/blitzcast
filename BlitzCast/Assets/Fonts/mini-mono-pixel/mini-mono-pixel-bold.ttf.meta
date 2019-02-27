@@ -1,16 +1,16 @@
 fileFormatVersion: 2
-guid: 4adad374cd4f74a9983da835d9720dcb
+guid: b20b59c3f719b462d98a2c8c9ecb07e2
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
-  fontSize: 16
-  forceTextureCase: -2
+  fontSize: 13
+  forceTextureCase: 0
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: BlackChancery
+  fontName: mini-mono-pixel-bold
   fontNames:
-  - BlackChancery
+  - mini-mono-pixel-bold
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 2

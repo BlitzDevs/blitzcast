@@ -1,16 +1,16 @@
 fileFormatVersion: 2
-guid: 8b588a49334c243e09d52ca78ce7917c
+guid: bf51c34e671424842a4f7769f541692d
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
-  fontSize: 16
-  forceTextureCase: -2
+  fontSize: 13
+  forceTextureCase: 0
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Tutbury
+  fontName: mini-mono-pixel
   fontNames:
-  - Tutbury
+  - mini-mono-pixel
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 2
