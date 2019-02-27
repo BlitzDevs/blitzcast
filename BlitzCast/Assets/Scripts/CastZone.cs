@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
-public class CastZone : MonoBehaviour {
+public class CastZone : MonoBehaviour
+{
 
     [SerializeField] private GameObject targetObject;
     [SerializeField] private Transform castingSlot;
@@ -14,4 +15,5 @@ public class CastZone : MonoBehaviour {
     {
         return castingSlot;
     }
+
 }

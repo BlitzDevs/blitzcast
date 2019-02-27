@@ -21,6 +21,7 @@ public class Player : MonoBehaviour, IEntity
     [SerializeField] private List<Card> playingDeck; // deck in play
     [SerializeField] private List<Card> hand;
     [SerializeField] private List<CardSlot> cardSlots;
+    [SerializeField] private List<CreatureSlot> creatureSlots;
 
     private GameManager gm;
     private System.Random randomGenerator = new System.Random();
@@ -48,6 +49,11 @@ public class Player : MonoBehaviour, IEntity
             cardSlots[i].index = i + 1; // +1 so index is natural counting nums
             cardSlots[i].SetTeam(team);
         }
+        for (int i = 0; i < creatureSlots.Count; i++)
+        {
+            creatureSlots[i].index = i + 1; // +1 so index is natural counting nums
+            creatureSlots[i].SetTeam(team);
+        }
 
         // draw first cards
         playingDeck = Clone(deck);
@@ -66,8 +72,8 @@ public class Player : MonoBehaviour, IEntity
         // Copy card from playingDeck, take out of playingDeck
         Card newCard = playingDeck[0].Clone();
         playingDeck.RemoveAt(0);
-        newCard.status = Card.CardStatus.Held;
-        newCard.team = this.team;
+        newCard.SetStatus(Card.CardStatus.Held);
+        newCard.SetTeam(this.team);
 
         int drawIndex;
         if (hand.Count < handSize)
@@ -78,7 +84,7 @@ public class Player : MonoBehaviour, IEntity
         else
         {
             drawIndex = hand.FindIndex((card) =>
-                card.status == Card.CardStatus.Deck);
+                card.StatusIs(Card.CardStatus.Deck));
 
             if (drawIndex != -1)
             {

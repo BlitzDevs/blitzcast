@@ -3,7 +3,15 @@ guid: 7a7ea338321c945aba8bbf953d8f29ce
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - playerA: {instanceID: 0}
+  - playerB: {instanceID: 0}
+  - spellCardPrefab: {fileID: 1243322330585536, guid: 0478844808d4844a9a03da320b9f47e4,
+      type: 2}
+  - creatureCardPrefab: {fileID: 1584408280016716, guid: b6565e021370447bea2b756737ccf2a4,
+      type: 2}
+  - targeter: {instanceID: 0}
+  - timerText: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

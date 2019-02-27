@@ -7,15 +7,16 @@ public class CardManager : MonoBehaviour,
                            IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Card card;
-    public bool showingFront;
 
     [SerializeField] private Text nameText;
+    [SerializeField] private Text typeText;
     [SerializeField] private Text descriptionText;
     [SerializeField] private Image artImage;
     [SerializeField] private Text castTimeText;
     [SerializeField] private Text redrawTimeText;
     [SerializeField] private GameObject cardFront;
     [SerializeField] private GameObject cardBack;
+    [SerializeField] private GameObject targetableZone;
     [SerializeField] private Image tint;
 
     private GameManager gm;
@@ -27,7 +28,8 @@ public class CardManager : MonoBehaviour,
     {
         gm = FindObjectOfType<GameManager>();
 
-        nameText.text = card.name;
+        nameText.text = card.cardName;
+        typeText.text = card.behavior.action.ToString();
         descriptionText.text = card.description;
         artImage.sprite = card.art;
         castTimeText.text = card.castTime.ToString();
@@ -38,8 +40,9 @@ public class CardManager : MonoBehaviour,
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (card.status == Card.CardStatus.Held && showingFront)
+        if (card.StatusIs(Card.CardStatus.Held))
         {
+            card.SetStatus(Card.CardStatus.Dragging);
             originalPosition = transform.position;
             dragOffset = originalPosition - eventData.position;
         }
@@ -47,16 +50,17 @@ public class CardManager : MonoBehaviour,
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (card.status == Card.CardStatus.Held && showingFront)
-            transform.position = eventData.position + dragOffset;
+        transform.position = eventData.position + dragOffset;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (card.status == Card.CardStatus.Held && showingFront &&
-            gm.targeter.InCastZone())
+        card.SetStatus(Card.CardStatus.Held);
+        CastZone castZone = gm.targeter.GetTargetCastZone(
+            card.behavior.action, targetableZone);
+        if (castZone != null)
         {
-            StartCoroutine(PlayCard());
+            StartCoroutine(gm.CastCard(this.gameObject, castZone));
         }
         else
         {
@@ -67,55 +71,46 @@ public class CardManager : MonoBehaviour,
 
     public void ShowFront()
     {
-        showingFront = true;
         cardBack.SetActive(false);
         cardFront.SetActive(true);
     }
 
     public void ShowBack()
     {
-        showingFront = false;
         cardBack.SetActive(true);
         cardFront.SetActive(false);
     }
 
-
-    IEnumerator PlayCard() //TODO: Move into GameManager
+    public void CastingAnimation()
     {
-        GameObject target = gm.targeter.GetTarget();
-        if (target != null)
-        {
-            transform.SetParent(gm.targeter.GetCastingSlot());
-            transform.localScale = Vector3.one;
-            transform.localPosition = Vector3.zero;
-            transform.localRotation = Quaternion.identity;
-        }
-
-        Debug.Log("Casting " + card.name + " on " + target.name);
-
-        card.status = Card.CardStatus.Casting;
+        // temporary
         tint.color = new Color32(255, 255, 255, 100);
+    }
 
-        for (var i = card.castTime; i >= 0; i--)
-        {
-            yield return new WaitForSecondsRealtime(1);
-            castTimeText.text = i.ToString();
-        }
-
-        gm.Cast(this.gameObject, target);
-        card.status = Card.CardStatus.Recharging;
+    public void RechargingAnimation()
+    {
+        // temporary
         tint.color = new Color32(0, 0, 0, 100);
+    }
 
-        for (var i = card.redrawTime; i >= 0; i--)
-        {
-            yield return new WaitForSecondsRealtime(1);
-            redrawTimeText.text = i.ToString();
-        }
+    public void SetCastTimer(int time)
+    {
+        // add bar or something instead of just text
+        castTimeText.text = time.ToString();
+    }
 
-        card.status = Card.CardStatus.Deck;
-        card.GetOwner().Draw();
-        Destroy(this.gameObject);
+    public void SetRedrawTimer(int time)
+    {
+        // add bar or something instead of just text
+        redrawTimeText.text = time.ToString();
+    }
 
+    void OnDisable()
+    {
+        Debug.Log("CardManager was disabled");
+        cardFront.SetActive(false);
+        cardBack.SetActive(false);
+        targetableZone.SetActive(false);
     }
 
 }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Card : ScriptableObject
@@ -8,12 +10,13 @@ public abstract class Card : ScriptableObject
     {
         Deck,
         Held,
+        Dragging,
         Recharging,
         Casting,
         Active
     }
 
-    public enum CardBehavior
+    public enum CardAction
     {
         Creature,
         DamageTarget,
@@ -22,18 +25,26 @@ public abstract class Card : ScriptableObject
         Counter
     }
 
-    public new string name;
+    [Serializable]
+    public struct CardBehavior
+    {
+        public CardAction action;
+        public int value;
+    }
+
+    public string cardName;
     public string description;
     public Sprite art;
     public int castTime;
     public int redrawTime;
-    public List<CardBehavior> behaviors;
-    public List<int> behaviorValues;
+    public CardBehavior behavior;
 
-    public CardStatus status;
-    public GameManager.Team team;
+    private CardStatus status;
+    private GameManager.Team team;
 
     public abstract Card Clone();
+    public abstract void Cast(GameObject target);
+
 
     public Player GetOwner()
     {
@@ -49,6 +60,21 @@ public abstract class Card : ScriptableObject
                 Debug.LogError("Team is null");
                 return null;
         }
+    }
+
+    public void SetTeam(GameManager.Team team)
+    {
+        this.team = team;
+    }
+
+    public void SetStatus(CardStatus status)
+    {
+        this.status = status;
+    }
+
+    public bool StatusIs(CardStatus status)
+    {
+        return this.status == status;
     }
 
 }
