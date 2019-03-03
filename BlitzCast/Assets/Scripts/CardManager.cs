@@ -13,20 +13,22 @@ public class CardManager : MonoBehaviour,
     [SerializeField] private Text descriptionText;
     [SerializeField] private Image artImage;
     [SerializeField] private Text castTimeText;
+    [SerializeField] private GameObject castSliderObject;
+    [SerializeField] private Slider castSlider;
     [SerializeField] private Text redrawTimeText;
     [SerializeField] private GameObject cardFront;
     [SerializeField] private GameObject cardBack;
     [SerializeField] private GameObject targetableZone;
     [SerializeField] private Image tint;
 
-    private GameManager gm;
+    private GameManager gameManager;
     private Vector2 originalPosition;
     private Vector2 dragOffset;
 
     // Use this for initialization
     void Start()
     {
-        gm = FindObjectOfType<GameManager>();
+        gameManager = FindObjectOfType<GameManager>();
 
         nameText.text = card.cardName;
         typeText.text = card.behavior.action.ToString();
@@ -35,6 +37,7 @@ public class CardManager : MonoBehaviour,
         castTimeText.text = card.castTime.ToString();
         redrawTimeText.text = card.redrawTime.ToString();
         tint.color = Color.clear;
+        castSliderObject.SetActive(false);
     }
 
 
@@ -50,24 +53,28 @@ public class CardManager : MonoBehaviour,
 
     public void OnDrag(PointerEventData eventData)
     {
-        transform.position = eventData.position + dragOffset;
+        //transform.position = eventData.position + dragOffset;
+        transform.position = new Vector2(
+            Mathf.RoundToInt(eventData.position.x + dragOffset.x),
+            Mathf.RoundToInt(eventData.position.y + dragOffset.y));
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         card.SetStatus(Card.CardStatus.Held);
-        CastZone castZone = gm.targeter.GetTargetCastZone(
+        CastZone castZone = gameManager.targeter.GetTargetCastZone(
             card.behavior.action, targetableZone);
         if (castZone != null)
         {
-            StartCoroutine(gm.CastCard(this.gameObject, castZone));
+            // Pass the card slot
+            StartCoroutine(gameManager.CastCard(
+                gameObject.GetComponentInParent<CardSlot>(), castZone));
         }
         else
         {
             transform.localPosition = Vector3.zero;
         }
     }
-
 
     public void ShowFront()
     {
@@ -84,33 +91,28 @@ public class CardManager : MonoBehaviour,
     public void CastingAnimation()
     {
         // temporary
+        castSliderObject.SetActive(true);
         tint.color = new Color32(255, 255, 255, 100);
     }
 
-    public void RechargingAnimation()
+    public void StopCastingAnimation()
     {
         // temporary
-        tint.color = new Color32(0, 0, 0, 100);
+        castSliderObject.SetActive(false);
     }
 
-    public void SetCastTimer(int time)
+    public void SetCastTimer(float time)
     {
-        // add bar or something instead of just text
-        castTimeText.text = time.ToString();
-    }
-
-    public void SetRedrawTimer(int time)
-    {
-        // add bar or something instead of just text
-        redrawTimeText.text = time.ToString();
+        castTimeText.text = Mathf.Round(time).ToString();
+        castSlider.value = time / card.castTime;
     }
 
     void OnDisable()
     {
-        Debug.Log("CardManager was disabled");
         cardFront.SetActive(false);
         cardBack.SetActive(false);
         targetableZone.SetActive(false);
+        StopCastingAnimation();
     }
 
 }

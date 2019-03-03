@@ -19,17 +19,17 @@ public class SpellCard : Card
         return copy;
     }
 
-    public override void Cast(GameObject target)
+    public override void Cast(GameObject selfObject, GameObject target)
     {
+        SetStatus(CardStatus.Active);
         switch (behavior.action)
         {
             case CardAction.DamageTarget:
                 {
-                    Debug.Log("Try damage target " + behavior.value);
+                    IEntity targetEntity = target.GetComponent<CreatureSlot>() != null ?
+                        target.GetComponent<CreatureSlot>().slotObject.GetComponent<CreatureManager>() : target.GetComponent<IEntity>();
 
-                    IEntity targetEntity = target.GetComponent<IEntity>();
                     targetEntity.Damage(behavior.value);
-
                 }
                 break;
 
@@ -47,6 +47,9 @@ public class SpellCard : Card
                 }
                 break;
         }
+        SetStatus(CardStatus.Deck);
+        Destroy(selfObject);
     }
+
 
 }

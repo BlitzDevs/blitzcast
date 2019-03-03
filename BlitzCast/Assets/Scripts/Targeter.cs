@@ -62,25 +62,17 @@ public class Targeter : MonoBehaviour
 
     public CastZone GetTargetCastZone(Card.CardAction action, GameObject ignoreObject)
     {
-        List<RaycastResult> results = Raycast();
         List<GameObject> hitObjects = new List<GameObject>();
-        GameObject targetObject = null;
+        List<RaycastResult> results = Raycast();
 
         foreach (RaycastResult result in results)
         {
             if (result.gameObject != ignoreObject)
             {
-                Debug.Log("Hit " + result.gameObject.name);
+                //Debug.Log("Hit " + result.gameObject.name);
                 hitObjects.Add(result.gameObject);
             }
         }
-
-        //CastZone,
-        //CreatureSlot,
-        //CastingCard,
-        //Player,
-        //Creature,
-        //CardSlot
 
         List<Tag> tags = new List<Tag>();
         actionTargets.TryGetValue(action, out tags);
@@ -88,48 +80,24 @@ public class Targeter : MonoBehaviour
         foreach (GameObject hitObject in hitObjects)
         {
             CastZone hitCastZone = hitObject.GetComponent<CastZone>();
+            GameObject hitTarget = hitCastZone != null ? hitCastZone.GetTargetObject() : null;
 
-            foreach (Tag targetTag in tags)
+            if (hitCastZone != null && hitCastZone.GetTargetObject() != null)
             {
-                switch (targetTag)
+                foreach (Tag targetTag in tags)
                 {
-                    case Tag.CastZone:
-                        if (hitCastZone != null)
-                        {
-                            targetObject = hitObject;
-                        }
-                        break;
-                    case Tag.CreatureSlot:
-                        if (hitCastZone != null && hitCastZone.GetTargetObject()
-                            .GetComponent<CreatureSlot>() != null)
-                        {
-                            targetObject = hitObject;
-                        }
-                        break;
-                    case Tag.CastingCard:
-                        if (hitCastZone != null && hitCastZone.GetTargetObject()
-                            .GetComponent<CardManager>()
-                            .card.StatusIs(Card.CardStatus.Casting))
-                        {
-                            targetObject = hitObject;
-                        }
-                        break;
-                    case Tag.Player:
-                        Debug.Log("Target tag is Player");
-                        if (hitCastZone != null && hitCastZone.GetTargetObject()
-                            .GetComponent<Player>() != null)
-                        {
-                            targetObject = hitObject;
-                        }
-                        break;
+                    if ((targetTag == Tag.CastZone)
+                        || (targetTag == Tag.CreatureSlot && hitTarget.GetComponent<CreatureSlot>() != null)
+                        || (targetTag == Tag.CastingCard && hitTarget.GetComponent<CardManager>().card.StatusIs(Card.CardStatus.Casting))
+                        || (targetTag == Tag.Player && hitTarget.GetComponent<PlayerManager>() != null)
+                        || (targetTag == Tag.Creature && hitTarget.GetComponent<CreatureSlot>() != null && hitTarget.GetComponent<CreatureSlot>().slotObject != null)
+                        || (targetTag == Tag.CardSlot && hitTarget.GetComponent<CardSlot>() != null))
+                    {
+                        Debug.Log("Target: " + hitObject.name);
+                        return hitObject.GetComponent<CastZone>();
+                    }
                 }
             }
-        }
-
-        if (targetObject != null)
-        {
-            Debug.Log("Target: " + targetObject.name);
-            return targetObject.GetComponent<CastZone>();
         }
 
         return null;

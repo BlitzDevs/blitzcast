@@ -43,24 +43,8 @@ public abstract class Card : ScriptableObject
     private GameManager.Team team;
 
     public abstract Card Clone();
-    public abstract void Cast(GameObject target);
+    public abstract void Cast(GameObject selfObject, GameObject target);
 
-
-    public Player GetOwner()
-    {
-        switch (team)
-        {
-            case GameManager.Team.A:
-                return FindObjectOfType<GameManager>().playerA;
-            case GameManager.Team.B:
-                return FindObjectOfType<GameManager>().playerB;
-            case GameManager.Team.Neutral:
-                return null;
-            default:
-                Debug.LogError("Team is null");
-                return null;
-        }
-    }
 
     public void SetTeam(GameManager.Team team)
     {

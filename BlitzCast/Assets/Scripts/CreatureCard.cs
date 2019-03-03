@@ -3,13 +3,13 @@ using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Creature Card", menuName = "Creature Card")]
-public class CreatureCard : Card, IEntity
+public class CreatureCard : Card
 {
 
     public RuntimeAnimatorController animator;
-    [SerializeField] private int health;
-    [SerializeField] private int attack;
-    [SerializeField] private int speed;
+    public int health;
+    public int attack;
+    public int speed;
 
     private CreatureManager creatureManager;
 
@@ -23,8 +23,8 @@ public class CreatureCard : Card, IEntity
         copy.castTime = this.castTime;
         copy.redrawTime = this.redrawTime;
         copy.behavior = this.behavior;
-        copy.animator = this.animator;
 
+        copy.animator = this.animator;
         copy.health = this.health;
         copy.attack = this.attack;
         copy.speed = this.speed;
@@ -32,7 +32,7 @@ public class CreatureCard : Card, IEntity
         return copy;
     }
 
-    public override void Cast(GameObject target)
+    public override void Cast(GameObject selfObject, GameObject target)
     {
         CreatureSlot creatureSlot = target.GetComponent<CreatureSlot>();
         if (creatureSlot == null)
@@ -40,48 +40,9 @@ public class CreatureCard : Card, IEntity
             Debug.LogError("Creature card target is not creature slot");
         }
 
-        creatureSlot.SetCard(creatureManager.gameObject);
-        creatureManager.CardIntoSprite();
-        creatureManager.StartCoroutine(BeginAttacking());
+        creatureSlot.SetObject(creatureManager.gameObject);
+        creatureManager.CardIntoCreature(creatureSlot);
     }
-
-    IEnumerator BeginAttacking()
-    {
-        while (health > 0)
-        {
-            yield return new WaitForSecondsRealtime(speed);
-            Debug.Log(cardName + " attack placeholder");
-        }
-
-        // health <= 0
-        creatureManager.DestroySelf();
-    }
-
-
-    public void Damage(int hp)
-    {
-        SetHealth(health -= hp);
-    }
-
-    public void Heal(int hp)
-    {
-        SetHealth(health += hp);
-    }
-
-    public void SetHealth(int hp)
-    {
-        health = hp;
-
-        // change health display
-        creatureManager.SetStatsTexts(GetStats());
-    }
-
-    public Vector3Int GetStats()
-    {
-        return new Vector3Int(health, attack, speed);
-    }
-
-
 
     public void SetCreatureManager(CreatureManager creatureManager)
     {

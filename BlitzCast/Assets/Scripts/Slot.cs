@@ -1,42 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public abstract class Slot : CastZone
+public abstract class Slot : MonoBehaviour
 {
-
-    protected Card card;
     public int index;
     public GameObject slotObject;
 
     protected GameManager.Team team;
-    protected GameManager.Team userTeam;
 
 
-    void Start()
-    {
-        userTeam = FindObjectOfType<GameManager>().userTeam;
-    }
-
-
-    public void SetCard(GameObject cardObject)
-    {
-        this.card = cardObject.GetComponent<CardManager>().card;
-        this.slotObject = cardObject;
-        this.slotObject.transform.SetParent(this.transform);
-        this.slotObject.transform.localScale = Vector3.one;
-        this.slotObject.transform.localPosition = Vector3.zero;
-        this.slotObject.transform.localRotation = Quaternion.identity;
-    }
+    public abstract void SetObject(GameObject slotObject);
 
     public void SetTeam(GameManager.Team team)
     {
         this.team = team;
     }
 
-    public void RemoveCard()
+    public GameManager.Team GetTeam()
     {
-        this.card = null;
+        return team;
     }
 
 }
