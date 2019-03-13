@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: db674cef48a7d47a99e2ca1059b4be5c
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 11
+  forceTextureCase: -1
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: mini-mono-pixel-wide-bold
+  fontNames:
+  - mini-mono-pixel-wide-bold
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 1
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
