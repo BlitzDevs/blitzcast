@@ -14,8 +14,9 @@ MonoBehaviour:
   cardName: Fireball
   description: Deal 6 damage.
   art: {fileID: 21300000, guid: 1c7bc148ef4cd49c2bb639b06afaab69, type: 3}
-  castTime: 1
+  castTime: 4
   redrawTime: 5
-  behavior:
-    action: 1
+  behaviors:
+  - action: 1
+    targets: 0300000005000000
     value: 6

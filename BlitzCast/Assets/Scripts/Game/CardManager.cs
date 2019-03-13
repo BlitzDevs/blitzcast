@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 public class CardManager : MonoBehaviour,
                            IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    public Card card;
 
     [SerializeField] private Text nameText;
     [SerializeField] private Text typeText;
@@ -21,17 +20,20 @@ public class CardManager : MonoBehaviour,
     [SerializeField] private GameObject targetableZone;
     [SerializeField] private Image tint;
 
+    private Card card;
+    private GameManager.Team team;
+
     private GameManager gameManager;
     private Vector2 originalPosition;
     private Vector2 dragOffset;
 
-    // Use this for initialization
+
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
 
         nameText.text = card.cardName;
-        typeText.text = card.behavior.action.ToString();
+        typeText.text = card.behaviors[0].action.ToString();
         descriptionText.text = card.description;
         artImage.sprite = card.art;
         castTimeText.text = card.castTime.ToString();
@@ -40,12 +42,19 @@ public class CardManager : MonoBehaviour,
         castSliderObject.SetActive(false);
     }
 
+    // Called by Player Manager
+    public void Initialize(Card card, GameManager.Team team)
+    {
+        this.card = card;
+        this.team = team;
+    }
+
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (card.StatusIs(Card.CardStatus.Held))
+        if (card.StatusIs(Card.Status.Held))
         {
-            card.SetStatus(Card.CardStatus.Dragging);
+            card.SetStatus(Card.Status.Dragging);
             originalPosition = transform.position;
             dragOffset = originalPosition - eventData.position;
         }
@@ -61,19 +70,32 @@ public class CardManager : MonoBehaviour,
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        card.SetStatus(Card.CardStatus.Held);
+        card.SetStatus(Card.Status.Held);
+
+        bool castedCard = TryCastCard();
+        if (!castedCard) {
+            transform.localPosition = Vector3.zero;
+        }
+    }
+
+    public bool TryCastCard()
+    {
         CastZone castZone = gameManager.targeter.GetTargetCastZone(
-            card.behavior.action, targetableZone);
+            card.behaviors, targetableZone);
         if (castZone != null)
         {
             // Pass the card slot
             StartCoroutine(gameManager.CastCard(
-                gameObject.GetComponentInParent<CardSlot>(), castZone));
+                gameObject.GetComponentInParent<HeldCardSlot>(), castZone));
+            return true;
         }
-        else
-        {
-            transform.localPosition = Vector3.zero;
-        }
+        return false;
+    }
+
+
+    public Card GetCard()
+    {
+        return card;
     }
 
     public void ShowFront()
@@ -106,6 +128,7 @@ public class CardManager : MonoBehaviour,
         castTimeText.text = Mathf.Round(time).ToString();
         castSlider.value = time / card.castTime;
     }
+
 
     void OnDisable()
     {

@@ -22,7 +22,7 @@ public class CreatureCard : Card
         copy.art = this.art;
         copy.castTime = this.castTime;
         copy.redrawTime = this.redrawTime;
-        copy.behavior = this.behavior;
+        copy.behaviors = this.behaviors;
 
         copy.animator = this.animator;
         copy.health = this.health;

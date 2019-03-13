@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class CreatureSlot : Slot
@@ -11,7 +9,7 @@ public class CreatureSlot : Slot
     public Slider attackSlider;
     public GameObject statsDisplay;
 
-    private void Start()
+    protected override void Initialize()
     {
         statsDisplay.SetActive(false);
     }

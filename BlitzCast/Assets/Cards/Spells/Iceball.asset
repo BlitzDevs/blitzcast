@@ -14,8 +14,9 @@ MonoBehaviour:
   cardName: Iceball
   description: Deal 2 damage.
   art: {fileID: 21300000, guid: d8fa9f9aa9a7441fba9ae9eee5412257, type: 3}
-  castTime: 2
+  castTime: 4
   redrawTime: 2
-  behavior:
-    action: 1
+  behaviors:
+  - action: 1
+    targets: 0300000005000000
     value: 2

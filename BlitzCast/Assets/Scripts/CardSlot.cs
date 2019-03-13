@@ -1,84 +1,55 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-public class CardSlot : Slot, IPointerEnterHandler, IPointerExitHandler
+public class CardSlot : Slot, IDeselectHandler, ISelectHandler,
+                            IPointerEnterHandler, IPointerExitHandler
 {
-    public GameObject redrawDisplay;
-    public Slider drawTimeSlider;
+    public Card card;
 
-    private Card card;
-    private Vector2 originalPosition = new Vector2();
+    private Vector2 originalPosition = Vector2.zero;
     private const int pixelsToFloatWhenSelected = 20;
-    private PlayerManager player;
+    protected EventSystem eventSystem;
 
-    private void Start()
+    protected override void Initialize()
     {
-        redrawDisplay.SetActive(false);
-        player = FindObjectOfType<GameManager>().GetPlayer(team);
+        eventSystem = FindObjectOfType<EventSystem>();
     }
 
-    public IEnumerator DrawCard(int drawTimeout)
+    public override void OnPointerEnter(PointerEventData eventData)
     {
-        redrawDisplay.SetActive(true);
-
-        float timer = 0;
-        while (timer < drawTimeout)
-        {
-            timer += Time.deltaTime;
-            drawTimeSlider.value = timer / drawTimeout;
-
-            yield return null;
-        }
-
-        redrawDisplay.SetActive(false);
-        player.Draw(index);
-        
+        eventSystem.SetSelectedGameObject(this.gameObject);
     }
 
-
-// TODO: (Future) Selectable with keys
-public void OnPointerEnter(PointerEventData eventData)
+    public override void OnPointerExit(PointerEventData eventData)
     {
-        if (card.StatusIs(Card.CardStatus.Held))
-        {
-            Float();
-        }
+        eventSystem.SetSelectedGameObject(null);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public override void OnSelect(BaseEventData eventData)
     {
-        if (card.StatusIs(Card.CardStatus.Held))
-        {
-            Unfloat();
-        }
+        Float();
     }
 
-    private void Float()
+    public override void OnDeselect(BaseEventData eventData)
     {
-        if (card.StatusIs(Card.CardStatus.Held))
-        {
-            originalPosition = slotObject.transform.localPosition;
-            slotObject.transform.localPosition = new Vector3(
-                originalPosition.x,
-                originalPosition.y + pixelsToFloatWhenSelected,
-                0);
-        }
+        Unfloat();
     }
 
-    private void Unfloat()
+    public void Float()
     {
-        if (card.StatusIs(Card.CardStatus.Held))
-        {
-            slotObject.transform.localPosition = originalPosition;
-        }
+        slotObject.transform.localPosition = new Vector3(
+            originalPosition.x, originalPosition.y + pixelsToFloatWhenSelected, 0);
     }
+
+    public void Unfloat()
+    {
+        slotObject.transform.localPosition = originalPosition;
+    }
+
 
     public override void SetObject(GameObject slotObject)
     {
-        card = slotObject.GetComponent<CardManager>().card;
+        card = slotObject.GetComponent<CardManager>().GetCard();
         this.slotObject = slotObject;
         this.slotObject.transform.SetParent(this.transform);
         this.slotObject.transform.localScale = Vector3.one;

@@ -23,7 +23,7 @@ public class CreatureManager : MonoBehaviour, IEntity
     {
         gameManager = FindObjectOfType<GameManager>();
 
-        creatureCard = (CreatureCard) cardManager.card;
+        creatureCard = (CreatureCard) cardManager.GetCard();
         creatureCard.SetCreatureManager(this);
 
         health = creatureCard.health;

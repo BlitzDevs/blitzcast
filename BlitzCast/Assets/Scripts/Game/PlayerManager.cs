@@ -9,18 +9,21 @@ public class PlayerManager : MonoBehaviour, IEntity
     public int health;
     public List<string> enchantments;
 
+    public HeldCardSelector heldCardSelector;
+
     public Image iconImage;
     public Text usernameText;
     public Text healthText;
     public Slider healthSlider;
+    public GameObject cardSlotsParent;
+    public GameObject creatureSlotsParent;
 
     private GameManager.Team team;
     [SerializeField] private List<Card> playingDeck; // deck in play
-    //[SerializeField] private List<Card> heldCards;
-    public List<CardSlot> cardSlots;
-    public List<CreatureSlot> creatureSlots;
 
-    private int selectedCardIndex = -1;
+    private List<HeldCardSlot> cardSlots;
+    private List<CreatureSlot> creatureSlots;
+
     private GameManager gameManager;
     private System.Random randomGenerator = new System.Random();
     private int maxHealth;
@@ -37,22 +40,31 @@ public class PlayerManager : MonoBehaviour, IEntity
 
         iconImage.sprite = player.icon;
         usernameText.text = player.username;
-        //heldCards = new List<Card>(handSize);
 
         // initialize CardSlots
-        if (cardSlots.Count != handSize)
+
+        cardSlots = new List<HeldCardSlot>();
+        for (int i = 0; i < cardSlotsParent.transform.childCount; i++)
         {
-            Debug.LogError("Player card slots not match hand size");
+            if (cardSlotsParent.transform.GetChild(i).gameObject.GetComponent<HeldCardSlot>() != null)
+            {
+                HeldCardSlot newSlot = cardSlotsParent.transform.GetChild(i).gameObject.GetComponent<HeldCardSlot>();
+                newSlot.index = i;
+                newSlot.SetTeam(team);
+                cardSlots.Add(newSlot);
+            }
         }
-        for (int i = 0; i < cardSlots.Count; i++)
+
+        creatureSlots = new List<CreatureSlot>();
+        for (int i = 0; i < creatureSlotsParent.transform.childCount; i++)
         {
-            cardSlots[i].index = i;
-            cardSlots[i].SetTeam(team);
-        }
-        for (int i = 0; i < creatureSlots.Count; i++)
-        {
-            creatureSlots[i].index = i;
-            creatureSlots[i].SetTeam(team);
+            if (creatureSlotsParent.transform.GetChild(i).gameObject.GetComponent<CreatureSlot>() != null)
+            {
+                CreatureSlot newSlot = creatureSlotsParent.transform.GetChild(i).gameObject.GetComponent<CreatureSlot>();
+                newSlot.index = i;
+                newSlot.SetTeam(team);
+                creatureSlots.Add(newSlot);
+            }
         }
 
         // draw first cards
@@ -63,6 +75,7 @@ public class PlayerManager : MonoBehaviour, IEntity
             Draw(i);
         }
     }
+
 
     public void Draw(int index)
     {
@@ -81,8 +94,7 @@ public class PlayerManager : MonoBehaviour, IEntity
         // Copy card from playingDeck, take out of playingDeck
         Card newCard = playingDeck[0].Clone();
         playingDeck.RemoveAt(0);
-        newCard.SetStatus(Card.CardStatus.Held);
-        newCard.SetTeam(team);
+        newCard.SetStatus(Card.Status.Held);
 
         GameObject cardPrefab = gameManager.spellCardPrefab;
         if (newCard is CreatureCard)
@@ -92,7 +104,7 @@ public class PlayerManager : MonoBehaviour, IEntity
 
         GameObject newCardObject = Instantiate(cardPrefab);
         CardManager newCardManager = newCardObject.GetComponent<CardManager>();
-        newCardManager.card = newCard;
+        newCardManager.Initialize(newCard, team);
         cardSlots[index].SetObject(newCardObject);
 
         if (team == gameManager.userTeam)
@@ -105,72 +117,16 @@ public class PlayerManager : MonoBehaviour, IEntity
         }
     }
 
+    public List<CreatureSlot> GetCreatureSlots()
+    {
+        return creatureSlots;
+    }
 
-    //public void Draw()
-    //{
-    //    if (playingDeck.Count == 0) // Reshuffle if empty
-    //    {
-    //        playingDeck = Clone(player.deck);
-    //        Shuffle();
-    //    }
+    public bool IsUser()
+    {
+        return team == gameManager.userTeam;
+    }
 
-    //    // Copy card from playingDeck, take out of playingDeck
-    //    Card newCard = playingDeck[0].Clone();
-    //    playingDeck.RemoveAt(0);
-    //    newCard.SetStatus(Card.CardStatus.Held);
-    //    newCard.SetTeam(team);
-
-    //    int drawIndex;
-    //    if (heldCards.Count < cardSlots.Count)
-    //    {
-
-    //        drawIndex = heldCards.Count;
-    //        heldCards.Add(newCard);
-    //    }
-    //    else
-    //    {
-    //        drawIndex = heldCards.FindIndex((card) =>
-    //            !card.StatusIs(Card.CardStatus.Held));
-
-    //        if (drawIndex != -1)
-    //        {
-    //            heldCards[drawIndex] = newCard;
-    //        }
-    //        else
-    //        {
-    //            Debug.LogError("Could not find card to draw");
-    //        }
-
-    //    }
-
-    //    GameObject cardPrefab = gameManager.spellCardPrefab;
-    //    if (newCard is CreatureCard)
-    //    {
-    //        cardPrefab = gameManager.creatureCardPrefab;
-    //    }
-
-    //    GameObject newCardObject = Instantiate(cardPrefab);
-    //    CardManager newCardManager = newCardObject.GetComponent<CardManager>();
-    //    newCardManager.card = heldCards[drawIndex];
-    //    cardSlots[drawIndex].SetObject(newCardObject);
-
-    //    if (team == gameManager.userTeam)
-    //    {
-    //        newCardManager.ShowFront();
-    //    }
-    //    else
-    //    {
-    //        newCardManager.ShowBack();
-    //    }
-    //}
-
-    //public void Draw(int amount)
-    //{
-    //    for (int i = 0; i < amount; i++)
-    //    {
-    //        Draw();
-    //    }
-    //}
 
     public List<Card> Clone(List<Card> original)
     {

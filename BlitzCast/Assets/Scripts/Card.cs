@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class Card : ScriptableObject
 {
 
-    public enum CardStatus
+    public enum Status
     {
         Deck,
         Held,
@@ -16,7 +16,7 @@ public abstract class Card : ScriptableObject
         Active
     }
 
-    public enum CardAction
+    public enum Action
     {
         Creature,
         DamageTarget,
@@ -25,10 +25,22 @@ public abstract class Card : ScriptableObject
         Counter
     }
 
-    [Serializable]
-    public struct CardBehavior
+    public enum Target
     {
-        public CardAction action;
+        CastZone,
+        HeldCardSlot,
+        CreatureSlot,
+        Creature,
+        CastingCard,
+        Opponent,
+        User
+    }
+
+    [Serializable]
+    public struct Behavior
+    {
+        public Action action;
+        public List<Target> targets;
         public int value;
     }
 
@@ -37,26 +49,20 @@ public abstract class Card : ScriptableObject
     public Sprite art;
     public int castTime;
     public int redrawTime;
-    public CardBehavior behavior;
+    public List<Behavior> behaviors;
 
-    private CardStatus status;
-    private GameManager.Team team;
+    private Status status;
 
     public abstract Card Clone();
     public abstract void Cast(GameObject selfObject, GameObject target);
 
 
-    public void SetTeam(GameManager.Team team)
-    {
-        this.team = team;
-    }
-
-    public void SetStatus(CardStatus status)
+    public void SetStatus(Status status)
     {
         this.status = status;
     }
 
-    public bool StatusIs(CardStatus status)
+    public bool StatusIs(Status status)
     {
         return this.status == status;
     }

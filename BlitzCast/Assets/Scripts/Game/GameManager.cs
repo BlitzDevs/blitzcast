@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -70,11 +69,16 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public IEnumerator CastCard(CardSlot cardSlot, CastZone castZone)
+    public IEnumerator CastCard(HeldCardSlot cardSlot, CastZone castZone)
     {
+        if (cardSlot == null)
+        {
+            yield break;
+        }
+
         GameObject cardObject = cardSlot.slotObject;
         CardManager cardManager = cardObject.GetComponent<CardManager>();
-        Card card = cardManager.card;
+        Card card = cardManager.GetCard();
         GameObject target = castZone.GetTargetObject();
         Transform slot = castZone.GetCastingSlot();
 
@@ -90,7 +94,7 @@ public class GameManager : MonoBehaviour
         cardObject.transform.localPosition = Vector3.zero;
 
 
-        card.SetStatus(Card.CardStatus.Casting);
+        card.SetStatus(Card.Status.Casting);
         cardManager.CastingAnimation();
 
         float timer = 0;
@@ -104,12 +108,13 @@ public class GameManager : MonoBehaviour
         card.Cast(cardObject, target);
     }
 
+
     public IEntity GetCreatureAttackTarget(int index, Team team)
     {
         Team targetTeam = team == Team.A ? Team.B : (team == Team.B ? Team.A : Team.Neutral);
         PlayerManager targetPlayer = GetPlayer(targetTeam);
-        return targetPlayer.creatureSlots[index].slotObject != null ?
-            (IEntity) targetPlayer.creatureSlots[index].slotObject.GetComponent<CreatureManager>() :
+        return targetPlayer.GetCreatureSlots()[index].slotObject != null ?
+            (IEntity) targetPlayer.GetCreatureSlots()[index].slotObject.GetComponent<CreatureManager>() :
             (IEntity) targetPlayer;
     }
 
