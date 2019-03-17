@@ -22,7 +22,7 @@ public class Targeter : MonoBehaviour
         List<Card.Target> targets = new List<Card.Target>();
         foreach (Card.Behavior behavior in behaviors)
         {
-            foreach (Card.Target target in targets)
+            foreach (Card.Target target in behavior.targets)
             {
                 targets.Add(target);
             }
@@ -35,21 +35,10 @@ public class Targeter : MonoBehaviour
         {
             if (result.gameObject != ignoreObject)
             {
-                //Debug.Log("Hit " + result.gameObject.name);
+                Debug.Log("Hit " + result.gameObject.name);
                 hitObjects.Add(result.gameObject);
             }
         }
-
-        //List<Func<GameObject, bool>> lambdas = new List<Func<GameObject, bool>>();
-        //foreach (Card.Target t in targets)
-        //{
-        //    Func<GameObject, bool> tlambda;
-        //    targetLambdas.TryGetValue(t, out tlambda);
-        //    if (tlambda != null)
-        //    {
-        //        lambdas.Add(tlambda);
-        //    }
-        //}
 
         bool found = false;
         foreach (GameObject hitObject in hitObjects)
@@ -112,19 +101,6 @@ public class Targeter : MonoBehaviour
                     }
                 }
 
-                //foreach (Card.CardTarget targetCard.CardTarget in targets)
-                //{
-                //    if ((targetCard.CardTarget == Card.CardTarget.CastZone)
-                //        || (targetCard.CardTarget == Card.CardTarget.CreatureSlot && hitTarget.GetComponent<CreatureSlot>() != null)
-                //        || (targetCard.CardTarget == Card.CardTarget.CastingCard && hitTarget.GetComponent<CardManager>().GetCard().StatusIs(Card.CardStatus.Casting))
-                //        || (targetCard.CardTarget == Card.CardTarget.Player && hitTarget.GetComponent<PlayerManager>() != null)
-                //        || (targetCard.CardTarget == Card.CardTarget.Creature && hitTarget.GetComponent<CreatureSlot>() != null && hitTarget.GetComponent<CreatureSlot>().slotObject != null)
-                //        || (targetCard.CardTarget == Card.CardTarget.CardSlot && hitTarget.GetComponent<HeldCardSlot>() != null))
-                //    {
-                //        Debug.Log("Target: " + hitObject.name);
-                //        return hitObject.GetComponent<CastZone>();
-                //    }
-                //}
             }
         }
 
