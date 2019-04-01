@@ -1,47 +1,46 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Card : ScriptableObject
 {
-
-    public enum Status
-    {
-        Deck,
-        Held,
-        Dragging,
-        Recharging,
-        Casting,
-        Active
-    }
-
     public enum Action
     {
-        Creature,
-        DamageTarget,
-        DamageAll,
-        BuffAttack,
-        Counter
+        Damage,
+        Heal,
+        Destroy,
+        GiveStatus
     }
 
-    public enum Target
+    public enum ActionShape
     {
-        CastZone,
-        HeldCardSlot,
-        CreatureSlot,
-        Creature,
-        CastingCard,
-        Opponent,
-        User
+        Single,
+        Cross,
+        Square,
+        Row,
+        Column,
+        All
+    }
+
+    public enum Condition
+    {
+        HPGreaterThan,
+        HPLessThan,
+        Race,
+        Status,
+        Friendly
     }
 
     [Serializable]
     public struct Behavior
     {
-        public Action action;
-        public List<Target> targets;
-        public int value;
+        Action action;
+        int actionValue;
+        Condition condition;
+        int conditionValue;
+        GameManager.Team targetTeam;
+        ActionShape actionShape;
     }
 
     public string cardName;
@@ -49,22 +48,5 @@ public abstract class Card : ScriptableObject
     public Sprite art;
     public int castTime;
     public int redrawTime;
-    public List<Behavior> behaviors;
-
-    private Status status;
-
     public abstract Card Clone();
-    public abstract void Cast(GameObject selfObject, GameObject target);
-
-
-    public void SetStatus(Status status)
-    {
-        this.status = status;
-    }
-
-    public bool StatusIs(Status status)
-    {
-        return this.status == status;
-    }
-
 }
