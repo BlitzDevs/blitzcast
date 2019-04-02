@@ -13,10 +13,10 @@ public class PlayerManager : MonoBehaviour
     public Text usernameText;
     public Text healthText;
     public Slider healthSlider;
-    public GameObject cardSlotsParent;
-    public GameObject creatureSlotsParent;
+    public GameObject spellCardPrefab;
+    public GameObject creatureCardPrefab;
 
-    private GameManager.Team team;
+    public GameManager.Team team;
     [SerializeField] private List<Card> playingDeck; // deck in play
 
     private List<HandSlot> cardSlots;
@@ -26,7 +26,7 @@ public class PlayerManager : MonoBehaviour
     private int maxHealth;
 
 
-    public void Initialize(GameManager.Team team, int handSize, int maxHealth)
+    public void Initialize(GameManager.Team team, int maxHealth)
     {
         gameManager = FindObjectOfType<GameManager>();
         this.team = team;
@@ -34,25 +34,36 @@ public class PlayerManager : MonoBehaviour
         // initialize Player
         this.maxHealth = maxHealth;
         SetHealth(maxHealth);
-
         iconImage.sprite = player.icon;
         usernameText.text = player.username;
-        
+
         // draw first cards
-        playingDeck = Clone(player.deck);
+        CloneDeck();
         Shuffle();
     }
 
-    public List<Card> Clone(List<Card> original)
+    public Card DrawTop()
     {
-        List<Card> newList = new List<Card>(original.Count);
+        Card temp = playingDeck[0];
+        playingDeck.RemoveAt(0);
 
-        original.ForEach((item) =>
+        if (playingDeck.Count == 0)
         {
-            newList.Add(item);
-        });
+            CloneDeck();
+            Shuffle();
+        }
 
-        return newList;
+        return temp;
+    }
+
+    public void CloneDeck()
+    {
+        playingDeck = new List<Card>(player.deck.Count);
+
+        foreach (Card c in player.deck)
+        {
+            playingDeck.Add(c);
+        }
     }
 
     public void Shuffle()

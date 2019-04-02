@@ -14,11 +14,11 @@ TagManager:
   - UI
   - 
   - 
-  - Cast Zone
-  - Card Targetable
-  - Card Slot
-  - 
-  - 
+  - Active
+  - Casting
+  - Held
+  - Creatures
+  - Players
   - 
   - 
   - 

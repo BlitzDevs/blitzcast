@@ -14,8 +14,8 @@ MonoBehaviour:
   username: goodmonkey
   icon: {fileID: 21300000, guid: 5cca984d653bb4ff183855686650552a, type: 3}
   deck:
-  - {fileID: 11400000, guid: 7f3187be53ffc46e3a68433b171f85e4, type: 2}
-  - {fileID: 11400000, guid: 4d9e5d69e2c604556a372ac2909d2e12, type: 2}
-  - {fileID: 11400000, guid: 4d9e5d69e2c604556a372ac2909d2e12, type: 2}
-  - {fileID: 11400000, guid: 6567a8b594c864af4bf7157f0fe3bce9, type: 2}
-  - {fileID: 11400000, guid: 6567a8b594c864af4bf7157f0fe3bce9, type: 2}
+  - {fileID: 11400000, guid: 99ec334f96b49134f957f0f4e398e431, type: 2}
+  - {fileID: 11400000, guid: b95c0da3112f4c942b01cb5085d2d09c, type: 2}
+  - {fileID: 11400000, guid: b95c0da3112f4c942b01cb5085d2d09c, type: 2}
+  - {fileID: 11400000, guid: 14a301b728cebdc42a9914db377f0490, type: 2}
+  - {fileID: 11400000, guid: 99ec334f96b49134f957f0f4e398e431, type: 2}

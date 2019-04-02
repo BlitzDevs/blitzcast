@@ -23,6 +23,7 @@ public abstract class Card : ScriptableObject
 
     public enum Condition
     {
+        None,
         HPGreaterThan,
         HPLessThan,
         Race,
@@ -37,13 +38,13 @@ public abstract class Card : ScriptableObject
         public int actionValue;
         public Condition condition;
         public int conditionValue;
-        public GameManager.Team targetTeam;
         public ActionShape actionShape;
     }
 
     public string cardName;
     public string description;
     public Sprite art;
+    public Behavior cardBehavior;
     public int castTime;
     public int redrawTime;
     public abstract Card Clone();

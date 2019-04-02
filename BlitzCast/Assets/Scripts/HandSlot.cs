@@ -10,13 +10,36 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
     private Vector2 originalPosition = Vector2.zero;
     private const int pixelsToFloatWhenSelected = 20;
     private EventSystem eventSystem;
+    private PlayerManager player;
 
-    protected override void Start()
+    public void Initialize(PlayerManager player)
     {
         eventSystem = FindObjectOfType<EventSystem>();
+        this.player = player;
+        AssignCard(this.player.DrawTop());
+
     }
 
-    public void SetObject(GameObject slotObject)
+    public void AssignCard(Card card)
+    {
+        GameObject cardPrefab = null;
+        if (card is CreatureCard)
+        {
+            cardPrefab = player.creatureCardPrefab;
+        } else if (card is SpellCard)
+        {
+            cardPrefab = player.spellCardPrefab;
+        } else
+        {
+            Debug.LogError("Card is not CreatureCard or SpellCard >:(");
+        }
+
+        GameObject cardObject = Instantiate(cardPrefab);
+        cardObject.GetComponent<CardManager>().Initialize(card, player.team);
+        SetObject(cardObject);
+    }
+
+    private void SetObject(GameObject slotObject)
     {
         this.slotObject = slotObject;
         this.slotObject.transform.SetParent(this.transform);
@@ -28,11 +51,13 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
     public override void OnPointerEnter(PointerEventData eventData)
     {
         eventSystem.SetSelectedGameObject(this.gameObject);
+        Debug.Log("Pointer enter");
     }
 
     public override void OnPointerExit(PointerEventData eventData)
     {
         eventSystem.SetSelectedGameObject(null);
+        Debug.Log("Pointer exit");
     }
 
     public override void OnSelect(BaseEventData eventData)

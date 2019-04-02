@@ -23,14 +23,19 @@ public abstract class CardManager : MonoBehaviour,
     protected GameManager.Team team;
 
     protected GameManager gameManager;
+    protected CreatureGrid grid;
     protected Vector2 originalPosition;
     protected Vector2 dragOffset;
 
-    abstract public void Cast(List<GameObject> Targets);
+    abstract public void Cast(List<GameObject> targets);
+    abstract public void EnablePreview(GridCell cell);
+    abstract public void DisablePreview();
+    abstract public bool ValidateCast();
 
     protected void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        grid = FindObjectOfType<CreatureGrid>();
 
         nameText.text = card.cardName;
         artImage.sprite = card.art;
@@ -40,7 +45,7 @@ public abstract class CardManager : MonoBehaviour,
         castSliderObject.SetActive(false);
     }
 
-    // Called by Player Manager
+    // Called by HandSlot
     public void Initialize(Card card, GameManager.Team team)
     {
         this.card = card;
@@ -59,16 +64,22 @@ public abstract class CardManager : MonoBehaviour,
 
     public void OnDrag(PointerEventData eventData)
     {
+        Debug.Log("Dragging");
         //transform.position = eventData.position + dragOffset;
         transform.position = new Vector2(
             Mathf.RoundToInt(eventData.position.x + dragOffset.x),
             Mathf.RoundToInt(eventData.position.y + dragOffset.y));
+
+        
+        DisablePreview();
+
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         bool castedCard = TryCastCard();
         if (!castedCard) {
+            DisablePreview();
             transform.localPosition = Vector3.zero;
         }
     }

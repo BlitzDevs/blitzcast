@@ -16,11 +16,11 @@ public class CreatureCardManager : CardManager
     private int actionTime;
     private float actionTimer;
 
-    private CreatureCard creatureCard;
-
-    void Start()
+    public new void Initialize(Card card, GameManager.Team team)
     {
-        creatureCard = (CreatureCard) card;
+        base.Initialize(card, team);
+
+        CreatureCard creatureCard = (CreatureCard) card;
         health = creatureCard.health;
         actionValue = creatureCard.behavior.actionValue;
         actionTime = creatureCard.actionTime;
@@ -32,6 +32,8 @@ public class CreatureCardManager : CardManager
 
     public override void Cast(List<GameObject> Targets)
     {
+
+        CreatureCard creatureCard = (CreatureCard)card;
 
         // Turn CreatureCard into Creature on grid
         gameObject.name = card.cardName;
@@ -94,5 +96,48 @@ public class CreatureCardManager : CardManager
     public void DestroySelf()
     {
         Destroy(this.gameObject);
+    }
+
+    public override bool ValidateCast()
+    {
+        CreatureCard creatureCard = (CreatureCard)card;
+        List<GameObject> hitObjects = gameManager.GetAllUnderCursor();
+        foreach (GameObject g in hitObjects)
+        {
+            GridCell cell = g.GetComponent<GridCell>();
+            if (cell != null && 
+                cell.coordinates.x >= grid.size.x / 2 &&
+                cell.coordinates.y + creatureCard.size.y - 1 < grid.size.y &&
+                cell.coordinates.x + creatureCard.size.x - 1 < grid.size.x
+                )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    public override void EnablePreview(GridCell cell)
+    {
+        CreatureCard creatureCard = (CreatureCard)card;
+        //disable card display
+        cardFront.SetActive(false);
+        cardBack.SetActive(false);
+        //enable sprite
+        sprite.SetActive(true);
+        //set color/transparency
+        sprite.GetComponent<Image>().color = new Color(0, 0, 0, 0.5f);
+        //snap to grid
+        gameObject.transform.position = cell.transform.position;
+    }
+
+    public override void DisablePreview ()
+    {
+        //enable card display
+        cardFront.SetActive(true);
+        cardBack.SetActive(true);
+        //set color/transparency
+        sprite.GetComponent<Image>().color = new Color(255, 255, 255, 1.0f);
+        //disable sprite
+        sprite.SetActive(false);
     }
 }

@@ -8,15 +8,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 053e37f551ec5414bb72685ccf3de814, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d89e7822a6a0404aa5538e07d27da72, type: 3}
   m_Name: Fireball
   m_EditorClassIdentifier: 
   cardName: Fireball
-  description: Deal 6 damage.
+  description: pew pew
   art: {fileID: 21300000, guid: 1c7bc148ef4cd49c2bb639b06afaab69, type: 3}
-  castTime: 4
+  castTime: 5
   redrawTime: 5
+  raycastLayers: 0b0000000c000000
   behaviors:
-  - action: 1
-    targets: 0300000005000000
-    value: 6
+  - action: 0
+    actionValue: 6
+    condition: 0
+    conditionValue: 0
+    targetTeam: 2
+    actionShape: 0

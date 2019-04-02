@@ -34,4 +34,29 @@ public class SpellCardManager: CardManager
         }
 
     }
+
+
+    public override void EnablePreview(GridCell cell)
+    {
+        SpellCard spellCard = (SpellCard) card;
+
+    }
+    public override void DisablePreview()
+    {
+        Debug.Log("bleh");
+    }
+    public override bool ValidateCast()
+    {
+        SpellCard spellCard = (SpellCard) card;
+        if (spellCard.cardBehavior.actionShape == Card.ActionShape.Single)
+        {
+            //TODO
+        } else
+        {
+            //TODO: Targets Creaturegrid
+        }
+        return false;
+    }
+
+
 }
