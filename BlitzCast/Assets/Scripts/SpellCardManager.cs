@@ -13,49 +13,54 @@ public class SpellCardManager: CardManager
         descriptionText.text = card.description;
     }
 
-    public override void Cast(List<GameObject> Targets) {
+    public override void Cast(List<GameObject> targets) {
         SpellCard spellCard = (SpellCard) card;
-        foreach (Card.Behavior behavior in spellCard.behaviors)
+        switch (spellCard.cardBehavior.action)
         {
-            switch (behavior.action)
-            {
-                case Card.Action.Damage:
-                    break;
-                case Card.Action.Destroy:
-                    break;
-                case Card.Action.GiveStatus:
-                    break;
-                case Card.Action.Heal:
-                    break;
-                default:
-                    break;
-            }
-
+            case Card.Action.Damage:
+                break;
+            case Card.Action.Destroy:
+                break;
+            case Card.Action.Heal:
+                break;
+            default:
+                break;
         }
 
     }
 
 
-    public override void EnablePreview(GridCell cell)
+    public override void EnablePreview(GameObject target)
     {
         SpellCard spellCard = (SpellCard) card;
 
     }
     public override void DisablePreview()
     {
-        Debug.Log("bleh");
+        Debug.Log("Disable Preview");
     }
-    public override bool ValidateCast()
+
+    public override GameObject GetCastTarget()
     {
         SpellCard spellCard = (SpellCard) card;
-        if (spellCard.cardBehavior.actionShape == Card.ActionShape.Single)
+        if (spellCard.cardBehavior.targetArea == Card.TargetArea.Single)
         {
-            //TODO
+            switch (spellCard.cardBehavior.action)
+            {
+                case Card.Action.Damage:
+                    break;
+                case Card.Action.Destroy:
+                    break;
+                case Card.Action.Heal:
+                    break;
+            }
         } else
         {
-            //TODO: Targets Creaturegrid
+            // When target area is a shape (not single), target is Creature Grid
+            return gameManager.GetFirstUnderCursor<GridCell>();
         }
-        return false;
+
+        return null;
     }
 
 

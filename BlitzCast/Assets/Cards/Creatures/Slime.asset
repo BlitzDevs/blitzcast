@@ -14,16 +14,16 @@ MonoBehaviour:
   cardName: Slime
   description: squishy
   art: {fileID: 21300000, guid: e83a77e8d474c47988cca828cb7c616e, type: 3}
+  cardBehavior:
+    action: 0
+    actionValue: 0
+    condition: 0
+    conditionValue: 0
+    targetArea: 0
+    statusInflicted: 0
   castTime: 2
   redrawTime: 2
   animator: {fileID: 9100000, guid: 479f2867f3cb1439197f5b49814996c9, type: 2}
   health: 3
   actionTime: 2
-  size: {x: 1, y: 2}
-  behavior:
-    action: 0
-    actionValue: 1
-    condition: 0
-    conditionValue: 0
-    targetTeam: 2
-    actionShape: 0
+  size: {x: 1, y: 1}

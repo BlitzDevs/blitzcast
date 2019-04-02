@@ -39,45 +39,35 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
         SetObject(cardObject);
     }
 
-    private void SetObject(GameObject slotObject)
+    private void SetObject(GameObject newObject)
     {
-        this.slotObject = slotObject;
-        this.slotObject.transform.SetParent(this.transform);
-        this.slotObject.transform.localScale = Vector3.one;
-        this.slotObject.transform.localPosition = Vector3.zero;
-        this.slotObject.transform.localRotation = Quaternion.identity;
+        slotObject = newObject;
+        slotObject.transform.SetParent(transform);
+        slotObject.transform.localScale = Vector3.one;
+        slotObject.transform.localPosition = Vector3.zero;
+        slotObject.transform.localRotation = Quaternion.identity;
     }
 
     public override void OnPointerEnter(PointerEventData eventData)
     {
-        eventSystem.SetSelectedGameObject(this.gameObject);
-        Debug.Log("Pointer enter");
+        eventSystem.SetSelectedGameObject(gameObject);
     }
 
     public override void OnPointerExit(PointerEventData eventData)
     {
         eventSystem.SetSelectedGameObject(null);
-        Debug.Log("Pointer exit");
     }
 
     public override void OnSelect(BaseEventData eventData)
     {
-        Float();
-    }
-
-    public override void OnDeselect(BaseEventData eventData)
-    {
-        Unfloat();
-    }
-
-    public void Float()
-    {
+        // Float
         slotObject.transform.localPosition = new Vector3(
             originalPosition.x, originalPosition.y + pixelsToFloatWhenSelected, 0);
     }
 
-    public void Unfloat()
+    public override void OnDeselect(BaseEventData eventData)
     {
+        // Unfloat
         slotObject.transform.localPosition = originalPosition;
     }
 }

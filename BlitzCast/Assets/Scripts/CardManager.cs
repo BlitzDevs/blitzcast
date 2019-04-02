@@ -28,9 +28,9 @@ public abstract class CardManager : MonoBehaviour,
     protected Vector2 dragOffset;
 
     abstract public void Cast(List<GameObject> targets);
-    abstract public void EnablePreview(GridCell cell);
+    abstract public void EnablePreview(GameObject target);
     abstract public void DisablePreview();
-    abstract public bool ValidateCast();
+    abstract public GameObject GetCastTarget();
 
     protected void Start()
     {
@@ -55,8 +55,8 @@ public abstract class CardManager : MonoBehaviour,
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (gameObject.layer == LayerMask.GetMask("Held")) {
-            gameObject.layer = LayerMask.GetMask("Active");
+        if (gameObject.layer == SortingLayer.GetLayerValueFromName("Held")) {
+            gameObject.layer = SortingLayer.GetLayerValueFromName("Active");
             originalPosition = transform.position;
             dragOffset = originalPosition - eventData.position;
         }
@@ -64,21 +64,29 @@ public abstract class CardManager : MonoBehaviour,
 
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log("Dragging");
         //transform.position = eventData.position + dragOffset;
         transform.position = new Vector2(
             Mathf.RoundToInt(eventData.position.x + dragOffset.x),
             Mathf.RoundToInt(eventData.position.y + dragOffset.y));
 
-        
-        DisablePreview();
+        GameObject target = GetCastTarget();
+        if (target != null)
+        {
+            EnablePreview(target);
+        }
+        else
+        {
+            DisablePreview();
+        }
 
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         bool castedCard = TryCastCard();
-        if (!castedCard) {
+        if (!castedCard)
+        {
+            gameObject.layer = SortingLayer.GetLayerValueFromName("Held");
             DisablePreview();
             transform.localPosition = Vector3.zero;
         }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Spell Card", menuName = "Spell Card")]
@@ -15,7 +13,7 @@ public class SpellCard : Card
         copy.art = this.art;
         copy.castTime = this.castTime;
         copy.redrawTime = this.redrawTime;
-        copy.behavior = this.behavior;
+        copy.cardBehavior = this.cardBehavior;
 
         return copy;
     }

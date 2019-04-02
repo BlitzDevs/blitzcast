@@ -22,7 +22,7 @@ public class CreatureCardManager : CardManager
 
         CreatureCard creatureCard = (CreatureCard) card;
         health = creatureCard.health;
-        actionValue = creatureCard.behavior.actionValue;
+        actionValue = creatureCard.cardBehavior.actionValue;
         actionTime = creatureCard.actionTime;
 
         healthText.text = health.ToString();
@@ -30,7 +30,7 @@ public class CreatureCardManager : CardManager
         actionTimeText.text = actionTime.ToString();
     }
 
-    public override void Cast(List<GameObject> Targets)
+    public override void Cast(List<GameObject> targets)
     {
 
         CreatureCard creatureCard = (CreatureCard)card;
@@ -98,27 +98,28 @@ public class CreatureCardManager : CardManager
         Destroy(this.gameObject);
     }
 
-    public override bool ValidateCast()
+    public override GameObject GetCastTarget()
     {
-        CreatureCard creatureCard = (CreatureCard)card;
-        List<GameObject> hitObjects = gameManager.GetAllUnderCursor();
-        foreach (GameObject g in hitObjects)
+        CreatureCard creatureCard = (CreatureCard) card;
+
+        // Get first GridCell under cursor
+        GameObject cellObject = gameManager.GetFirstUnderCursor<GridCell>();
+        GridCell cell = cellObject != null ? cellObject.GetComponent<GridCell>() : null;
+
+        if (cell != null && 
+            cell.coordinates.x >= grid.size.x / 2 &&
+            cell.coordinates.y + creatureCard.size.y - 1 < grid.size.y &&
+            cell.coordinates.x + creatureCard.size.x - 1 < grid.size.x)
         {
-            GridCell cell = g.GetComponent<GridCell>();
-            if (cell != null && 
-                cell.coordinates.x >= grid.size.x / 2 &&
-                cell.coordinates.y + creatureCard.size.y - 1 < grid.size.y &&
-                cell.coordinates.x + creatureCard.size.x - 1 < grid.size.x
-                )
-            {
-                return true;
-            }
+            return cellObject;
         }
-        return false;
+
+        return null;
     }
-    public override void EnablePreview(GridCell cell)
+
+    public override void EnablePreview(GameObject target)
     {
-        CreatureCard creatureCard = (CreatureCard)card;
+        CreatureCard creatureCard = (CreatureCard) card;
         //disable card display
         cardFront.SetActive(false);
         cardBack.SetActive(false);
@@ -127,10 +128,10 @@ public class CreatureCardManager : CardManager
         //set color/transparency
         sprite.GetComponent<Image>().color = new Color(0, 0, 0, 0.5f);
         //snap to grid
-        gameObject.transform.position = cell.transform.position;
+        gameObject.transform.position = target.transform.position;
     }
 
-    public override void DisablePreview ()
+    public override void DisablePreview()
     {
         //enable card display
         cardFront.SetActive(true);

@@ -48,4 +48,18 @@ public class GameManager : MonoBehaviour
         return results;
     }
 
+    public GameObject GetFirstUnderCursor<T>()
+    {
+        List<GameObject> hitObjects = GetAllUnderCursor();
+        foreach (GameObject g in hitObjects)
+        {
+            T t = g.GetComponent<T>();
+            if (t != null)
+            {
+                return g;
+            }
+        }
+        return null;
+    }
+
 }

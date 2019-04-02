@@ -7,11 +7,10 @@ public abstract class Card : ScriptableObject
     {
         Damage,
         Heal,
-        Destroy,
-        GiveStatus
+        Destroy
     }
 
-    public enum ActionShape
+    public enum TargetArea
     {
         Single,
         Cross,
@@ -31,6 +30,14 @@ public abstract class Card : ScriptableObject
         Friendly
     }
 
+    public enum Status
+    {
+        None,
+        Confusion,
+        Wounded,
+        Frozen
+    }
+
     [Serializable]
     public struct Behavior
     {
@@ -38,7 +45,8 @@ public abstract class Card : ScriptableObject
         public int actionValue;
         public Condition condition;
         public int conditionValue;
-        public ActionShape actionShape;
+        public TargetArea targetArea;
+        public Status statusInflicted;
     }
 
     public string cardName;
