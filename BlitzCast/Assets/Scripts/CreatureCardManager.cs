@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 
 public class CreatureCardManager : CardManager
@@ -9,16 +10,17 @@ public class CreatureCardManager : CardManager
     public Text actionTimeText;
     public GameObject sprite;
     public Animator animator;
-    public CardManager cardManager;
 
     private int health;
     private int actionValue;
     private int actionTime;
     private float actionTimer;
 
+    private CreatureCard creatureCard;
+
     void Start()
     {
-        CreatureCard creatureCard = (CreatureCard)card;
+        creatureCard = (CreatureCard) card;
         health = creatureCard.health;
         actionValue = creatureCard.behavior.actionValue;
         actionTime = creatureCard.actionTime;
@@ -28,9 +30,18 @@ public class CreatureCardManager : CardManager
         actionTimeText.text = actionTime.ToString();
     }
 
-    public void CardIntoCreature()
+    public override void Cast(List<GameObject> Targets)
     {
-        //TODO:
+
+        // Turn CreatureCard into Creature on grid
+        gameObject.name = card.cardName;
+        RectTransform rt = (RectTransform)gameObject.transform;
+        rt.sizeDelta = new Vector2(64f, 64f);
+
+        sprite.SetActive(true);
+        animator.runtimeAnimatorController = creatureCard.animator;
+
+        // Start action timer coroutine
         StartCoroutine(DoAction());
     }
 
@@ -72,7 +83,7 @@ public class CreatureCardManager : CardManager
         health = hp;
 
         // change health display
-        creatureSlot.healthText.text = health.ToString();
+        //creatureSlot.healthText.text = health.ToString();
     }
 
     public int GetHealth()
@@ -82,9 +93,6 @@ public class CreatureCardManager : CardManager
 
     public void DestroySelf()
     {
-        Debug.Log(creatureCard.cardName + " died.");
-        creatureSlot.statsDisplay.SetActive(false);
         Destroy(this.gameObject);
     }
-
 }

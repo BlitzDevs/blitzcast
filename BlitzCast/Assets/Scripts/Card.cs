@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Card : ScriptableObject
@@ -35,12 +33,12 @@ public abstract class Card : ScriptableObject
     [Serializable]
     public struct Behavior
     {
-        Action action;
-        int actionValue;
-        Condition condition;
-        int conditionValue;
-        GameManager.Team targetTeam;
-        ActionShape actionShape;
+        public Action action;
+        public int actionValue;
+        public Condition condition;
+        public int conditionValue;
+        public GameManager.Team targetTeam;
+        public ActionShape actionShape;
     }
 
     public string cardName;

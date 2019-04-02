@@ -9,7 +9,6 @@ public abstract class CardManager : MonoBehaviour,
 
     [SerializeField] protected Text nameText;
     [SerializeField] protected Text raceText;
-    [SerializeField] protected Text descriptionText;
     [SerializeField] protected Image artImage;
     [SerializeField] protected Text castTimeText;
     [SerializeField] protected GameObject castSliderObject;
@@ -29,12 +28,11 @@ public abstract class CardManager : MonoBehaviour,
 
     abstract public void Cast(List<GameObject> Targets);
 
-    void Start()
+    protected void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
 
         nameText.text = card.cardName;
-        descriptionText.text = card.description;
         artImage.sprite = card.art;
         castTimeText.text = card.castTime.ToString();
         redrawTimeText.text = card.redrawTime.ToString();
