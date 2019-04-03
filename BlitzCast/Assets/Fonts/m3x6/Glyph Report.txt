@@ -1,0 +1,8 @@
+Font: m3x6  Pt. Size: 16
+Characters packed: 96/99
+
+Missing Characters
+----------------------------------------
+ID: 8203	Hex: 200B	Char [​]
+ID: 8230	Hex: 2026	Char […]
+ID: 9633	Hex: 25A1	Char [□]

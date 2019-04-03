@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: db674cef48a7d47a99e2ca1059b4be5c
+guid: 8d3916fdb3ab949aabd4700520572e94
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
-  fontSize: 11
-  forceTextureCase: -1
+  fontSize: 16
+  forceTextureCase: -2
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: mini-mono-pixel-wide-bold
+  fontName: m3x6
   fontNames:
-  - mini-mono-pixel-wide-bold
+  - m3x6
   fallbackFontReferences: []
   customCharacters: 
-  fontRenderingMode: 1
+  fontRenderingMode: 2
   ascentCalculationMode: 1
   useLegacyBoundsCalculation: 0
   userData: 
