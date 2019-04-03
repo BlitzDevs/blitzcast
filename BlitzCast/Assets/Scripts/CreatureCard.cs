@@ -1,15 +1,13 @@
-using System;
-using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Creature Card", menuName = "Creature Card")]
 public class CreatureCard : Card
 {
 
-    public RuntimeAnimatorController animator;
     public int health;
     public int actionTime;
     public Vector2Int size;
+    public RuntimeAnimatorController animator;
 
     public override Card Clone()
     {

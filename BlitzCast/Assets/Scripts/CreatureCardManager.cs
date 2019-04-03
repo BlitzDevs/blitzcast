@@ -2,12 +2,13 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 
 public class CreatureCardManager : CardManager
 {
-    public Text healthText;
-    public Text actionValueText;
-    public Text actionTimeText;
+    public TMP_Text healthText;
+    public TMP_Text actionValueText;
+    public TMP_Text actionTimeText;
     public GameObject sprite;
     public Animator animator;
 
@@ -16,32 +17,44 @@ public class CreatureCardManager : CardManager
     private int actionTime;
     private float actionTimer;
 
-    public new void Initialize(Card card, GameManager.Team team)
+    public override void Initialize(Card card, GameManager.Team team, HandSlot slot)
     {
-        base.Initialize(card, team);
+        this.card = card;
+        this.team = team;
+        this.slot = slot;
 
         CreatureCard creatureCard = (CreatureCard) card;
         health = creatureCard.health;
         actionValue = creatureCard.cardBehavior.actionValue;
         actionTime = creatureCard.actionTime;
-
         healthText.text = health.ToString();
         actionValueText.text = actionValue.ToString();
         actionTimeText.text = actionTime.ToString();
+        animator.runtimeAnimatorController = creatureCard.animator;
     }
 
-    public override void Cast(List<GameObject> targets)
+    public override void Cast(GameObject target)
     {
-
-        CreatureCard creatureCard = (CreatureCard)card;
+        gameObject.layer = SortingLayer.NameToID("Creatures");
+        CreatureCard creatureCard = (CreatureCard) card;
 
         // Turn CreatureCard into Creature on grid
         gameObject.name = card.cardName;
-        RectTransform rt = (RectTransform)gameObject.transform;
-        rt.sizeDelta = new Vector2(64f, 64f);
+        //RectTransform rt = (RectTransform) gameObject.transform;
+        //rt.sizeDelta = new Vector2(42f, 42f);
 
+        // move out of the hierarchy
+        transform.SetParent(grid.playerCreaturesParent);
+        // move onto grid position
+        transform.position = target.transform.position;
+
+        //disable card display
+        cardFront.SetActive(false);
+        cardBack.SetActive(false);
+        // enable sprite display
         sprite.SetActive(true);
-        animator.runtimeAnimatorController = creatureCard.animator;
+        //set color/transparency to normal
+        sprite.GetComponent<Image>().color = new Color(255, 255, 255, 1.0f);
 
         // Start action timer coroutine
         StartCoroutine(DoAction());
@@ -110,6 +123,7 @@ public class CreatureCardManager : CardManager
             cell.coordinates.x >= grid.size.x / 2 &&
             cell.coordinates.y + creatureCard.size.y - 1 < grid.size.y &&
             cell.coordinates.x + creatureCard.size.x - 1 < grid.size.x)
+            //TODO: check if creature already exist in cell
         {
             return cellObject;
         }

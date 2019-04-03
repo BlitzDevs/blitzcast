@@ -1,19 +1,21 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections.Generic;
+using TMPro;
 
 public class SpellCardManager: CardManager
 {
-    [SerializeField] protected Text descriptionText;
+    [SerializeField] protected TMP_Text descriptionText;
 
-    new void Start()
+
+    public override void Initialize(Card card, GameManager.Team team, HandSlot slot)
     {
-        base.Start();
+        this.card = card;
+        this.team = team;
+        this.slot = slot;
 
         descriptionText.text = card.description;
     }
 
-    public override void Cast(List<GameObject> targets) {
+    public override void Cast(GameObject target) {
         SpellCard spellCard = (SpellCard) card;
         switch (spellCard.cardBehavior.action)
         {
@@ -28,7 +30,6 @@ public class SpellCardManager: CardManager
         }
 
     }
-
 
     public override void EnablePreview(GameObject target)
     {

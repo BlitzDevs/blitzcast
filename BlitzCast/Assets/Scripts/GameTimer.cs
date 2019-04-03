@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameTimer : MonoBehaviour
 {
-    public Text text; 
+    public TMP_Text text; 
     private float elapsedTime;
 
     void Update()

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -10,8 +11,8 @@ public class PlayerManager : MonoBehaviour
     public List<string> enchantments;
 
     public Image iconImage;
-    public Text usernameText;
-    public Text healthText;
+    public TMP_Text usernameText;
+    public TMP_Text healthText;
     public Slider healthSlider;
     public GameObject spellCardPrefab;
     public GameObject creatureCardPrefab;

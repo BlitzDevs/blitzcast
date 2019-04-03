@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections;
 
 public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
                             IPointerEnterHandler, IPointerExitHandler
 {
-    public int index;
     public GameObject slotObject;
     private Vector2 originalPosition = Vector2.zero;
     private const int pixelsToFloatWhenSelected = 20;
@@ -16,12 +16,25 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
     {
         eventSystem = FindObjectOfType<EventSystem>();
         this.player = player;
-        AssignCard(this.player.DrawTop());
+        DrawCard();
 
     }
 
-    public void AssignCard(Card card)
+    public void StartCardDrawTimer(float time)
     {
+        StartCoroutine(CardDrawTimer(time));
+    }
+
+    private IEnumerator CardDrawTimer(float time)
+    {
+        // temporary countdown
+        yield return new WaitForSeconds(time);
+        DrawCard();
+    }
+
+    private void DrawCard()
+    {
+        Card card = player.DrawTop();
         GameObject cardPrefab = null;
         if (card is CreatureCard)
         {
@@ -35,13 +48,9 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
         }
 
         GameObject cardObject = Instantiate(cardPrefab);
-        cardObject.GetComponent<CardManager>().Initialize(card, player.team);
-        SetObject(cardObject);
-    }
+        cardObject.GetComponent<CardManager>().Initialize(card, player.team, this);
 
-    private void SetObject(GameObject newObject)
-    {
-        slotObject = newObject;
+        slotObject = cardObject;
         slotObject.transform.SetParent(transform);
         slotObject.transform.localScale = Vector3.one;
         slotObject.transform.localPosition = Vector3.zero;
@@ -60,14 +69,21 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
 
     public override void OnSelect(BaseEventData eventData)
     {
-        // Float
-        slotObject.transform.localPosition = new Vector3(
-            originalPosition.x, originalPosition.y + pixelsToFloatWhenSelected, 0);
+        if (slotObject != null)
+        {
+            // Float
+            slotObject.transform.localPosition = new Vector3(
+                originalPosition.x, originalPosition.y + pixelsToFloatWhenSelected, 0);
+        }
     }
 
     public override void OnDeselect(BaseEventData eventData)
     {
-        // Unfloat
-        slotObject.transform.localPosition = originalPosition;
+        if (slotObject != null)
+        {
+            // Unfloat
+            slotObject.transform.localPosition = originalPosition;
+        }
     }
+
 }
