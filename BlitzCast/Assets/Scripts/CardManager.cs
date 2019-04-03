@@ -19,8 +19,8 @@ public abstract class CardManager : MonoBehaviour,
     [SerializeField] protected TMP_Text redrawTimeText;
     [SerializeField] protected TMP_Text castTimeText;
 
-    [SerializeField] protected Card card;
-    [SerializeField] protected GameManager.Team team;
+    public Card card;
+    public GameManager.Team team;
 
     protected GameManager gameManager;
     protected CreatureGrid grid;
@@ -34,7 +34,8 @@ public abstract class CardManager : MonoBehaviour,
     abstract public void Cast(GameObject target);
     abstract public void EnablePreview(GameObject target);
     abstract public void DisablePreview();
-    abstract public GameObject GetCastTarget();
+    abstract public GameObject GetCastLocation();
+    abstract public void DestroySelf();
 
 
     protected void Start()
@@ -67,7 +68,7 @@ public abstract class CardManager : MonoBehaviour,
             Mathf.RoundToInt(eventData.position.x + dragOffset.x),
             Mathf.RoundToInt(eventData.position.y + dragOffset.y));
 
-        GameObject target = GetCastTarget();
+        GameObject target = GetCastLocation();
         if (target != null)
         {
             EnablePreview(target);
@@ -81,7 +82,7 @@ public abstract class CardManager : MonoBehaviour,
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        GameObject target = GetCastTarget();
+        GameObject target = GetCastLocation();
         if (target != null)
         {
             StartCoroutine(CastTimer(target));
@@ -105,19 +106,7 @@ public abstract class CardManager : MonoBehaviour,
         // cast
         Cast(target);
     }
-
-    public void ShowFront()
-    {
-        cardBack.SetActive(false);
-        cardFront.SetActive(true);
-    }
-
-    public void ShowBack()
-    {
-        cardBack.SetActive(true);
-        cardFront.SetActive(false);
-    }
-
+    
     public void SetCastTimer(float time)
     {
         castTimeText.text = Mathf.Round(time).ToString();

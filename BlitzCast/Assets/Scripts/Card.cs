@@ -3,20 +3,30 @@ using UnityEngine;
 
 public abstract class Card : ScriptableObject
 {
+    public enum Race
+    {
+        Generic,
+        Dwarf,
+        Elf,
+        Auto
+    }
     public enum Action
     {
         Damage,
         Heal,
-        Destroy
+        Destroy,
+        Counter
     }
 
     public enum TargetArea
     {
         Single,
+        SingleCreature,
         Cross,
         Square,
         Row,
         Column,
+        AllCreatures,
         All
     }
 
@@ -27,7 +37,8 @@ public abstract class Card : ScriptableObject
         HPLessThan,
         Race,
         Status,
-        Friendly
+        Friendly,
+        Enemy
     }
 
     public enum Status
@@ -35,7 +46,9 @@ public abstract class Card : ScriptableObject
         None,
         Confusion,
         Wounded,
-        Frozen
+        Frozen,
+        Poisoned,
+        Rally
     }
 
     [Serializable]
@@ -47,13 +60,16 @@ public abstract class Card : ScriptableObject
         public int conditionValue;
         public TargetArea targetArea;
         public Status statusInflicted;
+        public int statusValue;
     }
 
+    public Race race;
     public string cardName;
     public string description;
     public Sprite art;
     public Behavior cardBehavior;
     public int castTime;
     public int redrawTime;
+
     public abstract Card Clone();
 }

@@ -1,23 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class GridCell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Vector2Int coordinates;
-
-    // Use this for initialization
-    public void Initialize()
+    public Image sprite;
+    
+    public void HighlightCell(Color color)
     {
+        sprite.color = color;        
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //throw new System.NotImplementedException();
+        HighlightCell(Color.yellow);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        //throw new System.NotImplementedException();
+        HighlightCell(Color.black);
     }
 }

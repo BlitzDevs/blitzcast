@@ -2,8 +2,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : MonoBehaviour, IEntity
 {
     public Player player;
 
@@ -41,6 +42,8 @@ public class PlayerManager : MonoBehaviour
         // draw first cards
         CloneDeck();
         Shuffle();
+
+        StartCoroutine(ExecuteStatuses());
     }
 
     public Card DrawTop()
@@ -107,4 +110,9 @@ public class PlayerManager : MonoBehaviour
         return health;
     }
 
+    public IEnumerator ExecuteStatuses()
+    {
+        // deal with statuses later
+        yield return null;
+    }
 }

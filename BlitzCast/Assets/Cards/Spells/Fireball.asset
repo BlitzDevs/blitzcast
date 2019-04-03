@@ -14,13 +14,13 @@ MonoBehaviour:
   cardName: Fireball
   description: pew pew
   art: {fileID: 21300000, guid: 1c7bc148ef4cd49c2bb639b06afaab69, type: 3}
-  castTime: 5
-  redrawTime: 5
-  raycastLayers: 0b0000000c000000
-  behaviors:
-  - action: 0
+  cardBehavior:
+    action: 0
     actionValue: 6
     condition: 0
     conditionValue: 0
-    targetTeam: 2
-    actionShape: 0
+    targetArea: 0
+    statusInflicted: 0
+    statusValue: 0
+  castTime: 5
+  redrawTime: 5

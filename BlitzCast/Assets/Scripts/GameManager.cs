@@ -61,5 +61,17 @@ public class GameManager : MonoBehaviour
         }
         return null;
     }
+    public GameObject GetFirstUnderCursor(int layer)
+    {
+        List<GameObject> hitObjects = GetAllUnderCursor();
+        foreach (GameObject g in hitObjects)
+        {
+            if (g.layer == layer)
+            {
+                return g;
+            }
+        }
+        return null;
+    }
 
 }
