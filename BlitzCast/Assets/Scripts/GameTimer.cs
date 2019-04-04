@@ -9,6 +9,13 @@ public class GameTimer : MonoBehaviour
     void Update()
     {
         elapsedTime += Time.deltaTime;
-        text.text = Mathf.Round(elapsedTime).ToString();
+        string displayText = "";
+        //don't worry about this :P
+        displayText = string.Format("{0,2}:{1,2}:{2,2}",
+            ((int)elapsedTime / 60).ToString().PadLeft(2, '0'), 
+            ((int)elapsedTime % 60).ToString().PadLeft(2, '0'),
+            (Mathf.RoundToInt(elapsedTime * 100) % 100).ToString().PadLeft(2, '0')
+            );
+        text.text = displayText;
     }
 }
