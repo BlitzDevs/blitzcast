@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -20,6 +19,6 @@ public class GridCell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        HighlightCell(Color.black);
+        HighlightCell(Color.white);
     }
 }

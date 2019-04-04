@@ -11,17 +11,18 @@ public class CreatureGrid : MonoBehaviour {
 
     public List<GridCell> cells;
 
-	void Start () {
-        cells = new List<GridCell>();
-        foreach (Transform child in cellsParent)
-        {
-            cells.Add(child.GetComponent<GridCell>());
-        }
-
+    // Start is called by Unity on first time this object is active
+    void Start ()
+    {
         creatures = new Dictionary<Vector2Int, CreatureCardManager>();
-        for (int i = 0; i < cells.Count; i++)
+
+        // initialize our cells
+        cells = new List<GridCell>();
+        for (int i = 0; i < cellsParent.childCount; i++)
         {
-            cells[i].coordinates = new Vector2Int(i / size.y, i % size.y);
+            GridCell cell = cellsParent.GetChild(i).GetComponent<GridCell>();
+            cell.coordinates = new Vector2Int(i / size.y, i % size.y);
+            cells.Add(cell);
         }
 	}
 

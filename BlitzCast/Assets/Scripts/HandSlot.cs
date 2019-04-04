@@ -6,12 +6,15 @@ using System.Collections;
 public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
                             IPointerEnterHandler, IPointerExitHandler
 {
+
     public GameObject slotObject;
     private Vector2 originalPosition = Vector2.zero;
     private const int pixelsToFloatWhenSelected = 20;
     private EventSystem eventSystem;
     private PlayerManager player;
 
+
+    // Called by GameManager
     public void Initialize(PlayerManager player)
     {
         eventSystem = FindObjectOfType<EventSystem>();
@@ -56,6 +59,7 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
         slotObject.transform.localPosition = Vector3.zero;
         slotObject.transform.localRotation = Quaternion.identity;
     }
+
 
     public override void OnPointerEnter(PointerEventData eventData)
     {

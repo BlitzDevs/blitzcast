@@ -112,7 +112,7 @@ public class PlayerManager : MonoBehaviour, IEntity
 
     public IEnumerator ExecuteStatuses()
     {
-        // deal with statuses later
+        //TODO: deal with statuses
         yield return null;
     }
 }

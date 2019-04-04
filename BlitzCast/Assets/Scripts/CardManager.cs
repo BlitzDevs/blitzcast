@@ -7,13 +7,18 @@ using TMPro;
 public abstract class CardManager : MonoBehaviour,
                            IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    // SeralizeField tells the Unity editor to display variable even if private
+    // protected is a private variable accessible by inheriting members
     [SerializeField] protected GameObject cardFront;
     [SerializeField] protected GameObject cardBack;
     [SerializeField] protected GameObject targetableZone;
     [SerializeField] protected GameObject castSliderObject;
     [SerializeField] protected Slider castSlider;
+    [SerializeField] protected Animator animator;
+    [SerializeField] protected Image sprite;
     [SerializeField] protected Image artImage;
     [SerializeField] protected Image tint;
+    // TMP_Text is TextMeshPro text; much better than default Unity text
     [SerializeField] protected TMP_Text nameText;
     [SerializeField] protected TMP_Text raceText;
     [SerializeField] protected TMP_Text redrawTimeText;
@@ -29,30 +34,39 @@ public abstract class CardManager : MonoBehaviour,
     private Vector2 dragOffset;
 
 
-    // Initialize is called by HandSlot
-    abstract public void Initialize(Card card, GameManager.Team team, HandSlot slot);
+    // abstract functions are to be implemented by inherting classes
     abstract public void Cast(GameObject target);
     abstract public void EnablePreview(GameObject target);
     abstract public void DisablePreview();
     abstract public GameObject GetCastLocation();
     abstract public void DestroySelf();
 
-
-    protected void Start()
+    // virtual functions are overrideable but can have a body
+    // Initialize is called by HandSlot
+    public virtual void Initialize(
+        Card card, GameManager.Team team, HandSlot slot)
     {
-        gameManager = FindObjectOfType<GameManager>();
-        grid = FindObjectOfType<CreatureGrid>();
-        
+        this.card = card;
+        this.team = team;
+        this.slot = slot;
+
         nameText.text = card.cardName;
         artImage.sprite = card.art;
         castTimeText.text = card.castTime.ToString();
         redrawTimeText.text = card.redrawTime.ToString();
-        tint.color = Color.clear;
+        animator.runtimeAnimatorController = card.animator;
+
         castSliderObject.SetActive(false);
     }
 
+    // Start is called by Unity on first time this object is active
+    void Start()
+    {
+        gameManager = FindObjectOfType<GameManager>();
+        grid = FindObjectOfType<CreatureGrid>();
+    }
 
-
+    // When begin dragging card, move card to Active layer
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (gameObject.layer == SortingLayer.GetLayerValueFromName("Held")) {
@@ -61,9 +75,9 @@ public abstract class CardManager : MonoBehaviour,
         }
     }
 
+    // While dragging, move the card and try preview
     public void OnDrag(PointerEventData eventData)
     {
-        //transform.position = eventData.position + dragOffset;
         transform.position = new Vector2(
             Mathf.RoundToInt(eventData.position.x + dragOffset.x),
             Mathf.RoundToInt(eventData.position.y + dragOffset.y));
@@ -80,6 +94,7 @@ public abstract class CardManager : MonoBehaviour,
 
     }
 
+    // When stop dragging, start casting if valid; else return to hand
     public void OnEndDrag(PointerEventData eventData)
     {
         GameObject target = GetCastLocation();
@@ -105,19 +120,6 @@ public abstract class CardManager : MonoBehaviour,
         slot.StartCardDrawTimer(card.redrawTime);
         // cast
         Cast(target);
-    }
-    
-    public void SetCastTimer(float time)
-    {
-        castTimeText.text = Mathf.Round(time).ToString();
-        castSlider.value = time / card.castTime;
-    }
-
-    void OnDisable()
-    {
-        cardFront.SetActive(false);
-        cardBack.SetActive(false);
-        targetableZone.SetActive(false);
     }
 
 }

@@ -3,6 +3,11 @@ using UnityEngine;
 
 public abstract class Card : ScriptableObject
 {
+    // A ScriptableObject is a Unity object whose properties we can edit inside
+    // the editor.
+    // This class should contain only the properties unique to a card.
+    // CardManager deals with card actions/status/etc while in game.
+
     public enum Race
     {
         Generic,
@@ -10,6 +15,7 @@ public abstract class Card : ScriptableObject
         Elf,
         Auto
     }
+
     public enum Action
     {
         Damage,
@@ -30,17 +36,6 @@ public abstract class Card : ScriptableObject
         All
     }
 
-    public enum Condition
-    {
-        None,
-        HPGreaterThan,
-        HPLessThan,
-        Race,
-        Status,
-        Friendly,
-        Enemy
-    }
-
     public enum Status
     {
         None,
@@ -56,20 +51,21 @@ public abstract class Card : ScriptableObject
     {
         public Action action;
         public int actionValue;
-        public Condition condition;
-        public int conditionValue;
         public TargetArea targetArea;
         public Status statusInflicted;
         public int statusValue;
     }
 
+
     public Race race;
     public string cardName;
     public string description;
-    public Sprite art;
-    public Behavior cardBehavior;
     public int castTime;
     public int redrawTime;
+    public Behavior cardBehavior;
+    public Sprite art;
+    public RuntimeAnimatorController animator;
 
+    // Cannot use newCard = oldCard because it becomes a reference! Use Clone()!
     public abstract Card Clone();
 }

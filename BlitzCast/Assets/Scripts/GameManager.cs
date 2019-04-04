@@ -6,8 +6,8 @@ using UnityEngine.EventSystems;
 public class GameManager : MonoBehaviour
 {
     public enum Team {
-        A, 
-        B,
+        Friendly, 
+        Enemy,
         Neutral
     }
 
@@ -19,10 +19,10 @@ public class GameManager : MonoBehaviour
     public List<HandSlot> handSlotsA;
     //public GameObject handSlotsB;
 
-    // Use this for initialization
+
     void Start()
     {
-        playerA.Initialize(Team.A, maxHealth);
+        playerA.Initialize(Team.Friendly, maxHealth);
         //playerB.Initialize(Team.B, maxHealth);
 
         for (int i = 0; i < handSlotsA.Count; i++)
@@ -30,8 +30,8 @@ public class GameManager : MonoBehaviour
             handSlotsA[i].Initialize(playerA);
             //handSlotsB[i].Initialize(playerB);
         }
-        
     }
+
     public List<GameObject> GetAllUnderCursor()
     {
         List<GameObject> results = new List<GameObject>();

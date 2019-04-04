@@ -1428,22 +1428,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a513ae044074cd4c8966e6fbd15399d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameText: {fileID: 114705277097456882}
-  raceText: {fileID: 114785941867650550}
-  artImage: {fileID: 114319304857512026}
-  castTimeText: {fileID: 114068224130991126}
-  castSliderObject: {fileID: 1523207763805570}
-  castSlider: {fileID: 114976486084278138}
-  redrawTimeText: {fileID: 114288246103065854}
   cardFront: {fileID: 1995735484086196}
   cardBack: {fileID: 1522823163671318}
   targetableZone: {fileID: 1823665981539060}
+  castSliderObject: {fileID: 1523207763805570}
+  castSlider: {fileID: 114976486084278138}
+  animator: {fileID: 95912281146111396}
+  sprite: {fileID: 114027944424615592}
+  artImage: {fileID: 114319304857512026}
   tint: {fileID: 114527917170290070}
+  nameText: {fileID: 114705277097456882}
+  raceText: {fileID: 114785941867650550}
+  redrawTimeText: {fileID: 114288246103065854}
+  castTimeText: {fileID: 114068224130991126}
+  card: {fileID: 0}
+  team: 0
   healthText: {fileID: 114855941054819636}
   actionValueText: {fileID: 114586087886055664}
   actionTimeText: {fileID: 114213857973493944}
-  sprite: {fileID: 1284418843872730}
-  animator: {fileID: 95912281146111396}
+  statuses: 
 --- !u!114 &114976486084278138
 MonoBehaviour:
   m_ObjectHideFlags: 1

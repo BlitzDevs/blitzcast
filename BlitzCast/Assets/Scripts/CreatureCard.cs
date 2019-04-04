@@ -7,8 +7,9 @@ public class CreatureCard : Card
     public int health;
     public int actionTime;
     public Vector2Int size;
-    public RuntimeAnimatorController animator;
 
+
+    // Cannot use newCard = oldCard because it becomes a reference! Use Clone()!
     public override Card Clone()
     {
         CreatureCard copy = (CreatureCard)CreateInstance(typeof(CreatureCard));
