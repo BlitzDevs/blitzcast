@@ -11,16 +11,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d89e7822a6a0404aa5538e07d27da72, type: 3}
   m_Name: Fireball
   m_EditorClassIdentifier: 
+  race: 0
   cardName: Fireball
   description: pew pew
-  art: {fileID: 21300000, guid: 1c7bc148ef4cd49c2bb639b06afaab69, type: 3}
+  castTime: 5
+  redrawTime: 5
   cardBehavior:
     action: 0
     actionValue: 6
-    condition: 0
-    conditionValue: 0
     targetArea: 0
     statusInflicted: 0
     statusValue: 0
-  castTime: 5
-  redrawTime: 5
+  art: {fileID: 21300000, guid: 1c7bc148ef4cd49c2bb639b06afaab69, type: 3}
+  animator: {fileID: 9100000, guid: dcb7af915f85d49cfa6ca3b191a88a46, type: 2}
+  condition: 0
+  conditionValue: 0
