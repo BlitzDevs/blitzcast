@@ -7,11 +7,18 @@ using TMPro;
 public class CreatureCardManager : CardManager, IEntity
 {
 
+    public List<Card.Status> statuses;
+
     public TMP_Text healthText;
     public TMP_Text actionValueText;
     public TMP_Text actionTimeText;
 
-    public List<Card.Status> statuses;
+    public GameObject gridDisplayObject;
+    public GameObject gridStatusesParent;
+    public TMP_Text gridHealthText;
+    public TMP_Text gridActionValueText;
+    public TMP_Text gridActionTimeText;
+    public Image gridActionTimer;
 
     private int health;
     private int actionValue;
@@ -37,6 +44,8 @@ public class CreatureCardManager : CardManager, IEntity
         healthText.text = health.ToString();
         actionValueText.text = actionValue.ToString();
         actionTimeText.text = actionTime.ToString();
+
+        gridDisplayObject.SetActive(false);
     }
 
     public override void EnablePreview(GameObject target)
@@ -108,20 +117,26 @@ public class CreatureCardManager : CardManager, IEntity
 
         // Turn CreatureCard into Creature on grid
         gameObject.name = card.cardName;
-        //RectTransform rt = (RectTransform) gameObject.transform;
-        //rt.sizeDelta = new Vector2(42f, 42f);
-
         // move out of the hierarchy
         transform.SetParent(grid.playerCreaturesParent);
         // move onto grid position
         transform.position = target.transform.position;
+
+        // Enable Grid Creature Display
+        gridDisplayObject.SetActive(true);
+        RectTransform rt = gridDisplayObject.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(
+            42 * creatureCard.size.x, 42 * creatureCard.size.y);
+        gridHealthText.text = health.ToString();
+        gridActionValueText.text = actionValue.ToString();
+        gridActionTimeText.text = actionTime.ToString();
 
         //disable card display
         cardFront.SetActive(false);
         cardBack.SetActive(false);
         // enable sprite display
         sprite.gameObject.SetActive(true);
-        //set color/transparency to normal
+        // set color/transparency to normal
         sprite.color = new Color(255, 255, 255, 1.0f);
 
         // Start action timer coroutine
@@ -179,7 +194,7 @@ public class CreatureCardManager : CardManager, IEntity
         health = hp;
 
         // change health display
-        //creatureSlot.healthText.text = health.ToString();
+        gridHealthText.text = health.ToString();
     }
 
     public int GetHealth()

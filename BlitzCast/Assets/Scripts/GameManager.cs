@@ -16,18 +16,19 @@ public class GameManager : MonoBehaviour
     public int maxHealth;
     public PlayerManager playerA;
     //public PlayerManager playerB;
-    public List<HandSlot> handSlotsA;
+    public Transform handSlotsAParent;
     //public GameObject handSlotsB;
 
-
+    // This function is called by Unity on the first frame that the object is active
     void Start()
     {
         playerA.Initialize(Team.Friendly, maxHealth);
         //playerB.Initialize(Team.B, maxHealth);
 
-        for (int i = 0; i < handSlotsA.Count; i++)
+        for (int i = 0; i < handSlotsAParent.childCount; i++)
         {
-            handSlotsA[i].Initialize(playerA);
+            handSlotsAParent.GetChild(i).GetComponent<HandSlot>()
+                .Initialize(playerA);
             //handSlotsB[i].Initialize(playerB);
         }
     }

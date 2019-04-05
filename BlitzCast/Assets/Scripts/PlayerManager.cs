@@ -7,21 +7,18 @@ using System.Collections;
 public class PlayerManager : MonoBehaviour, IEntity
 {
     public Player player;
-
+    public GameManager.Team team;
     public int health;
     public List<string> enchantments;
 
-    public Image iconImage;
-    public TMP_Text usernameText;
-    public TMP_Text healthText;
-    public Slider healthSlider;
+    [SerializeField] private Image iconImage;
+    [SerializeField] private TMP_Text usernameText;
+    [SerializeField] private TMP_Text healthText;
+    [SerializeField] private Slider healthSlider;
     public GameObject spellCardPrefab;
     public GameObject creatureCardPrefab;
 
-    public GameManager.Team team;
     [SerializeField] private List<Card> playingDeck; // deck in play
-
-    private List<HandSlot> cardSlots;
 
     private GameManager gameManager;
     private System.Random randomGenerator = new System.Random();

@@ -19,7 +19,7 @@ MonoBehaviour:
   cardBehavior:
     action: 0
     actionValue: 6
-    targetArea: 0
+    targetArea: 2
     statusInflicted: 0
     statusValue: 0
   art: {fileID: 21300000, guid: 1c7bc148ef4cd49c2bb639b06afaab69, type: 3}

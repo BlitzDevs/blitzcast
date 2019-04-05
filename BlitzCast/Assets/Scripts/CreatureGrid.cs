@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class CreatureGrid : MonoBehaviour {
 
-    public Transform cellsParent;
     public Vector2Int size;
+    public Transform cellsParent;
     public Transform playerCreaturesParent;
     public Transform enemyCreaturesParent;
     public Dictionary<Vector2Int, CreatureCardManager> creatures;
