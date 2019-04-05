@@ -89,11 +89,11 @@ public class SpellCardManager: CardManager
         return null;
     }
 
-    public override void Cast(GameObject target) {
+    //returns HashSet of GridCell Objects or Player Object
+    public override HashSet<GameObject> GetCastTargets(GameObject target) {
         HashSet<GameObject> targets = new HashSet<GameObject>();
         GridCell cell = target.GetComponent<GridCell>();
 
-        // Add targets to our list based on the TargetArea
         switch (spellCard.cardBehavior.targetArea)
         {
             case Card.TargetArea.Single:
@@ -108,7 +108,7 @@ public class SpellCardManager: CardManager
                 if (cell != null)
                 {
                     Debug.Log("Adding Creature to targets");
-                     
+
                     CreatureCardManager targetCreature = grid
                         .GetCreature(cell.coordinates);
                     if (targetCreature != null)
@@ -126,6 +126,7 @@ public class SpellCardManager: CardManager
 
                     // drc stands for Delta Row Column (blame dj)
                     List<Vector2Int> drc = new List<Vector2Int>();
+                    drc.Add(Vector2Int.zero);
                     drc.Add(Vector2Int.down);
                     drc.Add(Vector2Int.up);
                     drc.Add(Vector2Int.left);
@@ -151,24 +152,24 @@ public class SpellCardManager: CardManager
 
                     // dr/c stands for Delta Row/Column 
                     for (int dr = -1; dr <= 1; dr++)
-                    for (int dc = -1; dc <= 1; dc++)
-                    {
-                        Vector2Int drc = new Vector2Int(dr, dc);
-                        CreatureCardManager targetCreature = grid
-                            .GetCreature(location + drc);
-
-                        if (targetCreature != null)
+                        for (int dc = -1; dc <= 1; dc++)
                         {
-                            targets.Add(targetCreature.gameObject);
+                            Vector2Int drc = new Vector2Int(dr, dc);
+                            CreatureCardManager targetCreature = grid
+                                .GetCreature(location + drc);
+
+                            if (targetCreature != null)
+                            {
+                                targets.Add(targetCreature.gameObject);
+                            }
                         }
-                    }
                 }
                 break;
 
             case Card.TargetArea.Row:
                 if (cell != null)
                 {
-                    for(int c = 0; c < grid.size.y; c++)
+                    for (int c = 0; c < grid.size.y; c++)
                     {
                         CreatureCardManager targetCreature = grid.GetCreature(
                             new Vector2Int(cell.coordinates.x, c));
@@ -211,6 +212,14 @@ public class SpellCardManager: CardManager
                 Debug.LogWarning("Area not implemented");
                 break;
         }
+
+        return targets;
+    }
+
+    public override void Cast(GameObject target) {
+        HashSet<GameObject> targets = GetCastTargets(target);
+        // Add targets to our list based on the TargetArea
+        
 
         // Filter targets based on conditions
         HashSet<GameObject> targetsCopy = new HashSet<GameObject>(targets);

@@ -86,18 +86,31 @@ public class CreatureCardManager : CardManager, IEntity
         //TODO: check if creature already exist in cell
         {
             for (int r = 0; r < creatureCard.size.x; r++)
-                for (int c = 0; c < creatureCard.size.y; c++)
+            for (int c = 0; c < creatureCard.size.y; c++)
+            {
+                Vector2Int rc = new Vector2Int(
+                    cell.coordinates.x + r, cell.coordinates.y + c);
+                if (grid.creatures.ContainsKey(rc))
                 {
-                    Vector2Int rc = new Vector2Int(
-                        cell.coordinates.x + r, cell.coordinates.y + c);
-                    if (grid.creatures.ContainsKey(rc))
-                    {
-                        return null;
-                    }
+                    return null;
                 }
+            }
             return cellObject;
         }
         return null;
+    }
+
+    public override HashSet<GameObject> GetCastTargets(GameObject target)
+    {
+        HashSet<GameObject> targets = new HashSet<GameObject>();
+        GridCell cell = target.GetComponent<GridCell>();
+        for (int r = 0; r < creatureCard.size.x; r++)
+        for (int c = 0; c < creatureCard.size.y; c++)
+        {
+            Vector2Int rc = new Vector2Int(cell.coordinates.x + r, cell.coordinates.y + c);
+            targets.Add(grid.GetCellRC(rc).gameObject);
+        }
+        return targets;
     }
 
     public override void Cast(GameObject target)
@@ -107,12 +120,11 @@ public class CreatureCardManager : CardManager, IEntity
 
         gameObject.layer = SortingLayer.NameToID("Creatures");
 
-        //add creature location to CreatureGrid
-        for (int r = 0; r < creatureCard.size.x; r++)
-        for (int c = 0; c < creatureCard.size.y; c++)
+        //TODO: add creature location(s) to CreatureGrid
+        foreach (GameObject cellObject in GetCastTargets(target))
         {
-            Vector2Int rc = new Vector2Int(location.x + r, location.y + c);
-            grid.creatures.Add(rc, this);
+            GridCell c = cellObject.GetComponent<GridCell>();
+            grid.creatures.Add(c.coordinates, this);
         }
 
         // Turn CreatureCard into Creature on grid

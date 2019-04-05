@@ -29,15 +29,11 @@ public class CreatureGrid : MonoBehaviour {
 
     public void HighlightRC(Vector2Int rc, Color color)
     {
-        if (rc.x < 0 ||
-            rc.x > size.x ||
-            rc.y < 0 ||
-            rc.y > size.y)
+        GridCell temp = GetCellRC(rc);
+        if (temp != null)
         {
-            return;
+            temp.HighlightCell(color);
         }
-        int index = (rc.x * size.y) + rc.y;
-        cells[index].HighlightCell(color);
     }
 
     public List<CreatureCardManager> GetPlayerCreatures()
@@ -83,5 +79,17 @@ public class CreatureGrid : MonoBehaviour {
             return targetCreature;
         }
         return null;
+    }
+
+    public GridCell GetCellRC(Vector2Int rc)
+    {
+        if (rc.x < 0 ||
+            rc.x > size.x ||
+            rc.y < 0 ||
+            rc.y > size.y)
+        {
+            return null;
+        }
+        return cells[(rc.x * size.y) + rc.y];
     }
 }

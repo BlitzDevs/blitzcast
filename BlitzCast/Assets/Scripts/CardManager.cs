@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -32,13 +33,15 @@ public abstract class CardManager : MonoBehaviour,
     protected HandSlot slot;
 
     private Vector2 dragOffset;
+    private bool casted = false;
 
 
     // abstract functions are to be implemented by inherting classes
-    abstract public void Cast(GameObject target);
     abstract public void EnablePreview(GameObject target);
     abstract public void DisablePreview();
     abstract public GameObject GetCastLocation();
+    abstract public HashSet<GameObject> GetCastTargets(GameObject target);
+    abstract public void Cast(GameObject target);
     abstract public void DestroySelf();
 
     // virtual functions are overrideable but can have a body
@@ -69,6 +72,11 @@ public abstract class CardManager : MonoBehaviour,
     // When begin dragging card, move card to Active layer
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (casted)
+        {
+            return;
+        }
+
         if (gameObject.layer == SortingLayer.GetLayerValueFromName("Held")) {
             gameObject.layer = SortingLayer.GetLayerValueFromName("Active");
             dragOffset = (Vector2) transform.position - eventData.position;
@@ -78,6 +86,11 @@ public abstract class CardManager : MonoBehaviour,
     // While dragging, move the card and try preview
     public void OnDrag(PointerEventData eventData)
     {
+        if (casted)
+        {
+            return;
+        }
+
         transform.position = new Vector2(
             Mathf.RoundToInt(eventData.position.x + dragOffset.x),
             Mathf.RoundToInt(eventData.position.y + dragOffset.y));
@@ -97,9 +110,15 @@ public abstract class CardManager : MonoBehaviour,
     // When stop dragging, start casting if valid; else return to hand
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (casted)
+        {
+            return;
+        }
+
         GameObject target = GetCastLocation();
         if (target != null)
         {
+            casted = true;
             StartCoroutine(CastTimer(target));
         }
         else
