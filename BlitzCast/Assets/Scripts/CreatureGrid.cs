@@ -23,8 +23,22 @@ public class CreatureGrid : MonoBehaviour {
             GridCell cell = cellsParent.GetChild(i).GetComponent<GridCell>();
             cell.coordinates = new Vector2Int(i / size.y, i % size.y);
             cells.Add(cell);
+            
         }
 	}
+
+    public void HighlightRC(Vector2Int rc, Color color)
+    {
+        if (rc.x < 0 ||
+            rc.x > size.x ||
+            rc.y < 0 ||
+            rc.y > size.y)
+        {
+            return;
+        }
+        int index = (rc.x * size.y) + rc.y;
+        cells[index].HighlightCell(color);
+    }
 
     public List<CreatureCardManager> GetPlayerCreatures()
     {
