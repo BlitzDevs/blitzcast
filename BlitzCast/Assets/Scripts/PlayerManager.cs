@@ -9,7 +9,7 @@ public class PlayerManager : MonoBehaviour, IEntity
     public Player player;
     public GameManager.Team team;
     public int health;
-    public List<string> enchantments;
+    public List<Status> statuses;
 
     [SerializeField] private Image iconImage;
     [SerializeField] private TMP_Text usernameText;
@@ -28,6 +28,7 @@ public class PlayerManager : MonoBehaviour, IEntity
     public void Initialize(GameManager.Team team, int maxHealth)
     {
         gameManager = FindObjectOfType<GameManager>();
+        statuses = new List<Status>();
         this.team = team;
 
         // initialize Player
@@ -39,8 +40,6 @@ public class PlayerManager : MonoBehaviour, IEntity
         // draw first cards
         CloneDeck();
         Shuffle();
-
-        StartCoroutine(ExecuteStatuses());
     }
 
     public Card DrawTop()
@@ -107,9 +106,24 @@ public class PlayerManager : MonoBehaviour, IEntity
         return health;
     }
 
-    public IEnumerator ExecuteStatuses()
+    void Update()
     {
-        //TODO: deal with statuses
-        yield return null;
+        DoStatuses();
+    }
+
+    void DoStatuses()
+    {
+
+    }
+
+    void IEntity.DoStatuses()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void ApplyStatus(Card.StatusType statusType, int stacks)
+    {
+        return;
     }
 }
+    

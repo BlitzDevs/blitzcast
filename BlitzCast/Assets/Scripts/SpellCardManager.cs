@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 
@@ -19,8 +20,10 @@ public class SpellCardManager: CardManager
         descriptionText.text = card.description;
     }
 
-    public override void EnablePreview(GameObject target)
+    public override void EnablePreview()
     {
+        GameObject target = GetCastLocation();
+
         //disable card display
         cardFront.SetActive(false);
         cardBack.SetActive(false);
@@ -28,6 +31,12 @@ public class SpellCardManager: CardManager
         sprite.gameObject.SetActive(true);
         //snap to target
         gameObject.transform.position = target.transform.position;
+
+        foreach (GameObject targetObject in GetCastTargets(target))
+        {
+            Image image = targetObject.gameObject.GetComponent<Image>();
+            image.color = Color.yellow;
+        }
     }
 
     public override void DisablePreview()
@@ -257,8 +266,14 @@ public class SpellCardManager: CardManager
                     break;
 
                 case SpellCard.Condition.Status:
-                    valid = t.GetComponent<CreatureCardManager>().statuses
-                        .Contains((Card.Status) spellCard.conditionValue);
+                    valid = false;
+                    foreach (Status s in t.GetComponent<CreatureCardManager>().statuses)
+                    {
+                        if ((int) s.statusType == spellCard.conditionValue)
+                        {
+                            valid = true;
+                        }
+                    }
                     break;
 
                 default:
@@ -296,6 +311,8 @@ public class SpellCardManager: CardManager
                     cardTarget.DestroySelf();
                     break;
             }
+
+            damageableTarget.ApplyStatus(spellCard.cardBehavior.statusInflicted, spellCard.cardBehavior.stacks);
         }
 
         DestroySelf();

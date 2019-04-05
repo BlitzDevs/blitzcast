@@ -7,7 +7,7 @@ using TMPro;
 public class CreatureCardManager : CardManager, IEntity
 {
 
-    public List<Card.Status> statuses;
+    public List<Status> statuses;
 
     public TMP_Text healthText;
     public TMP_Text actionValueText;
@@ -35,7 +35,7 @@ public class CreatureCardManager : CardManager, IEntity
     {
         base.Initialize(card, team, slot);
 
-        statuses = new List<Card.Status>();
+        statuses = new List<Status>();
         creatureCard = (CreatureCard) card;
 
         health = creatureCard.health;
@@ -48,17 +48,12 @@ public class CreatureCardManager : CardManager, IEntity
         gridDisplayObject.SetActive(false);
     }
 
-    public override void EnablePreview(GameObject target)
+    public override void EnablePreview()
     {
-        //disable card display
-        cardFront.SetActive(false);
-        cardBack.SetActive(false);
-        //enable sprite
-        sprite.gameObject.SetActive(true);
         //set color/transparency
         sprite.color = new Color(0, 0, 0, 0.5f);
         //snap to grid
-        gameObject.transform.position = target.transform.position;
+        gameObject.transform.position = GetCastLocation().transform.position;
     }
 
     public override void DisablePreview()
@@ -152,7 +147,6 @@ public class CreatureCardManager : CardManager, IEntity
         sprite.color = new Color(255, 255, 255, 1.0f);
 
         // Start action timer coroutine
-        StartCoroutine(ExecuteStatuses());
         StartCoroutine(DoAction());
     }
 
@@ -174,6 +168,7 @@ public class CreatureCardManager : CardManager, IEntity
         actionTimer = 0;
         while (health > 0)
         {
+            DoStatuses();
             actionTimer += Time.deltaTime;
             //creatureSlot.attackSlider.value = actionTimer / actionTime;
             if (actionTimer / actionTime >= 1)
@@ -189,6 +184,42 @@ public class CreatureCardManager : CardManager, IEntity
 
         // when health <= 0
         DestroySelf();
+    }
+
+    public void DoStatuses()
+    {
+        Debug.Log("Statuses Count: " + statuses.Count);
+        for (int i = 0; i < statuses.Count; i++)
+        {
+            Status status = statuses[i];
+            Debug.Log("Status: " + status.statusType.ToString());
+            Debug.Log("Stacks: " + status.stacks.ToString());
+            switch (statuses[i].statusType)
+            {
+                case Card.StatusType.Frozen:
+                    actionTimer -= Time.deltaTime;
+                    if (gameTimer.elapsedTime - statuses[i].startTime > 1f)
+                    {
+                        statuses[i] = new Status(status.statusType, status.stacks - 1, gameTimer.elapsedTime);
+                    }
+                    break;
+                case Card.StatusType.Bleeding:
+                    if (gameTimer.elapsedTime - statuses[i].startTime > 1f)
+                    {
+                        Damage(status.stacks);
+                        statuses[i] = new Status(status.statusType, status.stacks - 1, gameTimer.elapsedTime);
+                    }
+                    break;
+                default:
+                    break;   
+            }
+
+            if (status.stacks == 0)
+            {
+                statuses.RemoveAt(i);
+                i--;
+            }
+        }
     }
 
     public void Damage(int hp)
@@ -214,9 +245,17 @@ public class CreatureCardManager : CardManager, IEntity
         return health;
     }
 
-    public IEnumerator ExecuteStatuses()
-    {
-        // deal with hecking statuses :(
-        yield return null;
+    public void ApplyStatus(Card.StatusType statusType, int stacks)
+    {   
+        for (int i = 0; i < statuses.Count; i++)
+        {
+            Status s = statuses[i];
+            if (s.statusType == statusType)
+            {
+                s.stacks += stacks;
+                return;
+            }
+        }
+        statuses.Add(new Status(statusType, stacks, gameTimer.elapsedTime));
     }
 }
