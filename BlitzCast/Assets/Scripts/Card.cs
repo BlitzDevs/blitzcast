@@ -36,14 +36,13 @@ public abstract class Card : ScriptableObject
         All
     }
 
-    public enum Status
+    public enum StatusType
     {
         None,
-        Confusion,
+        Confused,
         Wounded,
         Frozen,
-        Poisoned,
-        Rally
+        Bleeding
     }
 
     [Serializable]
@@ -52,8 +51,8 @@ public abstract class Card : ScriptableObject
         public Action action;
         public int actionValue;
         public TargetArea targetArea;
-        public Status statusInflicted;
-        public int statusValue;
+        public StatusType statusInflicted;
+        public int stacks;
     }
 
 

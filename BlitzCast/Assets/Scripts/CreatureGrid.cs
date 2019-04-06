@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class CreatureGrid : MonoBehaviour {
 
-    public Transform cellsParent;
     public Vector2Int size;
+    public Transform cellsParent;
     public Transform playerCreaturesParent;
     public Transform enemyCreaturesParent;
     public Dictionary<Vector2Int, CreatureCardManager> creatures;
@@ -23,8 +23,18 @@ public class CreatureGrid : MonoBehaviour {
             GridCell cell = cellsParent.GetChild(i).GetComponent<GridCell>();
             cell.coordinates = new Vector2Int(i / size.y, i % size.y);
             cells.Add(cell);
+            
         }
 	}
+
+    public void HighlightRC(Vector2Int rc, Color color)
+    {
+        GridCell temp = GetCellRC(rc);
+        if (temp != null)
+        {
+            temp.HighlightCell(color);
+        }
+    }
 
     public List<CreatureCardManager> GetPlayerCreatures()
     {
@@ -69,5 +79,17 @@ public class CreatureGrid : MonoBehaviour {
             return targetCreature;
         }
         return null;
+    }
+
+    public GridCell GetCellRC(Vector2Int rc)
+    {
+        if (rc.x < 0 ||
+            rc.x > size.x ||
+            rc.y < 0 ||
+            rc.y > size.y)
+        {
+            return null;
+        }
+        return cells[(rc.x * size.y) + rc.y];
     }
 }

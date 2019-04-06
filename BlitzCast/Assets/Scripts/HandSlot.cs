@@ -2,12 +2,17 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
                             IPointerEnterHandler, IPointerExitHandler
 {
 
     public GameObject slotObject;
+    [SerializeField] private GameObject drawTimerObject;
+    [SerializeField] private Image drawTimer;
+    [SerializeField] private TMP_Text drawTimerText;
+
     private Vector2 originalPosition = Vector2.zero;
     private const int pixelsToFloatWhenSelected = 20;
     private EventSystem eventSystem;
@@ -19,8 +24,8 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
     {
         eventSystem = FindObjectOfType<EventSystem>();
         this.player = player;
+        drawTimerObject.SetActive(false);
         DrawCard();
-
     }
 
     public void StartCardDrawTimer(float time)
@@ -30,8 +35,17 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
 
     private IEnumerator CardDrawTimer(float time)
     {
-        // temporary countdown
-        yield return new WaitForSeconds(time);
+        drawTimerObject.SetActive(true);
+
+        float countdown = time;
+        while (countdown > 0)
+        {
+            countdown -= Time.deltaTime;
+            drawTimerText.text = Mathf.Round(countdown).ToString();
+            yield return null;
+        }
+
+        drawTimerObject.SetActive(false);
         DrawCard();
     }
 

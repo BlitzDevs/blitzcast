@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -28,17 +29,20 @@ public abstract class CardManager : MonoBehaviour,
     public GameManager.Team team;
 
     protected GameManager gameManager;
+    protected GameTimer gameTimer;
     protected CreatureGrid grid;
     protected HandSlot slot;
 
     private Vector2 dragOffset;
+    private bool casted = false;
 
 
     // abstract functions are to be implemented by inherting classes
-    abstract public void Cast(GameObject target);
-    abstract public void EnablePreview(GameObject target);
+    abstract public void EnablePreview();
     abstract public void DisablePreview();
     abstract public GameObject GetCastLocation();
+    abstract public HashSet<GameObject> GetCastTargets(GameObject target);
+    abstract public void Cast(GameObject target);
     abstract public void DestroySelf();
 
     // virtual functions are overrideable but can have a body
@@ -63,47 +67,62 @@ public abstract class CardManager : MonoBehaviour,
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        gameTimer = FindObjectOfType<GameTimer>();
         grid = FindObjectOfType<CreatureGrid>();
     }
 
     // When begin dragging card, move card to Active layer
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (casted)
+        {
+            return;
+        }
+
         if (gameObject.layer == SortingLayer.GetLayerValueFromName("Held")) {
             gameObject.layer = SortingLayer.GetLayerValueFromName("Active");
             dragOffset = (Vector2) transform.position - eventData.position;
+
+            //disable card display
+            cardFront.SetActive(false);
+            cardBack.SetActive(false);
+            //enable sprite
+            sprite.gameObject.SetActive(true);
+
+            EnablePreview();
         }
     }
 
     // While dragging, move the card and try preview
     public void OnDrag(PointerEventData eventData)
     {
+        if (casted)
+        {
+            return;
+        }
+
         transform.position = new Vector2(
             Mathf.RoundToInt(eventData.position.x + dragOffset.x),
             Mathf.RoundToInt(eventData.position.y + dragOffset.y));
-
-        GameObject target = GetCastLocation();
-        if (target != null)
-        {
-            EnablePreview(target);
-        }
-        else
-        {
-            DisablePreview();
-        }
-
     }
 
     // When stop dragging, start casting if valid; else return to hand
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (casted)
+        {
+            return;
+        }
+
         GameObject target = GetCastLocation();
         if (target != null)
         {
+            casted = true;
             StartCoroutine(CastTimer(target));
         }
         else
         {
+            DisablePreview();
             gameObject.layer = SortingLayer.GetLayerValueFromName("Held");
             DisablePreview();
             transform.localPosition = Vector3.zero;

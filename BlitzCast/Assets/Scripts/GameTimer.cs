@@ -4,7 +4,7 @@ using TMPro;
 public class GameTimer : MonoBehaviour
 {
     public TMP_Text text; 
-    private float elapsedTime;
+    public float elapsedTime;
 
     void Update()
     {
@@ -15,7 +15,7 @@ public class GameTimer : MonoBehaviour
             ((int)elapsedTime / 60).ToString().PadLeft(2, '0'), 
             ((int)elapsedTime % 60).ToString().PadLeft(2, '0'),
             (Mathf.RoundToInt(elapsedTime * 100) % 100).ToString().PadLeft(2, '0')
-            );
+        );
         text.text = displayText;
     }
 }

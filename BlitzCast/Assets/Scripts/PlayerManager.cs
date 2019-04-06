@@ -7,21 +7,18 @@ using System.Collections;
 public class PlayerManager : MonoBehaviour, IEntity
 {
     public Player player;
-
+    public GameManager.Team team;
     public int health;
-    public List<string> enchantments;
+    public List<Status> statuses;
 
-    public Image iconImage;
-    public TMP_Text usernameText;
-    public TMP_Text healthText;
-    public Slider healthSlider;
+    [SerializeField] private Image iconImage;
+    [SerializeField] private TMP_Text usernameText;
+    [SerializeField] private TMP_Text healthText;
+    [SerializeField] private Slider healthSlider;
     public GameObject spellCardPrefab;
     public GameObject creatureCardPrefab;
 
-    public GameManager.Team team;
     [SerializeField] private List<Card> playingDeck; // deck in play
-
-    private List<HandSlot> cardSlots;
 
     private GameManager gameManager;
     private System.Random randomGenerator = new System.Random();
@@ -31,6 +28,7 @@ public class PlayerManager : MonoBehaviour, IEntity
     public void Initialize(GameManager.Team team, int maxHealth)
     {
         gameManager = FindObjectOfType<GameManager>();
+        statuses = new List<Status>();
         this.team = team;
 
         // initialize Player
@@ -42,8 +40,6 @@ public class PlayerManager : MonoBehaviour, IEntity
         // draw first cards
         CloneDeck();
         Shuffle();
-
-        StartCoroutine(ExecuteStatuses());
     }
 
     public Card DrawTop()
@@ -110,9 +106,24 @@ public class PlayerManager : MonoBehaviour, IEntity
         return health;
     }
 
-    public IEnumerator ExecuteStatuses()
+    void Update()
     {
-        //TODO: deal with statuses
-        yield return null;
+        DoStatuses();
+    }
+
+    void DoStatuses()
+    {
+
+    }
+
+    void IEntity.DoStatuses()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void ApplyStatus(Card.StatusType statusType, int stacks)
+    {
+        return;
     }
 }
+    
