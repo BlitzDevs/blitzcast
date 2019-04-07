@@ -15,10 +15,9 @@ public abstract class CardManager : MonoBehaviour,
     [SerializeField] protected GameObject targetableZone;
     [SerializeField] protected GameObject castSliderObject;
     [SerializeField] protected Slider castSlider;
-    [SerializeField] protected Animator animator;
+    [SerializeField] protected SpriteSheetAnimator animator;
     [SerializeField] protected Image sprite;
     [SerializeField] protected Image artImage;
-    [SerializeField] protected Image tint;
     // TMP_Text is TextMeshPro text; much better than default Unity text
     [SerializeField] protected TMP_Text nameText;
     [SerializeField] protected TMP_Text raceText;
@@ -30,20 +29,22 @@ public abstract class CardManager : MonoBehaviour,
 
     protected GameManager gameManager;
     protected GameTimer gameTimer;
+    protected Camera mainCamera;
     protected CreatureGrid grid;
     protected HandSlot slot;
+    [SerializeField] protected List<Image> previewImages;
 
-    private Vector2 dragOffset;
+    private CircleTimer castTimer;
     private bool casted = false;
 
 
     // abstract functions are to be implemented by inherting classes
-    abstract public void EnablePreview();
-    abstract public void DisablePreview();
+    // HashSets are Collections which can only contain unique values
     abstract public GameObject GetCastLocation();
     abstract public HashSet<GameObject> GetCastTargets(GameObject target);
+    abstract public void TryPreview();
     abstract public void Cast(GameObject target);
-    abstract public void DestroySelf();
+
 
     // virtual functions are overrideable but can have a body
     // Initialize is called by HandSlot
@@ -55,20 +56,33 @@ public abstract class CardManager : MonoBehaviour,
         this.slot = slot;
 
         nameText.text = card.cardName;
-        artImage.sprite = card.art;
+        //artImage.sprite = Resources.LoadAll<Sprite>(card.spriteSheet.name)[0];
+        artImage.color = card.color;
+        sprite.color = card.color;
+        animator.spriteSheet = card.spriteSheet;
         castTimeText.text = card.castTime.ToString();
         redrawTimeText.text = card.redrawTime.ToString();
-        animator.runtimeAnimatorController = card.animator;
-
-        castSliderObject.SetActive(false);
     }
+
+    public virtual void DestroySelf()
+    {
+        ClearPreview();
+        Destroy(sprite.gameObject);
+        Destroy(gameObject);
+    }
+
 
     // Start is called by Unity on first time this object is active
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
         gameTimer = FindObjectOfType<GameTimer>();
+        mainCamera = FindObjectOfType<Camera>();
         grid = FindObjectOfType<CreatureGrid>();
+
+        previewImages = new List<Image>();
+        castSliderObject.SetActive(false);
+        castTimer = gameManager.NewTimer(transform);
     }
 
     // When begin dragging card, move card to Active layer
@@ -80,16 +94,14 @@ public abstract class CardManager : MonoBehaviour,
         }
 
         if (gameObject.layer == SortingLayer.GetLayerValueFromName("Held")) {
+            // change layer to Active
             gameObject.layer = SortingLayer.GetLayerValueFromName("Active");
-            dragOffset = (Vector2) transform.position - eventData.position;
-
-            //disable card display
-            cardFront.SetActive(false);
-            cardBack.SetActive(false);
-            //enable sprite
+            // highlight card to show selected
+            SetTint(new Color(1f, 1f, 0f, 0.5f));
+            // enable sprite for preview
             sprite.gameObject.SetActive(true);
-
-            EnablePreview();
+            // move sprite to dragging in hierarchy
+            sprite.transform.SetParent(gameManager.draggingCardParent);
         }
     }
 
@@ -101,9 +113,17 @@ public abstract class CardManager : MonoBehaviour,
             return;
         }
 
-        transform.position = new Vector2(
-            Mathf.RoundToInt(eventData.position.x + dragOffset.x),
-            Mathf.RoundToInt(eventData.position.y + dragOffset.y));
+        // Convert screen location to camera position
+        Vector3 position = new Vector3(
+            eventData.position.x,
+            eventData.position.y,
+            mainCamera.nearClipPlane
+        );
+        sprite.transform.position = mainCamera.ScreenToWorldPoint(position);
+
+        ClearPreview();
+        TryPreview();
+
     }
 
     // When stop dragging, start casting if valid; else return to hand
@@ -118,27 +138,60 @@ public abstract class CardManager : MonoBehaviour,
         if (target != null)
         {
             casted = true;
+
+            // remove self from card slot
+            slot.slotObject = null;
+            // highlight card blue to show casting
+            SetTint(new Color (0.2f, 0.2f, 1f, 0.5f));
+
             StartCoroutine(CastTimer(target));
         }
         else
         {
-            DisablePreview();
+            // change layer to Held
             gameObject.layer = SortingLayer.GetLayerValueFromName("Held");
-            DisablePreview();
-            transform.localPosition = Vector3.zero;
+            // remove card highlight
+            SetTint(new Color(0, 0, 0, 0));
+            // move card back to slot
+            transform.SetParent(slot.transform);
+            transform.position = slot.transform.position;
+            // return sprite location and disable
+            sprite.transform.SetParent(transform);
+            sprite.transform.localPosition = Vector3.zero;
+            sprite.gameObject.SetActive(false);
         }
+
     }
 
     private IEnumerator CastTimer(GameObject target)
     {
-        // remove self from card slot
-        slot.slotObject = null;
-        // temporary countdown
-        yield return new WaitForSeconds(card.castTime);
+        castTimer.gameObject.SetActive(true);
+        castTimer.StartTimer(card.castTime);
+        while (!castTimer.IsComplete())
+        {
+            yield return null;
+        }
+        castTimer.gameObject.SetActive(false);
+
         // start card draw timer after casted
-        slot.StartCardDrawTimer(card.redrawTime);
+        slot.StartDrawTimer(card.redrawTime);
         // cast
         Cast(target);
+    }
+
+    // in the future, replace this with some animation possibly
+    public void SetTint(Color color)
+    {
+        targetableZone.GetComponent<Image>().color = color;
+    }
+
+    protected void ClearPreview()
+    {
+        foreach (Image image in previewImages)
+        {
+            image.color = Color.white;
+        }
+        previewImages.Clear();
     }
 
 }

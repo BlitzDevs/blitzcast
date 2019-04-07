@@ -6,7 +6,9 @@ using System.Collections.Generic;
 public class SpellCardManager: CardManager
 {
 
+    [SerializeField] protected TrailRenderer trail;
     [SerializeField] protected TMP_Text descriptionText;
+
     private SpellCard spellCard;
 
 
@@ -16,37 +18,28 @@ public class SpellCardManager: CardManager
         base.Initialize(card, team, slot);
 
         spellCard = (SpellCard)card;
-
         descriptionText.text = card.description;
+        trail.startColor = card.color;
+        trail.endColor = new Color(card.color.r, card.color.g, card.color.b, 0f);
     }
 
-    public override void EnablePreview()
+    public override void TryPreview()
     {
         GameObject target = GetCastLocation();
-
-        //disable card display
-        cardFront.SetActive(false);
-        cardBack.SetActive(false);
-        //enable sprite
-        sprite.gameObject.SetActive(true);
-        //snap to target
-        gameObject.transform.position = target.transform.position;
-
-        foreach (GameObject targetObject in GetCastTargets(target))
+        if (target != null)
         {
-            Image image = targetObject.gameObject.GetComponent<Image>();
-            image.color = Color.yellow;
+            //snap to target
+            sprite.transform.position = target.transform.position;
+
+            foreach (GameObject targetObject in GetCastTargets(target))
+            {
+                Image image = targetObject.gameObject.GetComponent<Image>();
+                previewImages.Add(image);
+                image.color = card.color;
+            }
         }
     }
 
-    public override void DisablePreview()
-    {
-        //enable card display
-        cardFront.SetActive(true);
-        cardBack.SetActive(false);
-        //disable sprite
-        sprite.gameObject.SetActive(false);
-    }
 
     public override GameObject GetCastLocation()
     {
@@ -58,11 +51,11 @@ public class SpellCardManager: CardManager
                     case Card.Action.Damage:
                     case Card.Action.Heal:
                         // Target Creature or Player
-                        GameObject creatureCell = gameManager
+                        GameObject cellObject = gameManager
                             .GetFirstUnderCursor<GridCell>();
-                        if (creatureCell != null)
+                        if (cellObject != null)
                         {
-                            return creatureCell;
+                            return cellObject;
                         }
                         return gameManager.GetFirstUnderCursor<PlayerManager>();
 
@@ -116,14 +109,14 @@ public class SpellCardManager: CardManager
             case Card.TargetArea.SingleCreature:
                 if (cell != null)
                 {
-                    Debug.Log("Adding Creature to targets");
+                    //CreatureCardManager targetCreature = grid
+                    //    .GetCreature(cell.coordinates);
+                    //if (targetCreature != null)
+                    //{
+                    //    //targets.Add(targetCreature.gameObject);
+                    //}
 
-                    CreatureCardManager targetCreature = grid
-                        .GetCreature(cell.coordinates);
-                    if (targetCreature != null)
-                    {
-                        targets.Add(targetCreature.gameObject);
-                    }
+                    targets.Add(cell.gameObject);
                 }
                 break;
 
@@ -143,11 +136,16 @@ public class SpellCardManager: CardManager
 
                     foreach (Vector2Int direction in drc)
                     {
-                        CreatureCardManager targetCreature = grid
-                            .GetCreature(location + direction);
-                        if (targetCreature != null)
+                        //CreatureCardManager targetCreature = grid
+                        //    .GetCreature(location + direction);
+                        //if (targetCreature != null)
+                        //{
+                        //    //targets.Add(targetCreature.gameObject);
+                        //}
+                        GridCell drcCell = grid.GetCellRC(location + direction);
+                        if (drcCell != null)
                         {
-                            targets.Add(targetCreature.gameObject);
+                            targets.Add(drcCell.gameObject);
                         }
                     }
                 }
@@ -164,12 +162,19 @@ public class SpellCardManager: CardManager
                         for (int dc = -1; dc <= 1; dc++)
                         {
                             Vector2Int drc = new Vector2Int(dr, dc);
-                            CreatureCardManager targetCreature = grid
-                                .GetCreature(location + drc);
 
-                            if (targetCreature != null)
+                            //CreatureCardManager targetCreature = grid
+                            //    .GetCreature(location + drc);
+
+                            //if (targetCreature != null)
+                            //{
+                            //    //targets.Add(targetCreature.gameObject);
+                            //}
+
+                            GridCell drcCell = grid.GetCellRC(location + drc);
+                            if (drcCell != null)
                             {
-                                targets.Add(targetCreature.gameObject);
+                                targets.Add(drcCell.gameObject);
                             }
                         }
                 }
@@ -180,11 +185,11 @@ public class SpellCardManager: CardManager
                 {
                     for (int c = 0; c < grid.size.y; c++)
                     {
-                        CreatureCardManager targetCreature = grid.GetCreature(
-                            new Vector2Int(cell.coordinates.x, c));
-                        if (targetCreature != null)
+                        Vector2Int rc = new Vector2Int(cell.coordinates.x, c);
+                        GridCell drcCell = grid.GetCellRC(rc);
+                        if (drcCell != null)
                         {
-                            targets.Add(targetCreature.gameObject);
+                            targets.Add(drcCell.gameObject);
                         }
                     }
                 }
@@ -195,11 +200,11 @@ public class SpellCardManager: CardManager
                 {
                     for (int r = 0; r < grid.size.x; r++)
                     {
-                        CreatureCardManager targetCreature = grid.GetCreature(
-                            new Vector2Int(r, cell.coordinates.y));
-                        if (targetCreature != null)
+                        Vector2Int rc = new Vector2Int(r, cell.coordinates.y);
+                        GridCell drcCell = grid.GetCellRC(rc);
+                        if (drcCell != null)
                         {
-                            targets.Add(targetCreature.gameObject);
+                            targets.Add(drcCell.gameObject);
                         }
                     }
                 }
@@ -211,7 +216,7 @@ public class SpellCardManager: CardManager
                 goto case Card.TargetArea.AllCreatures;
 
             case Card.TargetArea.AllCreatures:
-                foreach (CreatureCardManager c in grid.GetAllCreatures())
+                foreach (GridCell c in grid.cells)
                 {
                     targets.Add(c.gameObject);
                 }
@@ -225,18 +230,26 @@ public class SpellCardManager: CardManager
         return targets;
     }
 
-    public override void Cast(GameObject target) {
+    public override void Cast(GameObject target)
+    {
+        // GetCastTargets adds targets to our list based on the TargetArea
         HashSet<GameObject> targets = GetCastTargets(target);
-        // Add targets to our list based on the TargetArea
-        
 
         // Filter targets based on conditions
         HashSet<GameObject> targetsCopy = new HashSet<GameObject>(targets);
         foreach (GameObject t in targetsCopy)
         {
-            IEntity entity = t.GetComponent<IEntity>();
-
             bool valid = true;
+
+            GridCell tCell = t.GetComponent<GridCell>();
+            IEntity entity = tCell != null ?
+                grid.GetCreature(tCell.coordinates) :
+                t.GetComponent<IEntity>();
+            if (entity == null)
+            {
+                valid = false;
+            }
+
             switch (spellCard.condition)
             {
                 case SpellCard.Condition.None:
@@ -286,41 +299,56 @@ public class SpellCardManager: CardManager
             {
                 targets.Remove(t);
             }
-        }
+        } // end Conditions foreach loop
 
         // Execute Card Action on our list of valid targets
         foreach (GameObject t in targets)
         {
-            Debug.Log(t.name);
-            IEntity damageableTarget = t.GetComponent<IEntity>();
+            GridCell tCell = t.GetComponent<GridCell>();
+            IEntity entity = tCell != null ?
+                grid.GetCreature(tCell.coordinates) :
+                t.GetComponent<IEntity>();
+
             switch (spellCard.cardBehavior.action)
             {
                 case Card.Action.Damage:
-                    damageableTarget.Damage(card.cardBehavior.actionValue);
+                    entity.Damage(card.cardBehavior.actionValue);
                     break;
+
                 case Card.Action.Heal:
-                    damageableTarget.Heal(card.cardBehavior.actionValue);
+                    entity.Heal(card.cardBehavior.actionValue);
                     break;
+
                 case Card.Action.Destroy:
                     CreatureCardManager creatureTarget =
                         t.GetComponent<CreatureCardManager>();
-                    creatureTarget.DestroySelf();
+                    if (creatureTarget != null)
+                    {
+                        creatureTarget.DestroySelf();
+                    }
+                    else
+                    {
+                        CardManager cardTarget = t.GetComponent<CardManager>();
+                        if (cardTarget != null)
+                        {
+                            cardTarget.DestroySelf();
+                        }
+                    }
                     break;
+
                 default:
-                    CardManager cardTarget = t.GetComponent<CardManager>();
-                    cardTarget.DestroySelf();
+                    Debug.LogWarning("Card Action not implemented");
                     break;
             }
 
-            damageableTarget.ApplyStatus(spellCard.cardBehavior.statusInflicted, spellCard.cardBehavior.stacks);
+            entity.ApplyStatus(
+                spellCard.cardBehavior.statusInflicted,
+                spellCard.cardBehavior.stacks
+            );
         }
 
         DestroySelf();
     }
 
-    public override void DestroySelf()
-    {
-        Destroy(this.gameObject);
-    }
 
 }

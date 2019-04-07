@@ -9,16 +9,16 @@ public class CreatureCardManager : CardManager, IEntity
 
     public List<Status> statuses;
 
-    public TMP_Text healthText;
-    public TMP_Text actionValueText;
-    public TMP_Text actionTimeText;
+    [SerializeField] private TMP_Text healthText;
+    [SerializeField] private TMP_Text actionValueText;
+    [SerializeField] private TMP_Text actionTimeText;
 
-    public GameObject gridDisplayObject;
-    public GameObject gridStatusesParent;
-    public TMP_Text gridHealthText;
-    public TMP_Text gridActionValueText;
-    public TMP_Text gridActionTimeText;
-    public Image gridActionTimer;
+    [SerializeField] private GameObject gridDisplayObject;
+    [SerializeField] private GameObject gridStatusesParent;
+    [SerializeField] private TMP_Text gridHealthText;
+    [SerializeField] private TMP_Text gridActionValueText;
+    [SerializeField] private TMP_Text gridActionTimeText;
+    [SerializeField] private Image gridActionTimer;
 
     private int health;
     private int actionValue;
@@ -48,23 +48,28 @@ public class CreatureCardManager : CardManager, IEntity
         gridDisplayObject.SetActive(false);
     }
 
-    public override void EnablePreview()
+    public override void TryPreview()
     {
-        //set color/transparency
-        sprite.color = new Color(0, 0, 0, 0.5f);
-        //snap to grid
-        gameObject.transform.position = GetCastLocation().transform.position;
-    }
+        GameObject target = GetCastLocation();
+        if (target != null)
+        {
+            //set color/transparency
+            sprite.color = new Color(0, 0, 0, 0.5f);
+            //snap to target
+            sprite.transform.position = target.transform.position;
 
-    public override void DisablePreview()
-    {
-        //enable card display
-        cardFront.SetActive(true);
-        cardBack.SetActive(true);
-        //set color/transparency
-        sprite.color = new Color(255, 255, 255, 1.0f);
-        //disable sprite
-        sprite.gameObject.SetActive(false);
+            foreach (GameObject targetObject in GetCastTargets(target))
+            {
+                Image image = targetObject.gameObject.GetComponent<Image>();
+                previewImages.Add(image);
+                image.color = card.color;
+            }
+        }
+        else
+        {
+            sprite.color = card.color;
+        }
+
     }
 
     public override GameObject GetCastLocation()
@@ -78,7 +83,6 @@ public class CreatureCardManager : CardManager, IEntity
             cell.coordinates.x >= grid.size.x / 2 &&
             cell.coordinates.y + creatureCard.size.y - 1 < grid.size.y &&
             cell.coordinates.x + creatureCard.size.x - 1 < grid.size.x)
-        //TODO: check if creature already exist in cell
         {
             for (int r = 0; r < creatureCard.size.x; r++)
             for (int c = 0; c < creatureCard.size.y; c++)
@@ -102,7 +106,8 @@ public class CreatureCardManager : CardManager, IEntity
         for (int r = 0; r < creatureCard.size.x; r++)
         for (int c = 0; c < creatureCard.size.y; c++)
         {
-            Vector2Int rc = new Vector2Int(cell.coordinates.x + r, cell.coordinates.y + c);
+            Vector2Int rc = new Vector2Int(
+                cell.coordinates.x + r, cell.coordinates.y + c);
             targets.Add(grid.GetCellRC(rc).gameObject);
         }
         return targets;
@@ -115,7 +120,7 @@ public class CreatureCardManager : CardManager, IEntity
 
         gameObject.layer = SortingLayer.NameToID("Creatures");
 
-        //TODO: add creature location(s) to CreatureGrid
+        // add creature location to grid
         foreach (GameObject cellObject in GetCastTargets(target))
         {
             GridCell c = cellObject.GetComponent<GridCell>();
@@ -133,18 +138,21 @@ public class CreatureCardManager : CardManager, IEntity
         gridDisplayObject.SetActive(true);
         RectTransform rt = gridDisplayObject.GetComponent<RectTransform>();
         rt.sizeDelta = new Vector2(
-            42 * creatureCard.size.x, 42 * creatureCard.size.y);
+            rt.rect.width * creatureCard.size.x,
+            rt.rect.height * creatureCard.size.y
+        );
         gridHealthText.text = health.ToString();
         gridActionValueText.text = actionValue.ToString();
         gridActionTimeText.text = actionTime.ToString();
 
-        //disable card display
+        // disable card display
+        SetTint(new Color(0f, 0f, 0f, 0f));
         cardFront.SetActive(false);
         cardBack.SetActive(false);
         // enable sprite display
         sprite.gameObject.SetActive(true);
         // set color/transparency to normal
-        sprite.color = new Color(255, 255, 255, 1.0f);
+        sprite.color = card.color;
 
         // Start action timer coroutine
         StartCoroutine(DoAction());
@@ -160,7 +168,8 @@ public class CreatureCardManager : CardManager, IEntity
                 Vector2Int rc = new Vector2Int(location.x + r, location.y + c);
                 grid.creatures.Remove(rc);
             }
-        Destroy(this.gameObject);
+
+        base.DestroySelf();
     }
 
     private IEnumerator DoAction()
@@ -170,14 +179,13 @@ public class CreatureCardManager : CardManager, IEntity
         {
             DoStatuses();
             actionTimer += Time.deltaTime;
-            //creatureSlot.attackSlider.value = actionTimer / actionTime;
+            //TODO: adjust timer animation frame
+
             if (actionTimer / actionTime >= 1)
             {
-                Debug.Log("Health: " + health);
-                //TODO: Get target on grid
+                //TODO: Get target on grid and reset timer animation
 
                 actionTimer = 0;
-                //creatureSlot.attackSlider.value = 0;
             }
             yield return null;
         }
@@ -188,26 +196,34 @@ public class CreatureCardManager : CardManager, IEntity
 
     public void DoStatuses()
     {
-        Debug.Log("Statuses Count: " + statuses.Count);
         for (int i = 0; i < statuses.Count; i++)
         {
+            // Careful! Structs are immutable types in C#,
+            // so have to make a new Status when changing a value.
             Status status = statuses[i];
-            Debug.Log("Status: " + status.statusType.ToString());
-            Debug.Log("Stacks: " + status.stacks.ToString());
+
             switch (statuses[i].statusType)
             {
                 case Card.StatusType.Frozen:
                     actionTimer -= Time.deltaTime;
                     if (gameTimer.elapsedTime - statuses[i].startTime > 1f)
                     {
-                        statuses[i] = new Status(status.statusType, status.stacks - 1, gameTimer.elapsedTime);
+                        statuses[i] = new Status(
+                            status.statusType,
+                            status.stacks - 1,
+                            gameTimer.elapsedTime
+                        );
                     }
                     break;
                 case Card.StatusType.Bleeding:
                     if (gameTimer.elapsedTime - statuses[i].startTime > 1f)
                     {
                         Damage(status.stacks);
-                        statuses[i] = new Status(status.statusType, status.stacks - 1, gameTimer.elapsedTime);
+                        statuses[i] = new Status(
+                            status.statusType,
+                            status.stacks - 1,
+                            gameTimer.elapsedTime
+                        );
                     }
                     break;
                 default:
@@ -232,7 +248,7 @@ public class CreatureCardManager : CardManager, IEntity
         SetHealth(health += hp);
     }
 
-    public void SetHealth(int hp)
+    private void SetHealth(int hp)
     {
         health = hp;
 
@@ -256,6 +272,7 @@ public class CreatureCardManager : CardManager, IEntity
                 return;
             }
         }
+
         statuses.Add(new Status(statusType, stacks, gameTimer.elapsedTime));
     }
 }

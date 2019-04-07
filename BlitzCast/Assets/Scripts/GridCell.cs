@@ -6,19 +6,33 @@ public class GridCell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Vector2Int coordinates;
     public Image sprite;
+    public bool highlighted;
     
-    public void HighlightCell(Color color)
+    public void Highlight(Color color)
     {
-        sprite.color = color;        
+        highlighted = true;
+        sprite.color = color;
+    }
+
+    public void RemoveHighlight()
+    {
+        highlighted = false;
+        sprite.color = Color.white;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        HighlightCell(Color.yellow);
+        if (!highlighted)
+        {
+            sprite.color = Color.yellow;
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        HighlightCell(Color.white);
+        if (!highlighted)
+        {
+            RemoveHighlight();
+        }
     }
 }

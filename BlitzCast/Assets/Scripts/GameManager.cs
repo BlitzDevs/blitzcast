@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     //public PlayerManager playerB;
     public Transform handSlotsAParent;
     //public GameObject handSlotsB;
+    public Transform draggingCardParent;
+    public GameObject circleTimerPrefab;
 
     // This function is called by Unity on the first frame that the object is active
     void Start()
@@ -31,6 +33,19 @@ public class GameManager : MonoBehaviour
                 .Initialize(playerA);
             //handSlotsB[i].Initialize(playerB);
         }
+    }
+
+
+    public CircleTimer NewTimer(Transform parent)
+    {
+        CircleTimer timer = null;
+        GameObject timerObject = Instantiate(circleTimerPrefab);
+        timer = timerObject.GetComponent<CircleTimer>();
+        timer.transform.SetParent(parent);
+        timer.transform.localPosition = Vector3.zero;
+        timer.transform.localScale = Vector3.one;
+        timer.gameObject.SetActive(false);
+        return timer;
     }
 
     public List<GameObject> GetAllUnderCursor()
@@ -62,6 +77,7 @@ public class GameManager : MonoBehaviour
         }
         return null;
     }
+
     public GameObject GetFirstUnderCursor(int layer)
     {
         List<GameObject> hitObjects = GetAllUnderCursor();

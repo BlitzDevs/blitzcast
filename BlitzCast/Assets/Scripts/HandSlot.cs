@@ -2,50 +2,47 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
-using TMPro;
 
 public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
                             IPointerEnterHandler, IPointerExitHandler
 {
 
     public GameObject slotObject;
-    [SerializeField] private GameObject drawTimerObject;
-    [SerializeField] private Image drawTimer;
-    [SerializeField] private TMP_Text drawTimerText;
 
+    private CircleTimer drawTimer;
     private Vector2 originalPosition = Vector2.zero;
     private const int pixelsToFloatWhenSelected = 20;
     private EventSystem eventSystem;
     private PlayerManager player;
+    private GameManager gameManager;
 
 
     // Called by GameManager
     public void Initialize(PlayerManager player)
     {
         eventSystem = FindObjectOfType<EventSystem>();
+        gameManager = FindObjectOfType<GameManager>();
         this.player = player;
-        drawTimerObject.SetActive(false);
+
+        drawTimer = gameManager.NewTimer(transform);
+
         DrawCard();
     }
 
-    public void StartCardDrawTimer(float time)
+    public void StartDrawTimer(float time)
     {
-        StartCoroutine(CardDrawTimer(time));
+        StartCoroutine(DrawTimer(time));
     }
 
-    private IEnumerator CardDrawTimer(float time)
+    private IEnumerator DrawTimer(float time)
     {
-        drawTimerObject.SetActive(true);
-
-        float countdown = time;
-        while (countdown > 0)
+        drawTimer.gameObject.SetActive(true);
+        drawTimer.StartTimer(time);
+        while (!drawTimer.IsComplete())
         {
-            countdown -= Time.deltaTime;
-            drawTimerText.text = Mathf.Round(countdown).ToString();
             yield return null;
         }
-
-        drawTimerObject.SetActive(false);
+        drawTimer.gameObject.SetActive(false);
         DrawCard();
     }
 
@@ -61,7 +58,7 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
             cardPrefab = player.spellCardPrefab;
         } else
         {
-            Debug.LogError("Card is not CreatureCard or SpellCard >:(");
+            Debug.LogError("Card type is unknown");
         }
 
         GameObject cardObject = Instantiate(cardPrefab);

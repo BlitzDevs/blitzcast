@@ -32,7 +32,7 @@ public class CreatureGrid : MonoBehaviour {
         GridCell temp = GetCellRC(rc);
         if (temp != null)
         {
-            temp.HighlightCell(color);
+            temp.Highlight(color);
         }
     }
 

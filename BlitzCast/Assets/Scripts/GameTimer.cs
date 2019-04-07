@@ -3,7 +3,7 @@ using TMPro;
 
 public class GameTimer : MonoBehaviour
 {
-    public TMP_Text text; 
+    [SerializeField] private TMP_Text text; 
     public float elapsedTime;
 
     void Update()
