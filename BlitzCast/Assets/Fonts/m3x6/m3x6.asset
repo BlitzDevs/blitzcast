@@ -18,7 +18,7 @@ MonoBehaviour:
   m_fontInfo:
     Name: m3x6
     PointSize: 16
-    Scale: 1
+    Scale: 16
     CharacterCount: 96
     LineHeight: 8
     Baseline: 0

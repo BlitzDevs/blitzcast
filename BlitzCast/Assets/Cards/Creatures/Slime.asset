@@ -11,19 +11,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3718d06e4808074db547e4a69a967fc, type: 3}
   m_Name: Slime
   m_EditorClassIdentifier: 
+  race: 0
   cardName: Slime
   description: squishy
-  art: {fileID: 21300000, guid: e83a77e8d474c47988cca828cb7c616e, type: 3}
+  castTime: 2
+  redrawTime: 2
   cardBehavior:
     action: 0
     actionValue: 0
-    condition: 0
-    conditionValue: 0
     targetArea: 0
     statusInflicted: 0
-  castTime: 2
-  redrawTime: 2
-  animator: {fileID: 9100000, guid: 479f2867f3cb1439197f5b49814996c9, type: 2}
+    stacks: 0
+  spriteSheet: {fileID: 2800000, guid: e83a77e8d474c47988cca828cb7c616e, type: 3}
+  color: {r: 0.47397092, g: 0.7794118, b: 0.2980104, a: 1}
   health: 3
   actionTime: 2
   size: {x: 1, y: 1}
