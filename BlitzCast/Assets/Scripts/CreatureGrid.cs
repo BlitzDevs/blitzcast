@@ -84,9 +84,9 @@ public class CreatureGrid : MonoBehaviour {
     public GridCell GetCellRC(Vector2Int rc)
     {
         if (rc.x < 0 ||
-            rc.x > size.x ||
+            rc.x >= size.x ||
             rc.y < 0 ||
-            rc.y > size.y)
+            rc.y >= size.y)
         {
             return null;
         }
