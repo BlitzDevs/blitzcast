@@ -11,18 +11,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d89e7822a6a0404aa5538e07d27da72, type: 3}
   m_Name: Iceball
   m_EditorClassIdentifier: 
-  race: 0
   cardName: Iceball
   description: pew pew
-  castTime: 5
-  redrawTime: 5
-  cardBehavior:
-    action: 0
-    actionValue: 0
-    targetArea: 0
-    statusInflicted: 0
-    stacks: 0
   spriteSheet: {fileID: 2800000, guid: 1c7bc148ef4cd49c2bb639b06afaab69, type: 3}
   color: {r: 0.66176474, g: 0.8320488, b: 1, a: 1}
+  castTime: 1
+  redrawTime: 2
+  race: 0
+  cardBehavior:
+    action: 0
+    actionValue: 1
+    targetArea: 0
+    statusInflicted: 3
+    stacks: 5
   condition: 0
   conditionValue: 0

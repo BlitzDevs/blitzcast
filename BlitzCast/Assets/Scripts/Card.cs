@@ -56,14 +56,14 @@ public abstract class Card : ScriptableObject
     }
 
 
-    public Race race = Race.Generic;
     public string cardName = "New Card";
     public string description = "Something cool?";
-    public int castTime;
-    public int redrawTime;
-    public Behavior cardBehavior;
     public Texture2D spriteSheet;
     public Color color = Color.white;
+    public int castTime;
+    public int redrawTime;
+    public Race race = Race.Generic;
+    public Behavior cardBehavior;
 
 
     // Cannot use newCard = oldCard because it becomes a reference! Use Clone()!

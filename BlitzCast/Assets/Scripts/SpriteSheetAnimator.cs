@@ -37,12 +37,7 @@ public class SpriteSheetAnimator : MonoBehaviour
 
         if (time >= 1f / framesPerSecond)
         {
-            //!! what am i doing wrong here...?
-            //frame = frame >= sprites.Length ? 0 : frame + 1;
-            frame++;
-            if (frame >= sprites.Length)
-                frame = 0;
-
+            frame = frame + 1 >= sprites.Length ? 0 : frame + 1;
             image.sprite = sprites[frame];
 
             time = 0f;

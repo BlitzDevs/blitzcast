@@ -13,8 +13,6 @@ public abstract class CardManager : MonoBehaviour,
     [SerializeField] protected GameObject cardFront;
     [SerializeField] protected GameObject cardBack;
     [SerializeField] protected GameObject targetableZone;
-    [SerializeField] protected GameObject castSliderObject;
-    [SerializeField] protected Slider castSlider;
     [SerializeField] protected SpriteSheetAnimator animator;
     [SerializeField] protected Image sprite;
     [SerializeField] protected Image artImage;
@@ -28,7 +26,6 @@ public abstract class CardManager : MonoBehaviour,
     public GameManager.Team team;
 
     protected GameManager gameManager;
-    protected GameTimer gameTimer;
     protected Camera mainCamera;
     protected CreatureGrid grid;
     protected HandSlot slot;
@@ -56,12 +53,13 @@ public abstract class CardManager : MonoBehaviour,
         this.slot = slot;
 
         nameText.text = card.cardName;
-        //artImage.sprite = Resources.LoadAll<Sprite>(card.spriteSheet.name)[0];
         artImage.color = card.color;
         sprite.color = card.color;
         animator.spriteSheet = card.spriteSheet;
         castTimeText.text = card.castTime.ToString();
         redrawTimeText.text = card.redrawTime.ToString();
+
+        sprite.gameObject.SetActive(false);
     }
 
     public virtual void DestroySelf()
@@ -71,18 +69,26 @@ public abstract class CardManager : MonoBehaviour,
         Destroy(gameObject);
     }
 
+    protected void ClearPreview()
+    {
+        foreach (Image image in previewImages)
+        {
+            image.color = Color.white;
+        }
+        previewImages.Clear();
+    }
+
 
     // Start is called by Unity on first time this object is active
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-        gameTimer = FindObjectOfType<GameTimer>();
         mainCamera = FindObjectOfType<Camera>();
         grid = FindObjectOfType<CreatureGrid>();
 
         previewImages = new List<Image>();
-        castSliderObject.SetActive(false);
-        castTimer = gameManager.NewTimer(transform);
+        castTimer = gameManager.NewCircleTimer(transform);
+        castTimer.gameObject.SetActive(false);
     }
 
     // When begin dragging card, move card to Active layer
@@ -177,21 +183,14 @@ public abstract class CardManager : MonoBehaviour,
         slot.StartDrawTimer(card.redrawTime);
         // cast
         Cast(target);
+
+        ClearPreview();
     }
 
     // in the future, replace this with some animation possibly
     public void SetTint(Color color)
     {
         targetableZone.GetComponent<Image>().color = color;
-    }
-
-    protected void ClearPreview()
-    {
-        foreach (Image image in previewImages)
-        {
-            image.color = Color.white;
-        }
-        previewImages.Clear();
     }
 
 }

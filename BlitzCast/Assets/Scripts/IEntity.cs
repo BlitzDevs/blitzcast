@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 
 public struct Status
 {
@@ -18,6 +18,7 @@ public interface IEntity
     void Damage(int hp);
     void Heal(int hp);
     void DoStatuses();
+    List<Status> GetStatuses();
     int GetHealth();
     void ApplyStatus(Card.StatusType statusType, int stacks);
 }

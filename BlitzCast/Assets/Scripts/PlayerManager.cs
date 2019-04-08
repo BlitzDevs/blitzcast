@@ -123,7 +123,22 @@ public class PlayerManager : MonoBehaviour, IEntity
 
     public void ApplyStatus(Card.StatusType statusType, int stacks)
     {
-        return;
+        for (int i = 0; i < statuses.Count; i++)
+        {
+            Status s = statuses[i];
+            if (s.statusType == statusType)
+            {
+                s.stacks += stacks;
+                return;
+            }
+        }
+
+        statuses.Add(new Status(statusType, stacks, gameManager.timer.elapsedTime));
+    }
+
+    public List<Status> GetStatuses()
+    {
+        return statuses;
     }
 }
     

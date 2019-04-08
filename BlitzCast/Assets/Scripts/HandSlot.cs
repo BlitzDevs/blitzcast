@@ -24,7 +24,7 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
         gameManager = FindObjectOfType<GameManager>();
         this.player = player;
 
-        drawTimer = gameManager.NewTimer(transform);
+        drawTimer = gameManager.NewCircleTimer(transform);
 
         DrawCard();
     }

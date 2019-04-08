@@ -1,5 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
@@ -20,6 +21,8 @@ public class GameManager : MonoBehaviour
     //public GameObject handSlotsB;
     public Transform draggingCardParent;
     public GameObject circleTimerPrefab;
+    public GameTimer timer;
+
 
     // This function is called by Unity on the first frame that the object is active
     void Start()
@@ -36,16 +39,16 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public CircleTimer NewTimer(Transform parent)
+    public CircleTimer NewCircleTimer(Transform parent)
     {
-        CircleTimer timer = null;
+        CircleTimer cTimer = null;
         GameObject timerObject = Instantiate(circleTimerPrefab);
-        timer = timerObject.GetComponent<CircleTimer>();
-        timer.transform.SetParent(parent);
-        timer.transform.localPosition = Vector3.zero;
-        timer.transform.localScale = Vector3.one;
-        timer.gameObject.SetActive(false);
-        return timer;
+        cTimer = timerObject.GetComponent<CircleTimer>();
+        cTimer.transform.SetParent(parent);
+        cTimer.transform.localPosition = Vector3.zero;
+        cTimer.transform.localScale = Vector3.one;
+        cTimer.gameObject.SetActive(false);
+        return cTimer;
     }
 
     public List<GameObject> GetAllUnderCursor()

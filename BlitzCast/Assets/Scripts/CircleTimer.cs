@@ -5,6 +5,8 @@ using TMPro;
 public class CircleTimer : MonoBehaviour {
 
     public float time = 3f;
+    public float countdown;
+
     public Color backgroundColor = Color.black;
     public Color fillColor = Color.gray;
 
@@ -12,7 +14,6 @@ public class CircleTimer : MonoBehaviour {
     [SerializeField] private Image fill;
     [SerializeField] private TMP_Text text;
 
-    private float countdown;
 
     public void StartTimer(float seconds)
     {

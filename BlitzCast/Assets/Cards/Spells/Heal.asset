@@ -9,20 +9,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d89e7822a6a0404aa5538e07d27da72, type: 3}
-  m_Name: Fireball
+  m_Name: Heal
   m_EditorClassIdentifier: 
-  cardName: Fireball
-  description: pew pew
+  cardName: Heal
+  description: Recover 5 hp
   spriteSheet: {fileID: 2800000, guid: 1c7bc148ef4cd49c2bb639b06afaab69, type: 3}
-  color: {r: 1, g: 0.48397565, b: 0.29411763, a: 1}
+  color: {r: 0.60446244, g: 1, b: 0.44852942, a: 1}
   castTime: 1
   redrawTime: 2
   race: 0
   cardBehavior:
-    action: 0
-    actionValue: 3
-    targetArea: 2
-    statusInflicted: 2
-    stacks: 1
-  condition: 0
+    action: 1
+    actionValue: 0
+    targetArea: 0
+    statusInflicted: 0
+    stacks: 0
+  condition: 5
   conditionValue: 0
