@@ -258,6 +258,18 @@ public class CreatureCardManager : CardManager, IEntity
                     }
                     break;
 
+                case Card.StatusType.Wounded:
+                    if (actionTimer.IsComplete())
+                    {
+                        Damage(status.stacks);
+                        //we don't care about startTime for wounded
+                        statuses[i] = new Status(
+                            status.statusType,
+                            status.stacks - 1,
+                            status.startTime
+                        );
+                    }
+                    break;
                 default:
                     Debug.LogWarning("Status not implemented");
                     break;   
