@@ -113,9 +113,9 @@ public class CreatureCardManager : CardManager, IEntity
         return null;
     }
 
-    public override HashSet<GameObject> GetCastTargets(GameObject target)
+    public override List<GameObject> GetCastTargets(GameObject target)
     {
-        HashSet<GameObject> targets = new HashSet<GameObject>();
+        List<GameObject> targets = new List<GameObject>();
         GridCell cell = target.GetComponent<GridCell>();
         for (int r = 0; r < creatureCard.size.x; r++)
         for (int c = 0; c < creatureCard.size.y; c++)

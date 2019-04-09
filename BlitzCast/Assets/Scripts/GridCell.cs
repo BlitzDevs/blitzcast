@@ -7,6 +7,8 @@ public class GridCell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public Vector2Int coordinates;
     public Image sprite;
     public bool highlighted;
+
+    public CreatureGrid grid;
     
     public void Highlight(Color color)
     {
@@ -34,5 +36,10 @@ public class GridCell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             RemoveHighlight();
         }
+    }
+
+    public CreatureCardManager GetCreature()
+    {
+        return grid.GetCreature(coordinates);
     }
 }

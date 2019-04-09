@@ -20,7 +20,7 @@ MonoBehaviour:
   race: 0
   cardBehavior:
     action: 1
-    actionValue: 0
+    actionValue: 5
     targetArea: 0
     statusInflicted: 0
     stacks: 0

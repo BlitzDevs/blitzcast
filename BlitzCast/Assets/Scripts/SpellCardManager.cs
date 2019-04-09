@@ -92,8 +92,8 @@ public class SpellCardManager: CardManager
     }
 
     //returns HashSet of GridCell Objects or Player Object
-    public override HashSet<GameObject> GetCastTargets(GameObject target) {
-        HashSet<GameObject> targets = new HashSet<GameObject>();
+    public override List<GameObject> GetCastTargets(GameObject target) {
+        List<GameObject> targets = new List<GameObject>();
         GridCell cell = target.GetComponent<GridCell>();
 
         switch (spellCard.cardBehavior.targetArea)
@@ -209,23 +209,39 @@ public class SpellCardManager: CardManager
         return targets;
     }
 
-    public override void Cast(GameObject target)
+    public override void Cast(GameObject location)
     {
         // GetCastTargets adds targets to our list based on the TargetArea
-        HashSet<GameObject> targets = GetCastTargets(target);
+        List<GameObject> locations = GetCastTargets(location);
+
+        //turn locations into targets
+        HashSet<GameObject> targets = new HashSet<GameObject>();
+        foreach(GameObject g in locations)
+        {
+            if (g.GetComponent<CardManager>() != null)
+            {
+                targets.Add(g.GetComponent<CardManager>().gameObject);
+            }
+            else if (g.GetComponent<GridCell>() != null &&
+                     g.GetComponent<GridCell>().GetCreature() != null)
+            {
+                targets.Add(g.GetComponent<GridCell>().GetCreature().gameObject);
+            }
+        }
 
         // Filter targets based on conditions
         HashSet<GameObject> targetsCopy = new HashSet<GameObject>(targets);
+
         foreach (GameObject t in targetsCopy)
         {
             bool valid = true;
 
             GridCell tCell = t.GetComponent<GridCell>();
             IEntity tEntity = tCell != null ?
-                grid.GetCreature(tCell.coordinates) :
+                tCell.GetCreature() :
                 t.GetComponent<IEntity>();
             CardManager tCard = tCell != null ?
-                grid.GetCreature(tCell.coordinates) :
+                tCell.GetCreature() :
                 t.GetComponent<CardManager>();
 
             if (tEntity == null && tCard == null)
@@ -304,12 +320,13 @@ public class SpellCardManager: CardManager
         // Execute Card Action on our list of valid targets
         foreach (GameObject t in targets)
         {
+            //unpack cell
             GridCell tCell = t.GetComponent<GridCell>();
             IEntity tEntity = tCell != null ?
-                grid.GetCreature(tCell.coordinates) :
+                tCell.GetCreature() :
                 t.GetComponent<IEntity>();
             CardManager tCard = tCell != null ?
-                grid.GetCreature(tCell.coordinates) :
+                tCell.GetCreature() :
                 t.GetComponent<CardManager>();
 
             switch (spellCard.cardBehavior.action)

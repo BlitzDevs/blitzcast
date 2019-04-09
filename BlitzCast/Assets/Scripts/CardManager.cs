@@ -38,7 +38,7 @@ public abstract class CardManager : MonoBehaviour,
     // abstract functions are to be implemented by inherting classes
     // HashSets are Collections which can only contain unique values
     abstract public GameObject GetCastLocation();
-    abstract public HashSet<GameObject> GetCastTargets(GameObject target);
+    abstract public List<GameObject> GetCastTargets(GameObject target);
     abstract public void TryPreview();
     abstract public void Cast(GameObject target);
 
