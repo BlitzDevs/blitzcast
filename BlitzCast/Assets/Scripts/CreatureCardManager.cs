@@ -65,6 +65,17 @@ public class CreatureCardManager : CardManager, IEntity
         gridDisplayObject.SetActive(false);
     }
 
+    public void Update()
+    {
+        if (gameObject.layer == SortingLayer.NameToID("Creatures"))
+        {
+            Debug.Log("test");
+            DoStatuses();
+            SetHealth(health - frameDamage);
+            frameDamage = 0;
+        }
+    }
+
     public override void TryPreview()
     {
         GameObject target = GetCastLocation();
@@ -199,7 +210,6 @@ public class CreatureCardManager : CardManager, IEntity
     {
         while (health > 0)
         {
-            DoStatuses();
             if (actionTimer.IsComplete())
             {
                 switch (card.cardBehavior.action)
@@ -258,10 +268,10 @@ public class CreatureCardManager : CardManager, IEntity
                             status.stacks - 1,
                             gameManager.timer.elapsedTime
                         );
-                        Damage(status.stacks);
+                        frameDamage = status.stacks;
                     }
                     break;
-/* TODO: prevent stackoverflow
+
                 case Card.StatusType.Shielded:
                     if (frameDamage > 0)
                     {
@@ -273,7 +283,7 @@ public class CreatureCardManager : CardManager, IEntity
                         frameDamage = 0;
                     }
                     break;
-*/
+
                 case Card.StatusType.Wounded:
                     if (actionTimer.IsComplete())
                     {
@@ -283,7 +293,7 @@ public class CreatureCardManager : CardManager, IEntity
                             status.stacks - 1,
                             status.startTime
                         );
-                        Damage(status.stacks);
+                        frameDamage = status.stacks;
                     }
                     break;
                 default:
@@ -302,8 +312,6 @@ public class CreatureCardManager : CardManager, IEntity
     public void Damage(int hp)
     {
         frameDamage = hp;
-        //DoStatuses();
-        SetHealth(health - frameDamage);
     }
 
     public void Heal(int hp)
