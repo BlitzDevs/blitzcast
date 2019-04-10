@@ -340,6 +340,10 @@ public class SpellCardManager: CardManager
                     tEntity.Heal(card.cardBehavior.actionValue);
                     break;
 
+                case Card.Action.IncreaseHP:
+                    tEntity.IncreaseHP(card.cardBehavior.actionValue);
+                    break;
+
                 case Card.Action.Destroy:
                     tCard.DestroySelf();
                     break;

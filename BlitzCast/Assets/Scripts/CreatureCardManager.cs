@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using System;
 
 public class CreatureCardManager : CardManager, IEntity
 {
@@ -20,6 +21,8 @@ public class CreatureCardManager : CardManager, IEntity
     [SerializeField] private CircleTimer actionTimer;
 
     private int health;
+    private int maxHealth;
+    private int frameDamage;
     private int actionValue;
     private int actionTime;
 
@@ -40,6 +43,8 @@ public class CreatureCardManager : CardManager, IEntity
         creatureCard = (CreatureCard) card;
 
         health = creatureCard.health;
+        maxHealth = creatureCard.health;
+        frameDamage = 0;
         actionValue = creatureCard.cardBehavior.actionValue;
         actionTime = creatureCard.actionTime;
         healthText.text = health.ToString();
@@ -233,7 +238,6 @@ public class CreatureCardManager : CardManager, IEntity
                 case Card.StatusType.Frozen:
                     // stop timer from progressing
                     actionTimer.countdown += Time.deltaTime;
-
                     // after 1 second, remove 1 stack
                     if (gameManager.timer.elapsedTime - statuses[i].startTime > 1f)
                     {
@@ -249,25 +253,37 @@ public class CreatureCardManager : CardManager, IEntity
                     // after 1 second, deal (stacks) damage and remove 1 stack
                     if (gameManager.timer.elapsedTime - statuses[i].startTime > 1f)
                     {
-                        Damage(status.stacks);
                         statuses[i] = new Status(
                             status.statusType,
                             status.stacks - 1,
                             gameManager.timer.elapsedTime
                         );
+                        Damage(status.stacks);
                     }
                     break;
-
+/* TODO: prevent stackoverflow
+                case Card.StatusType.Shielded:
+                    if (frameDamage > 0)
+                    {
+                        statuses[i] = new Status(
+                            status.statusType,
+                            status.stacks - 1,
+                            status.startTime
+                        );
+                        frameDamage = 0;
+                    }
+                    break;
+*/
                 case Card.StatusType.Wounded:
                     if (actionTimer.IsComplete())
                     {
-                        Damage(status.stacks);
                         //we don't care about startTime for wounded
                         statuses[i] = new Status(
                             status.statusType,
                             status.stacks - 1,
                             status.startTime
                         );
+                        Damage(status.stacks);
                     }
                     break;
                 default:
@@ -285,13 +301,22 @@ public class CreatureCardManager : CardManager, IEntity
 
     public void Damage(int hp)
     {
-        SetHealth(health -= hp);
+        frameDamage = hp;
+        //DoStatuses();
+        SetHealth(health - frameDamage);
     }
 
     public void Heal(int hp)
     {
-        SetHealth(health += hp);
+        SetHealth(Math.Min(health + hp, maxHealth));
     }
+
+    public void IncreaseHP (int hp)
+    {
+        maxHealth += hp;
+        SetHealth(health + hp);
+    }
+
 
     private void SetHealth(int hp)
     {

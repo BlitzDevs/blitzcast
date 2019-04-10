@@ -17,6 +17,7 @@ public interface IEntity
 {
     void Damage(int hp);
     void Heal(int hp);
+    void IncreaseHP(int hp);
     void DoStatuses();
     List<Status> GetStatuses();
     int GetHealth();

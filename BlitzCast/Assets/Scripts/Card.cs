@@ -20,6 +20,7 @@ public abstract class Card : ScriptableObject
     {
         Damage,
         Heal,
+        IncreaseHP,
         Destroy,
         Counter
     }
@@ -42,7 +43,8 @@ public abstract class Card : ScriptableObject
         Confused,
         Wounded,
         Frozen,
-        Bleeding
+        Bleeding,
+        Shielded
     }
 
     [Serializable]

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using System;
 
 public class PlayerManager : MonoBehaviour, IEntity
 {
@@ -90,7 +91,13 @@ public class PlayerManager : MonoBehaviour, IEntity
 
     public void Heal(int hp)
     {
-        SetHealth(health += hp);
+        SetHealth(Math.Min(health + hp, maxHealth));
+    }
+
+    public void IncreaseHP(int hp)
+    {
+        maxHealth += hp;
+        SetHealth(health + hp);
     }
 
     public void SetHealth(int hp)
