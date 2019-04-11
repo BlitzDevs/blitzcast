@@ -50,6 +50,7 @@ public class SpellCardManager: CardManager
                 {
                     case Card.Action.Damage:
                     case Card.Action.Heal:
+                    case Card.Action.IncreaseHP:
                         // Target Creature or Player
                         GameObject cellObject = gameManager
                             .GetFirstUnderCursor<GridCell>();
@@ -75,6 +76,7 @@ public class SpellCardManager: CardManager
             case Card.TargetArea.Square:
             case Card.TargetArea.Row:
             case Card.TargetArea.Column:
+            case Card.TargetArea.SingleCreature:
                 return gameManager.GetFirstUnderCursor<GridCell>();
 
             case Card.TargetArea.AllCreatures:
@@ -339,6 +341,10 @@ public class SpellCardManager: CardManager
 
                 case Card.Action.Heal:
                     tEntity.Heal(card.cardBehavior.actionValue);
+                    break;
+
+                case Card.Action.IncreaseHP:
+                    tEntity.IncreaseHP(card.cardBehavior.actionValue);
                     break;
 
                 case Card.Action.Destroy:
