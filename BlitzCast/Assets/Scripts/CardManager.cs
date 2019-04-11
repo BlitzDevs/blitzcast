@@ -169,7 +169,7 @@ public abstract class CardManager : MonoBehaviour,
 
     }
 
-    private IEnumerator CastTimer(GameObject target)
+    protected virtual IEnumerator CastTimer(GameObject target)
     {
         castTimer.gameObject.SetActive(true);
         castTimer.StartTimer(card.castTime);

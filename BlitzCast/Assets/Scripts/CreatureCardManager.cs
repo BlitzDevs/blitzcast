@@ -27,7 +27,6 @@ public class CreatureCardManager : CardManager, IEntity
     private CreatureCard creatureCard;
 
     private Vector2 spriteSize;
-    private Vector3 sizeOffset;
 
 
     // Initialize is our own function which is called by HandSlot
@@ -47,15 +46,14 @@ public class CreatureCardManager : CardManager, IEntity
         actionTimeText.text = actionTime.ToString();
 
         spriteSize = new Vector2(
-            sprite.rectTransform.rect.width * creatureCard.size.x,
-            sprite.rectTransform.rect.height * creatureCard.size.y
+            sprite.rectTransform.rect.width * creatureCard.size.y,
+            sprite.rectTransform.rect.height * creatureCard.size.x
         );
-        sizeOffset = new Vector3(
-            sprite.rectTransform.rect.width * (creatureCard.size.x - 1f) / 2f,
-            -sprite.rectTransform.rect.height * (creatureCard.size.y - 1f) / 2f,
-            0f
-        );
+
         sprite.rectTransform.sizeDelta = spriteSize;
+
+        RectTransform cellRect = gridDisplayObject.GetComponent<RectTransform>();
+        cellRect.sizeDelta = spriteSize;
 
         gridDisplayObject.SetActive(false);
     }
@@ -68,9 +66,7 @@ public class CreatureCardManager : CardManager, IEntity
             //set color/transparency
             sprite.color = new Color(0, 0, 0, 0.5f);
             //snap to target
-            //sprite.transform.position = target.transform.position + sizeOffset;
             sprite.transform.position = target.transform.position;
-            sprite.transform.localPosition += sizeOffset;
 
             foreach (GameObject targetObject in GetCastTargets(target))
             {
@@ -127,13 +123,8 @@ public class CreatureCardManager : CardManager, IEntity
         return targets;
     }
 
-    public override void Cast(GameObject target)
+    protected override IEnumerator CastTimer(GameObject target)
     {
-        GridCell cell = target.GetComponent<GridCell>();
-        location = cell.coordinates;
-
-        gameObject.layer = SortingLayer.NameToID("Creatures");
-
         // add creature location to grid
         foreach (GameObject cellObject in GetCastTargets(target))
         {
@@ -141,23 +132,37 @@ public class CreatureCardManager : CardManager, IEntity
             grid.creatures.Add(c.coordinates, this);
         }
 
+        return base.CastTimer(target);
+    }
+
+    public override void Cast(GameObject target)
+    {
+        GridCell cell = target.GetComponent<GridCell>();
+        location = cell.coordinates;
+
+        gameObject.layer = SortingLayer.NameToID("Creatures");
+
         // Turn CreatureCard into Creature on grid
         gameObject.name = card.cardName;
+        // set creature rect size (parent GameObject)
+        RectTransform creatureRect = gameObject.GetComponent<RectTransform>();
+        creatureRect.sizeDelta = spriteSize;
         // move out of the hierarchy
         sprite.transform.SetParent(transform);
-        sprite.transform.localPosition = Vector3.zero + sizeOffset;
+        sprite.transform.localPosition = Vector3.zero;
         transform.SetParent(grid.playerCreaturesParent);
         // move onto grid position
-        transform.position = target.transform.position;
+        Vector3 sizeOffset = new Vector3(
+            spriteSize.x * (creatureCard.size.x - 1f),
+            -spriteSize.y * (creatureCard.size.y - 1f),
+            0f
+        );
+        Debug.Log("Target position: " + target.transform.position.ToString());
+        Debug.Log("Size Offset: " + sizeOffset.ToString());
+        transform.position = target.transform.position + sizeOffset;
 
         // Enable Grid Creature Display
         gridDisplayObject.SetActive(true);
-        RectTransform rt = gridDisplayObject.GetComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(
-            rt.rect.width * creatureCard.size.x,
-            rt.rect.height * creatureCard.size.y
-        );
-        gridDisplayObject.transform.localPosition = Vector3.zero + sizeOffset;
         gridHealthText.text = health.ToString();
         gridActionValueText.text = actionValue.ToString();
         actionTimer.StartTimer(actionTime);

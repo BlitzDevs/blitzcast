@@ -9,9 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3718d06e4808074db547e4a69a967fc, type: 3}
-  m_Name: Slime
+  m_Name: Wide Slime
   m_EditorClassIdentifier: 
-  cardName: Slime
+  cardName: Wide Slime
   description: squishy
   spriteSheet: {fileID: 2800000, guid: e83a77e8d474c47988cca828cb7c616e, type: 3}
   color: {r: 0.47397092, g: 0.7794118, b: 0.2980104, a: 1}
@@ -24,6 +24,6 @@ MonoBehaviour:
     targetArea: 0
     statusInflicted: 0
     stacks: 0
-  health: 2
+  health: 5
   actionTime: 5
-  size: {x: 1, y: 1}
+  size: {x: 1, y: 3}

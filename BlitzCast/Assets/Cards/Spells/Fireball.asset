@@ -21,7 +21,7 @@ MonoBehaviour:
   cardBehavior:
     action: 0
     actionValue: 3
-    targetArea: 2
+    targetArea: 3
     statusInflicted: 2
     stacks: 1
   condition: 0

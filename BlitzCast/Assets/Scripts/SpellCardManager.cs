@@ -79,8 +79,9 @@ public class SpellCardManager: CardManager
 
             case Card.TargetArea.AllCreatures:
             case Card.TargetArea.All:
-                int castAllZoneLayer = SortingLayer
-                    .GetLayerValueFromName("Cast All Zone");
+
+                int castAllZoneLayer = LayerMask.NameToLayer("Cast All Zone");
+                Debug.Log("Cast All Zone Layer: " + castAllZoneLayer);
                 return gameManager.GetFirstUnderCursor(castAllZoneLayer);
 
             default:
