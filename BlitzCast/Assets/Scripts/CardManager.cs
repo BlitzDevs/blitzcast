@@ -14,6 +14,7 @@ public abstract class CardManager : MonoBehaviour,
     [SerializeField] protected GameObject cardBack;
     [SerializeField] protected GameObject targetableZone;
     [SerializeField] protected SpriteSheetAnimator animator;
+    [SerializeField] protected RectTransform castingSpriteParent;
     [SerializeField] protected Image sprite;
     [SerializeField] protected Image artImage;
     // TMP_Text is TextMeshPro text; much better than default Unity text
@@ -55,17 +56,17 @@ public abstract class CardManager : MonoBehaviour,
         nameText.text = card.cardName;
         artImage.color = card.color;
         sprite.color = card.color;
-        animator.spriteSheet = card.spriteSheet;
+        animator.card = card;
         castTimeText.text = card.castTime.ToString();
         redrawTimeText.text = card.redrawTime.ToString();
 
-        sprite.gameObject.SetActive(false);
+        castingSpriteParent.gameObject.SetActive(false);
     }
 
     public virtual void DestroySelf()
     {
         ClearPreview();
-        Destroy(sprite.gameObject);
+        Destroy(castingSpriteParent.gameObject);
         Destroy(gameObject);
     }
 
@@ -105,9 +106,9 @@ public abstract class CardManager : MonoBehaviour,
             // highlight card to show selected
             SetTint(new Color(1f, 1f, 0f, 0.5f));
             // enable sprite for preview
-            sprite.gameObject.SetActive(true);
+            castingSpriteParent.gameObject.SetActive(true);
             // move sprite to dragging in hierarchy
-            sprite.transform.SetParent(gameManager.draggingCardParent);
+            castingSpriteParent.SetParent(gameManager.dragLocationParent);
         }
     }
 
@@ -125,7 +126,7 @@ public abstract class CardManager : MonoBehaviour,
             eventData.position.y,
             mainCamera.nearClipPlane
         );
-        sprite.transform.position = mainCamera.ScreenToWorldPoint(position);
+        castingSpriteParent.transform.position = mainCamera.ScreenToWorldPoint(position);
 
         ClearPreview();
         TryPreview();
@@ -162,9 +163,9 @@ public abstract class CardManager : MonoBehaviour,
             transform.SetParent(slot.transform);
             transform.position = slot.transform.position;
             // return sprite location and disable
-            sprite.transform.SetParent(transform);
-            sprite.transform.localPosition = Vector3.zero;
-            sprite.gameObject.SetActive(false);
+            castingSpriteParent.transform.SetParent(transform);
+            castingSpriteParent.transform.localPosition = Vector3.zero;
+            castingSpriteParent.gameObject.SetActive(false);
         }
 
     }

@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     //public PlayerManager playerB;
     public Transform handSlotsAParent;
     //public GameObject handSlotsB;
-    public Transform draggingCardParent;
+    public Transform dragLocationParent;
     public GameObject circleTimerPrefab;
 
 

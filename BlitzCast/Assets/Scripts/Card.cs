@@ -61,9 +61,10 @@ public abstract class Card : ScriptableObject
     public string cardName = "New Card";
     public string description = "Something cool?";
     public Texture2D spriteSheet;
+    public int spriteAnimateSpeed = 30;
     public Color color = Color.white;
-    public int castTime;
-    public int redrawTime;
+    public int castTime = 1;
+    public int redrawTime = 1;
     public Race race = Race.Generic;
     public Behavior cardBehavior;
 

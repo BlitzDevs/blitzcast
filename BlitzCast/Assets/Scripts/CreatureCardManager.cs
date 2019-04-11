@@ -30,6 +30,7 @@ public class CreatureCardManager : CardManager, IEntity
     private CreatureCard creatureCard;
 
     private Vector2 spriteSize;
+    private Vector2 sizeOffset;
 
 
     // Initialize is our own function which is called by HandSlot
@@ -54,8 +55,13 @@ public class CreatureCardManager : CardManager, IEntity
             sprite.rectTransform.rect.width * creatureCard.size.y,
             sprite.rectTransform.rect.height * creatureCard.size.x
         );
+        sizeOffset = new Vector2(
+            sprite.rectTransform.rect.width / 2 * (creatureCard.size.y - 1),
+            -sprite.rectTransform.rect.height / 2 * (creatureCard.size.x - 1)
+        );
 
         sprite.rectTransform.sizeDelta = spriteSize;
+        castingSpriteParent.sizeDelta = spriteSize;
 
         RectTransform cellRect = gridDisplayObject.GetComponent<RectTransform>();
         cellRect.sizeDelta = spriteSize;
@@ -67,7 +73,6 @@ public class CreatureCardManager : CardManager, IEntity
     {
         if (gameObject.layer == SortingLayer.NameToID("Creatures"))
         {
-            Debug.Log("test");
             DoStatuses();
             SetHealth(health - frameDamage);
             frameDamage = 0;
@@ -82,7 +87,7 @@ public class CreatureCardManager : CardManager, IEntity
             //set color/transparency
             sprite.color = new Color(0, 0, 0, 0.5f);
             //snap to target
-            sprite.transform.position = target.transform.position;
+            castingSpriteParent.transform.position = target.transform.position;
 
             foreach (GameObject targetObject in GetCastTargets(target))
             {
@@ -96,6 +101,7 @@ public class CreatureCardManager : CardManager, IEntity
             sprite.color = card.color;
         }
 
+        castingSpriteParent.transform.localPosition += (Vector3) sizeOffset;
     }
 
     public override GameObject GetCastLocation()
@@ -134,7 +140,7 @@ public class CreatureCardManager : CardManager, IEntity
         {
             Vector2Int rc = new Vector2Int(
                 cell.coordinates.x + r, cell.coordinates.y + c);
-            targets.Add(grid.GetCellRC(rc).gameObject);
+            targets.Add(grid.GetCell(rc).gameObject);
         }
         return targets;
     }
@@ -164,18 +170,14 @@ public class CreatureCardManager : CardManager, IEntity
         RectTransform creatureRect = gameObject.GetComponent<RectTransform>();
         creatureRect.sizeDelta = spriteSize;
         // move out of the hierarchy
-        sprite.transform.SetParent(transform);
-        sprite.transform.localPosition = Vector3.zero;
+        castingSpriteParent.transform.SetParent(transform);
+        castingSpriteParent.transform.localPosition = Vector3.zero;
         transform.SetParent(grid.playerCreaturesParent);
-        // move onto grid position
-        Vector3 sizeOffset = new Vector3(
-            spriteSize.x * (creatureCard.size.x - 1f),
-            -spriteSize.y * (creatureCard.size.y - 1f),
-            0f
-        );
         Debug.Log("Target position: " + target.transform.position.ToString());
         Debug.Log("Size Offset: " + sizeOffset.ToString());
-        transform.position = target.transform.position + sizeOffset;
+        //transform.position = target.transform.position + sizeOffset;
+        transform.position = target.transform.position;
+        transform.localPosition += (Vector3) sizeOffset;
 
         // Enable Grid Creature Display
         gridDisplayObject.SetActive(true);

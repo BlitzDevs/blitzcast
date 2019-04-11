@@ -132,7 +132,7 @@ public class SpellCardManager: CardManager
 
                     foreach (Vector2Int direction in drc)
                     {
-                        GridCell drcCell = grid.GetCellRC(location + direction);
+                        GridCell drcCell = grid.GetCell(location + direction);
                         if (drcCell != null)
                         {
                             targets.Add(drcCell.gameObject);
@@ -153,7 +153,7 @@ public class SpellCardManager: CardManager
                         {
                             Vector2Int drc = new Vector2Int(dr, dc);
 
-                            GridCell drcCell = grid.GetCellRC(location + drc);
+                            GridCell drcCell = grid.GetCell(location + drc);
                             if (drcCell != null)
                             {
                                 targets.Add(drcCell.gameObject);
@@ -168,7 +168,7 @@ public class SpellCardManager: CardManager
                     for (int c = 0; c < grid.size.y; c++)
                     {
                         Vector2Int rc = new Vector2Int(cell.coordinates.x, c);
-                        GridCell drcCell = grid.GetCellRC(rc);
+                        GridCell drcCell = grid.GetCell(rc);
                         if (drcCell != null)
                         {
                             targets.Add(drcCell.gameObject);
@@ -183,7 +183,7 @@ public class SpellCardManager: CardManager
                     for (int r = 0; r < grid.size.x; r++)
                     {
                         Vector2Int rc = new Vector2Int(r, cell.coordinates.y);
-                        GridCell drcCell = grid.GetCellRC(rc);
+                        GridCell drcCell = grid.GetCell(rc);
                         if (drcCell != null)
                         {
                             targets.Add(drcCell.gameObject);

@@ -80,7 +80,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &1250520015924462
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
@@ -176,6 +176,21 @@ GameObject:
   - component: {fileID: 114257604615194316}
   m_Layer: 0
   m_Name: Card Template
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1403233460009394
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 224691278728573670}
+  m_Layer: 0
+  m_Name: Spell (Casting Sprite Parent)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -336,8 +351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84191e5c2182d469daf26c57e4a81bc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteSheet: {fileID: 0}
-  framesPerSecond: 30
+  card: {fileID: 0}
   sprites: []
   frame: 0
 --- !u!114 &114174219490966922
@@ -763,6 +777,7 @@ MonoBehaviour:
   cardBack: {fileID: 1313113861035576}
   targetableZone: {fileID: 1427296473608388}
   animator: {fileID: 114056656277895582}
+  castingSpriteParent: {fileID: 224691278728573670}
   sprite: {fileID: 114881543716548770}
   artImage: {fileID: 114617551581465120}
   nameText: {fileID: 114396725965483244}
@@ -1283,7 +1298,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 224573179716825638}
+  m_Father: {fileID: 224691278728573670}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1356,7 +1371,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 224382083399844392}
+  - {fileID: 224691278728573670}
   - {fileID: 224335172250196006}
   - {fileID: 224203005574425908}
   - {fileID: 224324081575517350}
@@ -1367,6 +1382,25 @@ RectTransform:
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 50, y: 70}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!224 &224691278728573670
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1403233460009394}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 224382083399844392}
+  m_Father: {fileID: 224573179716825638}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 42, y: 42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224780056702556984
 RectTransform:

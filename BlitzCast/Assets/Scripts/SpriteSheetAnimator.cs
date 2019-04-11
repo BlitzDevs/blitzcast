@@ -3,8 +3,7 @@ using UnityEngine.UI;
 
 public class SpriteSheetAnimator : MonoBehaviour
 {
-    public Texture2D spriteSheet;
-    public int framesPerSecond = 30;
+    public Card card;
 
     private Image image;
     private GameTimer gameTimer;
@@ -17,7 +16,7 @@ public class SpriteSheetAnimator : MonoBehaviour
     void Start()
     {
         image = GetComponent<Image>();
-        sprites = Resources.LoadAll<Sprite>("Textures/Cards/" + spriteSheet.name);
+        sprites = Resources.LoadAll<Sprite>("Textures/Cards/" + card.spriteSheet.name);
         gameTimer = FindObjectOfType<GameTimer>();
 
         if (image == null)
@@ -35,7 +34,7 @@ public class SpriteSheetAnimator : MonoBehaviour
     {
         time += Time.deltaTime;
 
-        if (time >= 1f / framesPerSecond)
+        if (time >= 1f / card.spriteAnimateSpeed)
         {
             frame = frame + 1 >= sprites.Length ? 0 : frame + 1;
             image.sprite = sprites[frame];

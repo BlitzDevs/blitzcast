@@ -4,6 +4,7 @@ using UnityEngine;
 public class CreatureGrid : MonoBehaviour {
 
     public Vector2Int size;
+
     public GameObject cellPrefab;
     public GameObject linePrefab;
     public Transform cellsParent;
@@ -11,9 +12,10 @@ public class CreatureGrid : MonoBehaviour {
     public Transform verticalLinesParent;
     public Transform playerCreaturesParent;
     public Transform enemyCreaturesParent;
-    public Dictionary<Vector2Int, CreatureCardManager> creatures;
 
+    public Dictionary<Vector2Int, CreatureCardManager> creatures;
     public List<GridCell> cells;
+
 
     public void Initialize(Vector2Int size)
     {
@@ -23,34 +25,30 @@ public class CreatureGrid : MonoBehaviour {
 
         // initialize our cells
         cells = new List<GridCell>();
-        //for (int i = 0; i < cellsParent.childCount; i++)
-        //{
-        //    GridCell cell = cellsParent.GetChild(i).GetComponent<GridCell>();
-        //    cell.coordinates = new Vector2Int(i / size.y, i % size.y);
-        //    cells.Add(cell);
-        //}
         for (int r = 0; r < size.x; r++)
         for (int c = 0; c < size.y; c++)
         {
             GameObject cellObject = Instantiate(cellPrefab, cellsParent);
             GridCell cell = cellObject.GetComponent<GridCell>();
+            cell.grid = this;
             cell.coordinates = new Vector2Int(r, c);
             cells.Add(cell);
         }
 
+        // create line objects
         for (int r = 0; r < size.x + 1; r++)
         {
-            GameObject lineObject = Instantiate(linePrefab, horizontalLinesParent);
+            Instantiate(linePrefab, horizontalLinesParent);
         }
         for (int c = 0; c < size.y + 1; c++)
         {
-            GameObject lineObject = Instantiate(linePrefab, verticalLinesParent);
+            Instantiate(linePrefab, verticalLinesParent);
         }
     }
 
     public void HighlightRC(Vector2Int rc, Color color)
     {
-        GridCell temp = GetCellRC(rc);
+        GridCell temp = GetCell(rc);
         if (temp != null)
         {
             temp.Highlight(color);
@@ -102,7 +100,7 @@ public class CreatureGrid : MonoBehaviour {
         return null;
     }
 
-    public GridCell GetCellRC(Vector2Int rc)
+    public GridCell GetCell(Vector2Int rc)
     {
         if (rc.x < 0 ||
             rc.x >= size.x ||
