@@ -13,8 +13,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Shield
   description: 2 Health + Shield
-  spriteSheet: {fileID: 2800000, guid: 1c7bc148ef4cd49c2bb639b06afaab69, type: 3}
-  color: {r: 0.99247706, g: 1, b: 0.611808, a: 1}
+  spriteAnimateSpeed: 30
+  color: {r: 0.22794116, g: 0.5207913, b: 1, a: 1}
   castTime: 0
   redrawTime: 2
   race: 0

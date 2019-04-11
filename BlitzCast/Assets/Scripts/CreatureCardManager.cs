@@ -14,8 +14,8 @@ public class CreatureCardManager : CardManager, IEntity
     [SerializeField] private TMP_Text actionValueText;
     [SerializeField] private TMP_Text actionTimeText;
 
-    [SerializeField] private GameObject gridDisplayObject;
-    [SerializeField] private GameObject gridStatusesParent;
+    [SerializeField] private RectTransform gridDisplayRect;
+    [SerializeField] private RectTransform gridStatusesParent;
     [SerializeField] private TMP_Text gridHealthText;
     [SerializeField] private TMP_Text gridActionValueText;
     [SerializeField] private CircleTimer actionTimer;
@@ -63,10 +63,9 @@ public class CreatureCardManager : CardManager, IEntity
         sprite.rectTransform.sizeDelta = spriteSize;
         castingSpriteParent.sizeDelta = spriteSize;
 
-        RectTransform cellRect = gridDisplayObject.GetComponent<RectTransform>();
-        cellRect.sizeDelta = spriteSize;
-
-        gridDisplayObject.SetActive(false);
+        gridStatusesParent.sizeDelta = new Vector2(spriteSize.x, gridStatusesParent.rect.y);
+        gridDisplayRect.sizeDelta = spriteSize;
+        gridDisplayRect.gameObject.SetActive(false);
     }
 
     public void Update()
@@ -180,7 +179,7 @@ public class CreatureCardManager : CardManager, IEntity
         transform.localPosition += (Vector3) sizeOffset;
 
         // Enable Grid Creature Display
-        gridDisplayObject.SetActive(true);
+        gridDisplayRect.gameObject.SetActive(true);
         gridHealthText.text = health.ToString();
         gridActionValueText.text = actionValue.ToString();
         actionTimer.StartTimer(actionTime);
@@ -250,9 +249,9 @@ public class CreatureCardManager : CardManager, IEntity
             // so have to make a new Status when changing a value.
             Status status = statuses[i];
 
-            switch (statuses[i].statusType)
+            switch (status.statusType)
             {
-                case Card.StatusType.Frozen:
+                case Card.StatusType.Stun:
                     // stop timer from progressing
                     actionTimer.countdown += Time.deltaTime;
                     // after 1 second, remove 1 stack
@@ -266,7 +265,7 @@ public class CreatureCardManager : CardManager, IEntity
                     }
                     break;
 
-                case Card.StatusType.Bleeding:
+                case Card.StatusType.Poison:
                     // after 1 second, deal (stacks) damage and remove 1 stack
                     if (gameManager.timer.elapsedTime - statuses[i].startTime > 1f)
                     {
@@ -279,7 +278,7 @@ public class CreatureCardManager : CardManager, IEntity
                     }
                     break;
 
-                case Card.StatusType.Shielded:
+                case Card.StatusType.Shield:
                     if (frameDamage > 0)
                     {
                         statuses[i] = new Status(
@@ -291,7 +290,7 @@ public class CreatureCardManager : CardManager, IEntity
                     }
                     break;
 
-                case Card.StatusType.Wounded:
+                case Card.StatusType.Wound:
                     if (actionTimer.IsComplete())
                     {
                         //we don't care about startTime for wounded
@@ -304,7 +303,7 @@ public class CreatureCardManager : CardManager, IEntity
                     }
                     break;
                 default:
-                    Debug.LogWarning("Status not implemented");
+                    Debug.LogWarning("Status not implemented: " + status.statusType.ToString());
                     break;   
             }
 
@@ -353,9 +352,6 @@ public class CreatureCardManager : CardManager, IEntity
 
     public void ApplyStatus(Card.StatusType statusType, int stacks)
     {
-        //GameObject statusObject = new
-        //statusObject.transform.SetParent(gridStatusesParent);
-
         // if status already exists, add stacks
         for (int i = 0; i < statuses.Count; i++)
         {
@@ -366,7 +362,34 @@ public class CreatureCardManager : CardManager, IEntity
                 return;
             }
         }
+
         // otherwise add
         statuses.Add(new Status(statusType, stacks, gameManager.timer.elapsedTime));
+        Color color;
+        switch (statusType)
+        {
+            case Card.StatusType.Stun:
+                color = Color.yellow;
+                break;
+            case Card.StatusType.Poison:
+                color = Color.magenta;
+                break;
+            case Card.StatusType.Wound:
+                color = Color.red;
+                break;
+            case Card.StatusType.Clumsy:
+                color = Color.green;
+                break;
+            case Card.StatusType.Shield:
+                color = Color.blue;
+                break;
+            default:
+                color = Color.black;
+                break;
+        }
+
+        GameObject statusObject = Instantiate(gameManager.statusPrefab, gridStatusesParent);
+        Image statusImage = statusObject.GetComponent<Image>();
+        statusImage.color = color;
     }
 }
