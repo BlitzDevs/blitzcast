@@ -568,7 +568,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 1
+  m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 292, y: 2}
@@ -1448,7 +1448,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 2, y: 169}
@@ -1764,9 +1764,9 @@ MonoBehaviour:
   size: {x: 4, y: 7}
   cellPrefab: {fileID: 1606094757981996, guid: a5029437690eb45049d633d8d2103f20, type: 2}
   linePrefab: {fileID: 1152999426847342, guid: 898f02aa2a19a4ba3a144b61434d5d54, type: 2}
-  cellsParent: {fileID: 1801020072}
-  horizontalLinesParent: {fileID: 380065395}
-  verticalLinesParent: {fileID: 1204441382}
+  cellsGroup: {fileID: 1801020073}
+  horiLinesGroup: {fileID: 380065396}
+  vertLinesGroup: {fileID: 1204441383}
   playerCreaturesParent: {fileID: 605772609}
   enemyCreaturesParent: {fileID: 872022916}
   cells:
