@@ -53,6 +53,8 @@ public abstract class CardManager : MonoBehaviour,
         this.team = team;
         this.slot = slot;
 
+        gameObject.layer = LayerMask.NameToLayer("Held");
+
         nameText.text = card.cardName;
         artImage.color = card.color;
         sprite.color = card.color;
@@ -100,9 +102,9 @@ public abstract class CardManager : MonoBehaviour,
             return;
         }
 
-        if (gameObject.layer == SortingLayer.GetLayerValueFromName("Held")) {
+        if (gameObject.layer == LayerMask.NameToLayer("Held")) {
             // change layer to Active
-            gameObject.layer = SortingLayer.GetLayerValueFromName("Active");
+            gameObject.layer = LayerMask.NameToLayer("Active");
             // highlight card to show selected
             SetTint(new Color(1f, 1f, 0f, 0.5f));
             // enable sprite for preview
@@ -156,7 +158,7 @@ public abstract class CardManager : MonoBehaviour,
         else
         {
             // change layer to Held
-            gameObject.layer = SortingLayer.GetLayerValueFromName("Held");
+            gameObject.layer = LayerMask.NameToLayer("Held");
             // remove card highlight
             SetTint(new Color(0, 0, 0, 0));
             // move card back to slot

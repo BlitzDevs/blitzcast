@@ -69,16 +69,6 @@ public class CreatureCardManager : CardManager, IEntity
         gridDisplayObject.SetActive(false);
     }
 
-    public void Update()
-    {
-        if (gameObject.layer == SortingLayer.NameToID("Creatures"))
-        {
-            DoStatuses();
-            SetHealth(health - frameDamage);
-            frameDamage = 0;
-        }
-    }
-
     public override void TryPreview()
     {
         GameObject target = GetCastLocation();
@@ -162,7 +152,7 @@ public class CreatureCardManager : CardManager, IEntity
         GridCell cell = target.GetComponent<GridCell>();
         location = cell.coordinates;
 
-        gameObject.layer = SortingLayer.NameToID("Creatures");
+        gameObject.layer = LayerMask.NameToLayer("Creatures");
 
         // Turn CreatureCard into Creature on grid
         gameObject.name = card.cardName;
@@ -217,6 +207,9 @@ public class CreatureCardManager : CardManager, IEntity
     {
         while (health > 0)
         {
+            DoStatuses();
+            SetHealth(health - frameDamage);
+            frameDamage = 0;
             if (actionTimer.IsComplete())
             {
                 switch (card.cardBehavior.action)
