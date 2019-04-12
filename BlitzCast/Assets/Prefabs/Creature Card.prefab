@@ -261,7 +261,7 @@ GameObject:
   - component: {fileID: 224673844221180670}
   - component: {fileID: 114882829039840342}
   m_Layer: 0
-  m_Name: CreatureCard
+  m_Name: Creature Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -900,8 +900,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84191e5c2182d469daf26c57e4a81bc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  card: {fileID: 0}
-  sprites: []
+  animatable:
+    speed: 0
+  state: 0
+  currentSprites: []
   frame: 0
 --- !u!114 &114288246103065854
 MonoBehaviour:
@@ -1770,8 +1772,8 @@ MonoBehaviour:
   healthText: {fileID: 114855941054819636}
   actionValueText: {fileID: 114586087886055664}
   actionTimeText: {fileID: 114213857973493944}
-  gridDisplayObject: {fileID: 1335673244041384}
-  gridStatusesParent: {fileID: 1373803586527150}
+  gridDisplayRect: {fileID: 224461859050765230}
+  gridStatusesParent: {fileID: 224489065755432112}
   gridHealthText: {fileID: 114064513350211962}
   gridActionValueText: {fileID: 114913322286422072}
   actionTimer: {fileID: 114558050964174464}

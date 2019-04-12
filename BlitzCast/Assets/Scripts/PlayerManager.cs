@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Collections;
 using System;
 
 public class PlayerManager : MonoBehaviour, IEntity
@@ -10,23 +9,23 @@ public class PlayerManager : MonoBehaviour, IEntity
     public Player player;
     public GameManager.Team team;
     public int health;
+    public int maxHealth;
     public List<Status> statuses;
 
-    [SerializeField] private Image iconImage;
     [SerializeField] private TMP_Text usernameText;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private Slider healthSlider;
-    public GameObject spellCardPrefab;
-    public GameObject creatureCardPrefab;
+    [SerializeField] private GameObject handSlotPrefab;
+    [SerializeField] private Transform handSlotParent;
+    [SerializeField] private SpriteSheetAnimator animator;
 
     [SerializeField] private List<Card> playingDeck; // deck in play
 
     private GameManager gameManager;
     private System.Random randomGenerator = new System.Random();
-    private int maxHealth;
 
 
-    public void Initialize(GameManager.Team team, int maxHealth)
+    public void Initialize(GameManager.Team team, int maxHealth, int handSize)
     {
         gameManager = FindObjectOfType<GameManager>();
         statuses = new List<Status>();
@@ -35,12 +34,26 @@ public class PlayerManager : MonoBehaviour, IEntity
         // initialize Player
         this.maxHealth = maxHealth;
         SetHealth(maxHealth);
-        iconImage.sprite = player.icon;
+        SpriteSheetAnimator.Animatable anim = new SpriteSheetAnimator.Animatable(
+            player.caster.name,
+            "Casters",
+            player.caster.spriteAnimateSpeed
+        );
+        animator.Initialize(anim);
         usernameText.text = player.username;
 
-        // draw first cards
         CloneDeck();
         Shuffle();
+
+        // create and initialize HandSlots
+
+        // Initialize HandSlots
+        for (int i = 0; i < handSize; i++)
+        {
+            GameObject handSlotObject = Instantiate(handSlotPrefab, handSlotParent);
+            HandSlot handSlot = handSlotObject.GetComponent<HandSlot>();
+            handSlot.Initialize(this);
+        }
     }
 
     public Card DrawTop()
@@ -81,7 +94,7 @@ public class PlayerManager : MonoBehaviour, IEntity
     public void SetHealthText(int hp)
     {
         healthText.text = hp.ToString();
-        healthSlider.value = (float)hp / maxHealth;
+        healthSlider.value = (float) hp / maxHealth;
     }
 
     public void Damage(int hp)

@@ -56,9 +56,15 @@ public abstract class CardManager : MonoBehaviour,
         gameObject.layer = LayerMask.NameToLayer("Held");
 
         nameText.text = card.cardName;
+        raceText.text = card.race.ToString();
         artImage.color = card.color;
         sprite.color = card.color;
-        animator.card = card;
+        SpriteSheetAnimator.Animatable anim = new SpriteSheetAnimator.Animatable(
+            card.name,
+            "Cards/" + (card is CreatureCard ? "Creatures" : "Spells"),
+            card.spriteAnimateSpeed
+        );
+        animator.Initialize(anim);
         castTimeText.text = card.castTime.ToString();
         redrawTimeText.text = card.redrawTime.ToString();
 
@@ -74,6 +80,7 @@ public abstract class CardManager : MonoBehaviour,
 
     protected void ClearPreview()
     {
+        sprite.transform.localPosition = Vector3.zero;
         foreach (Image image in previewImages)
         {
             image.color = Color.white;

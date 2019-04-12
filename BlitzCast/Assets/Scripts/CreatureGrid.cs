@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CreatureGrid : MonoBehaviour {
 
@@ -7,9 +8,9 @@ public class CreatureGrid : MonoBehaviour {
 
     public GameObject cellPrefab;
     public GameObject linePrefab;
-    public Transform cellsParent;
-    public Transform horizontalLinesParent;
-    public Transform verticalLinesParent;
+    public GridLayoutGroup cellsGroup;
+    public GridLayoutGroup horiLinesGroup;
+    public GridLayoutGroup vertLinesGroup;
     public Transform playerCreaturesParent;
     public Transform enemyCreaturesParent;
 
@@ -20,6 +21,14 @@ public class CreatureGrid : MonoBehaviour {
     public void Initialize(Vector2Int size)
     {
         this.size = size;
+        RectTransform cellsGroupRect = cellsGroup.GetComponent<RectTransform>();
+
+        cellsGroupRect.sizeDelta = new Vector2(
+            cellsGroup.cellSize.x * size.y + 2,
+            cellsGroup.cellSize.y * size.x + 2
+        );
+        horiLinesGroup.cellSize = new Vector2(cellsGroupRect.rect.size.x, 2);
+        vertLinesGroup.cellSize = new Vector2(2, cellsGroupRect.rect.size.y);
 
         creatures = new Dictionary<Vector2Int, CreatureCardManager>();
 
@@ -28,7 +37,7 @@ public class CreatureGrid : MonoBehaviour {
         for (int r = 0; r < size.x; r++)
         for (int c = 0; c < size.y; c++)
         {
-            GameObject cellObject = Instantiate(cellPrefab, cellsParent);
+            GameObject cellObject = Instantiate(cellPrefab, cellsGroup.transform);
             GridCell cell = cellObject.GetComponent<GridCell>();
             cell.grid = this;
             cell.coordinates = new Vector2Int(r, c);
@@ -38,11 +47,11 @@ public class CreatureGrid : MonoBehaviour {
         // create line objects
         for (int r = 0; r < size.x + 1; r++)
         {
-            Instantiate(linePrefab, horizontalLinesParent);
+            Instantiate(linePrefab, horiLinesGroup.transform);
         }
         for (int c = 0; c < size.y + 1; c++)
         {
-            Instantiate(linePrefab, verticalLinesParent);
+            Instantiate(linePrefab, vertLinesGroup.transform);
         }
     }
 

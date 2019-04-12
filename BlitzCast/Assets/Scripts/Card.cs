@@ -40,11 +40,11 @@ public abstract class Card : ScriptableObject
     public enum StatusType
     {
         None,
-        Confused,
-        Wounded,
-        Frozen,
-        Bleeding,
-        Shielded
+        Clumsy,
+        Wound,
+        Stun,
+        Poison,
+        Shield
     }
 
     [Serializable]
@@ -57,10 +57,8 @@ public abstract class Card : ScriptableObject
         public int stacks;
     }
 
-
     public string cardName = "New Card";
     public string description = "Something cool?";
-    public Texture2D spriteSheet;
     public int spriteAnimateSpeed = 30;
     public Color color = Color.white;
     public int castTime = 1;
@@ -78,7 +76,6 @@ public abstract class Card : ScriptableObject
         copy.castTime = castTime;
         copy.redrawTime = redrawTime;
         copy.cardBehavior = cardBehavior;
-        copy.spriteSheet = spriteSheet;
         copy.color = color;
         return copy;
     }
