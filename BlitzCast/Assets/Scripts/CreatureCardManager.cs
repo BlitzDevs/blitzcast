@@ -5,12 +5,8 @@ using System.Collections.Generic;
 using TMPro;
 using System;
 
-public class CreatureCardManager : CardManager, IEntity
+public class CreatureCardManager : CardManager
 {
-
-    public List<Status> statuses;
-
-    [SerializeField] private TMP_Text healthText;
     [SerializeField] private TMP_Text actionValueText;
     [SerializeField] private TMP_Text actionTimeText;
 
@@ -20,9 +16,6 @@ public class CreatureCardManager : CardManager, IEntity
     [SerializeField] private TMP_Text gridActionValueText;
     [SerializeField] private CircleTimer actionTimer;
 
-    private int health;
-    private int maxHealth;
-    private int frameDamage;
     private int actionValue;
     private int actionTime;
     private float deltaTimeForAction;
@@ -33,6 +26,7 @@ public class CreatureCardManager : CardManager, IEntity
     private Vector2 spriteSize;
     private Vector2 sizeOffset;
 
+    private Entity entity;
 
     // Initialize is our own function which is called by HandSlot
     public override void Initialize(Card card, HandSlot slot, PlayerManager player)
@@ -193,7 +187,9 @@ public class CreatureCardManager : CardManager, IEntity
         // set color/transparency to normal
         sprite.color = card.color;
 
-
+        //create entity 
+        entity = gameObject.AddComponent<Entity>();
+        entity.Initialize(creatureCard.health, creatureCard.health, 1f, new List<Status>(), gridHealthText); = 
         // Start action timer coroutine
         StartCoroutine(DoAction());
     }
@@ -221,6 +217,9 @@ public class CreatureCardManager : CardManager, IEntity
             frameDamage = 0;
             if (actionTimer.IsComplete())
             {
+                //raise event to let entity know
+                entity.Event += new Entity.Lorem(entity.OnDoAction);
+
                 switch (card.cardBehavior.action)
                 {
                     case Card.Action.Damage:
@@ -318,48 +317,7 @@ public class CreatureCardManager : CardManager, IEntity
         }
     }
 
-    public void ApplyStatus(Card.StatusType statusType, int stacks)
-    {
-        // if status already exists, add stacks
-        for (int i = 0; i < statuses.Count; i++)
-        {
-            Status s = statuses[i];
-            if (s.statusType == statusType)
-            {
-                s.stacks += stacks;
-                return;
-            }
-        }
-
-        // otherwise add
-        statuses.Add(new Status(statusType, stacks, gameManager.timer.elapsedTime));
-        Color color;
-        switch (statusType)
-        {
-            case Card.StatusType.Stun:
-                color = Color.yellow;
-                break;
-            case Card.StatusType.Poison:
-                color = Color.magenta;
-                break;
-            case Card.StatusType.Wound:
-                color = Color.red;
-                break;
-            case Card.StatusType.Clumsy:
-                color = Color.green;
-                break;
-            case Card.StatusType.Shield:
-                color = Color.blue;
-                break;
-            default:
-                color = Color.black;
-                break;
-        }
-
-        GameObject statusObject = Instantiate(gameManager.statusPrefab, gridStatusesParent);
-        Image statusImage = statusObject.GetComponent<Image>();
-        statusImage.color = color;
-    }
+    
 
     public void Damage(int hp)
     {
