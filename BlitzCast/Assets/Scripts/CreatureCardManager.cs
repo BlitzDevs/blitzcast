@@ -25,8 +25,9 @@ public class CreatureCardManager : CardManager, IEntity
     private int frameDamage;
     private int actionValue;
     private int actionTime;
+    private float deltaTimeForAction;
 
-    private Vector2Int location;
+    private Vector2Int coordinates;
     private CreatureCard creatureCard;
 
     private Vector2 spriteSize;
@@ -34,10 +35,9 @@ public class CreatureCardManager : CardManager, IEntity
 
 
     // Initialize is our own function which is called by HandSlot
-    public override void Initialize(
-        Card card, GameManager.Team team, HandSlot slot)
+    public override void Initialize(Card card, HandSlot slot, PlayerManager player)
     {
-        base.Initialize(card, team, slot);
+        base.Initialize(card, slot, player);
 
         statuses = new List<Status>();
         creatureCard = (CreatureCard) card;
@@ -70,8 +70,9 @@ public class CreatureCardManager : CardManager, IEntity
 
     public void Update()
     {
-        if (gameObject.layer == SortingLayer.NameToID("Creatures"))
+        if (gameObject.layer == LayerMask.NameToLayer("Creatures"))
         {
+            deltaTimeForAction = gameManager.timer.deltaTime;
             DoStatuses();
             SetHealth(health - frameDamage);
             frameDamage = 0;
@@ -90,9 +91,9 @@ public class CreatureCardManager : CardManager, IEntity
 
             foreach (GameObject targetObject in GetCastTargets(target))
             {
-                Image image = targetObject.gameObject.GetComponent<Image>();
-                previewImages.Add(image);
-                image.color = card.color;
+                IHighlightable highlightable = targetObject.gameObject.GetComponent<IHighlightable>();
+                previewHighlightables.Add(highlightable);
+                highlightable.Highlight(card.color);
             }
         }
         else
@@ -156,12 +157,12 @@ public class CreatureCardManager : CardManager, IEntity
         return base.CastTimer(target);
     }
 
-    public override void Cast(GameObject target)
+    public override void Cast(GameObject location)
     {
-        GridCell cell = target.GetComponent<GridCell>();
-        location = cell.coordinates;
+        GridCell cell = location.GetComponent<GridCell>();
+        coordinates = cell.coordinates;
 
-        gameObject.layer = SortingLayer.NameToID("Creatures");
+        gameObject.layer = LayerMask.NameToLayer("Creatures");
 
         // Turn CreatureCard into Creature on grid
         gameObject.name = card.cardName;
@@ -172,16 +173,15 @@ public class CreatureCardManager : CardManager, IEntity
         castingSpriteParent.transform.SetParent(transform);
         castingSpriteParent.transform.localPosition = Vector3.zero;
         transform.SetParent(grid.playerCreaturesParent);
-        Debug.Log("Target position: " + target.transform.position.ToString());
-        Debug.Log("Size Offset: " + sizeOffset.ToString());
         //transform.position = target.transform.position + sizeOffset;
-        transform.position = target.transform.position;
+        transform.position = location.transform.position;
         transform.localPosition += (Vector3) sizeOffset;
 
         // Enable Grid Creature Display
         gridDisplayRect.gameObject.SetActive(true);
         gridHealthText.text = health.ToString();
         gridActionValueText.text = actionValue.ToString();
+        actionTimer.entityToBaseTimerOn = this;
         actionTimer.StartTimer(actionTime);
 
         // disable card display
@@ -205,7 +205,7 @@ public class CreatureCardManager : CardManager, IEntity
         for (int r = 0; r < creatureCard.size.x; r++)
             for (int c = 0; c < creatureCard.size.y; c++)
             {
-                Vector2Int rc = new Vector2Int(location.x + r, location.y + c);
+                Vector2Int rc = new Vector2Int(coordinates.x + r, coordinates.y + c);
                 grid.creatures.Remove(rc);
             }
 
@@ -216,6 +216,9 @@ public class CreatureCardManager : CardManager, IEntity
     {
         while (health > 0)
         {
+            DoStatuses();
+            SetHealth(health - frameDamage);
+            frameDamage = 0;
             if (actionTimer.IsComplete())
             {
                 switch (card.cardBehavior.action)
@@ -253,7 +256,7 @@ public class CreatureCardManager : CardManager, IEntity
             {
                 case Card.StatusType.Stun:
                     // stop timer from progressing
-                    actionTimer.countdown += Time.deltaTime;
+                    deltaTimeForAction = 0;
                     // after 1 second, remove 1 stack
                     if (gameManager.timer.elapsedTime - statuses[i].startTime > 1f)
                     {
@@ -304,7 +307,7 @@ public class CreatureCardManager : CardManager, IEntity
                     break;
                 default:
                     Debug.LogWarning("Status not implemented: " + status.statusType.ToString());
-                    break;   
+                    break;
             }
 
             if (status.stacks == 0)
@@ -313,41 +316,6 @@ public class CreatureCardManager : CardManager, IEntity
                 i--;
             }
         }
-    }
-
-    public void Damage(int hp)
-    {
-        frameDamage = hp;
-    }
-
-    public void Heal(int hp)
-    {
-        SetHealth(Math.Min(health + hp, maxHealth));
-    }
-
-    public void IncreaseHP (int hp)
-    {
-        maxHealth += hp;
-        SetHealth(health + hp);
-    }
-
-
-    private void SetHealth(int hp)
-    {
-        health = hp;
-
-        // change health display
-        gridHealthText.text = health.ToString();
-    }
-
-    public int GetHealth()
-    {
-        return health;
-    }
-
-    public List<Status> GetStatuses()
-    {
-        return statuses;
     }
 
     public void ApplyStatus(Card.StatusType statusType, int stacks)
@@ -391,5 +359,45 @@ public class CreatureCardManager : CardManager, IEntity
         GameObject statusObject = Instantiate(gameManager.statusPrefab, gridStatusesParent);
         Image statusImage = statusObject.GetComponent<Image>();
         statusImage.color = color;
+    }
+
+    public void Damage(int hp)
+    {
+        frameDamage = hp;
+    }
+
+    public void Heal(int hp)
+    {
+        SetHealth(Math.Min(health + hp, maxHealth));
+    }
+
+    public void IncreaseHP (int hp)
+    {
+        maxHealth += hp;
+        SetHealth(health + hp);
+    }
+
+
+    private void SetHealth(int hp)
+    {
+        health = hp;
+
+        // change health display
+        gridHealthText.text = health.ToString();
+    }
+
+    public int GetHealth()
+    {
+        return health;
+    }
+
+    public List<Status> GetStatuses()
+    {
+        return statuses;
+    }
+
+    public float GetDeltaTime()
+    {
+        return deltaTimeForAction;
     }
 }

@@ -25,6 +25,7 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
         this.player = player;
 
         drawTimer = gameManager.NewCircleTimer(transform);
+        drawTimer.entityToBaseTimerOn = player;
 
         DrawCard();
     }
@@ -62,7 +63,7 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
         }
 
         GameObject cardObject = Instantiate(cardPrefab);
-        cardObject.GetComponent<CardManager>().Initialize(card, player.team, this);
+        cardObject.GetComponent<CardManager>().Initialize(card, this, player);
 
         slotObject = cardObject;
         slotObject.transform.SetParent(transform);

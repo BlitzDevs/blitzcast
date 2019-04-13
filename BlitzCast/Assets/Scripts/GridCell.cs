@@ -2,14 +2,15 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class GridCell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class GridCell : MonoBehaviour, IHighlightable,
+                        IPointerEnterHandler, IPointerExitHandler
 {
     public Vector2Int coordinates;
     public Image sprite;
     public bool highlighted;
 
     public CreatureGrid grid;
-    
+
     public void Highlight(Color color)
     {
         highlighted = true;

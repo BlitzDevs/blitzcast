@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public GameTimer timer;
     public PlayerManager playerA;
     //public PlayerManager playerB;
+    public Camera mainCamera;
     public GraphicRaycaster raycaster;
     public EventSystem eventSystem;
 
@@ -95,6 +96,12 @@ public class GameManager : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public PlayerManager GetPlayer(Team team)
+    {
+        return playerA;
+        //return team == Team.Friendly ? playerA : playerB;
     }
 
 }

@@ -4,13 +4,15 @@ using TMPro;
 public class GameTimer : MonoBehaviour
 {
     public float elapsedTime;
+    public float deltaTime;
 
     [SerializeField] private TMP_Text text; 
 
 
     void Update()
     {
-        elapsedTime += Time.deltaTime;
+        deltaTime = Time.deltaTime;
+        elapsedTime += deltaTime;
         string displayText = "";
 
         displayText = string.Format("{0,2}:{1,2}:{2,2}",
