@@ -17,7 +17,7 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
     private GameManager gameManager;
 
 
-    // Called by GameManager
+    // Called by Player
     public void Initialize(PlayerManager player)
     {
         eventSystem = FindObjectOfType<EventSystem>();
@@ -25,6 +25,7 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
         this.player = player;
 
         drawTimer = gameManager.NewCircleTimer(transform);
+        drawTimer.entityToBaseTimerOn = player;
 
         DrawCard();
     }
@@ -52,17 +53,17 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
         GameObject cardPrefab = null;
         if (card is CreatureCard)
         {
-            cardPrefab = player.creatureCardPrefab;
+            cardPrefab = gameManager.creatureCardPrefab;
         } else if (card is SpellCard)
         {
-            cardPrefab = player.spellCardPrefab;
+            cardPrefab = gameManager.spellCardPrefab;
         } else
         {
             Debug.LogError("Card type is unknown");
         }
 
         GameObject cardObject = Instantiate(cardPrefab);
-        cardObject.GetComponent<CardManager>().Initialize(card, player.team, this);
+        cardObject.GetComponent<CardManager>().Initialize(card, this, player);
 
         slotObject = cardObject;
         slotObject.transform.SetParent(transform);

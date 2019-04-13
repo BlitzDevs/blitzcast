@@ -6,6 +6,7 @@ public class CircleTimer : MonoBehaviour {
 
     public float time = 3f;
     public float countdown;
+    public IEntity entityToBaseTimerOn;
 
     public Color backgroundColor = Color.black;
     public Color fillColor = Color.gray;
@@ -15,21 +16,30 @@ public class CircleTimer : MonoBehaviour {
     [SerializeField] private TMP_Text text;
 
 
+    private GameTimer gameTimer;
+    private float deltaTime;
+
+
+    void Start()
+    {
+        fill.color = fillColor;
+        background.color = backgroundColor;
+        gameTimer = FindObjectOfType<GameManager>().timer;
+    }
+
+
     public void StartTimer(float seconds)
     {
         time = seconds;
         countdown = seconds;
     }
-
-    void Start () {
-        fill.color = fillColor;
-        background.color = backgroundColor;
-    }
 	
 	void Update () {
         if (!IsComplete())
         {
-            countdown -= Time.deltaTime;
+            deltaTime = entityToBaseTimerOn == null ? gameTimer.deltaTime :
+                entityToBaseTimerOn.GetDeltaTime();
+            countdown -= deltaTime;
             text.text = Mathf.Round(countdown).ToString();
             fill.fillAmount = countdown / time;
         } 

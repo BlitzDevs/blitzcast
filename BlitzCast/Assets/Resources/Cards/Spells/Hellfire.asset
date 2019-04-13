@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d89e7822a6a0404aa5538e07d27da72, type: 3}
+  m_Name: Hellfire
+  m_EditorClassIdentifier: 
+  cardName: Hellfire
+  description: Damage 3 to all
+  spriteAnimateSpeed: 30
+  color: {r: 0.8235294, g: 0, b: 0, a: 1}
+  castTime: 3
+  redrawTime: 3
+  race: 0
+  cardBehavior:
+    action: 0
+    actionValue: 3
+    targetArea: 7
+    statusInflicted: 0
+    stacks: 1
+  condition: 0
+  conditionValue: 0

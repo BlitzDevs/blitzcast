@@ -12,10 +12,9 @@ public class SpellCardManager: CardManager
     private SpellCard spellCard;
 
 
-    public override void Initialize(
-        Card card, GameManager.Team team, HandSlot slot)
+    public override void Initialize(Card card, HandSlot slot, PlayerManager player)
     {
-        base.Initialize(card, team, slot);
+        base.Initialize(card, slot, player);
 
         spellCard = (SpellCard)card;
         descriptionText.text = card.description;
@@ -33,9 +32,9 @@ public class SpellCardManager: CardManager
 
             foreach (GameObject targetObject in GetCastTargets(target))
             {
-                Image image = targetObject.gameObject.GetComponent<Image>();
-                previewImages.Add(image);
-                image.color = card.color;
+                IHighlightable highlightable = targetObject.gameObject.GetComponent<IHighlightable>();
+                previewHighlightables.Add(highlightable);
+                highlightable.Highlight(card.color);
             }
         }
     }
@@ -50,6 +49,7 @@ public class SpellCardManager: CardManager
                 {
                     case Card.Action.Damage:
                     case Card.Action.Heal:
+                    case Card.Action.IncreaseHP:
                         // Target Creature or Player
                         GameObject cellObject = gameManager
                             .GetFirstUnderCursor<GridCell>();
@@ -75,12 +75,12 @@ public class SpellCardManager: CardManager
             case Card.TargetArea.Square:
             case Card.TargetArea.Row:
             case Card.TargetArea.Column:
+            case Card.TargetArea.SingleCreature:
                 return gameManager.GetFirstUnderCursor<GridCell>();
 
             case Card.TargetArea.AllCreatures:
             case Card.TargetArea.All:
-                int castAllZoneLayer = SortingLayer
-                    .GetLayerValueFromName("Cast All Zone");
+                int castAllZoneLayer = LayerMask.NameToLayer("Cast All Zone");
                 return gameManager.GetFirstUnderCursor(castAllZoneLayer);
 
             default:
@@ -129,7 +129,7 @@ public class SpellCardManager: CardManager
 
                     foreach (Vector2Int direction in drc)
                     {
-                        GridCell drcCell = grid.GetCellRC(location + direction);
+                        GridCell drcCell = grid.GetCell(location + direction);
                         if (drcCell != null)
                         {
                             targets.Add(drcCell.gameObject);
@@ -150,7 +150,7 @@ public class SpellCardManager: CardManager
                         {
                             Vector2Int drc = new Vector2Int(dr, dc);
 
-                            GridCell drcCell = grid.GetCellRC(location + drc);
+                            GridCell drcCell = grid.GetCell(location + drc);
                             if (drcCell != null)
                             {
                                 targets.Add(drcCell.gameObject);
@@ -165,7 +165,7 @@ public class SpellCardManager: CardManager
                     for (int c = 0; c < grid.size.y; c++)
                     {
                         Vector2Int rc = new Vector2Int(cell.coordinates.x, c);
-                        GridCell drcCell = grid.GetCellRC(rc);
+                        GridCell drcCell = grid.GetCell(rc);
                         if (drcCell != null)
                         {
                             targets.Add(drcCell.gameObject);
@@ -180,7 +180,7 @@ public class SpellCardManager: CardManager
                     for (int r = 0; r < grid.size.x; r++)
                     {
                         Vector2Int rc = new Vector2Int(r, cell.coordinates.y);
-                        GridCell drcCell = grid.GetCellRC(rc);
+                        GridCell drcCell = grid.GetCell(rc);
                         if (drcCell != null)
                         {
                             targets.Add(drcCell.gameObject);
@@ -236,78 +236,65 @@ public class SpellCardManager: CardManager
         {
             bool valid = true;
 
-            GridCell tCell = t.GetComponent<GridCell>();
-            IEntity tEntity = tCell != null ?
-                tCell.GetCreature() :
-                t.GetComponent<IEntity>();
-            CardManager tCard = tCell != null ?
-                tCell.GetCreature() :
-                t.GetComponent<CardManager>();
+            IEntity tEntity = t.GetComponent<IEntity>();
+            CardManager tCard = t.GetComponent<CardManager>();
 
-            if (tEntity == null && tCard == null)
+            switch (spellCard.condition)
             {
-                // in this case, the target cell is empty
-                valid = false;
-            }
-            else
-            {
-                switch (spellCard.condition)
-                {
-                    case SpellCard.Condition.None:
-                        break;
+                case SpellCard.Condition.None:
+                    break;
 
-                    case SpellCard.Condition.HPGreaterThan:
-                        if (tEntity != null)
+                case SpellCard.Condition.HPGreaterThan:
+                    if (tEntity != null)
+                    {
+                        valid = tEntity.GetHealth() > spellCard.conditionValue;
+                    }
+                    break;
+
+                case SpellCard.Condition.HPLessThan:
+                    if (tEntity != null)
+                    {
+                        valid = tEntity.GetHealth() < spellCard.conditionValue;
+                    }
+                    break;
+
+                case SpellCard.Condition.Race:
+
+                    if (tCard != null)
+                    {
+                        valid = tCard.card.race ==
+                            (Card.Race)spellCard.conditionValue;
+                    }
+                    break;
+
+                case SpellCard.Condition.Friendly:
+                    if (tCard != null)
+                    {
+                        valid = tCard.team == GameManager.Team.Friendly;
+                    }
+                    break;
+
+                case SpellCard.Condition.Enemy:
+                    if (tCard != null)
+                    {
+                        valid = tCard.team == GameManager.Team.Enemy;
+                    }
+                    break;
+
+                case SpellCard.Condition.Status:
+                    valid = false;
+                    foreach (Status s in tEntity.GetStatuses())
+                    {
+                        if ((int)s.statusType == spellCard.conditionValue)
                         {
-                            valid = tEntity.GetHealth() > spellCard.conditionValue;
+                            valid = true;
                         }
-                        break;
+                    }
+                    break;
 
-                    case SpellCard.Condition.HPLessThan:
-                        if (tEntity != null)
-                        {
-                            valid = tEntity.GetHealth() < spellCard.conditionValue;
-                        }
-                        break;
-
-                    case SpellCard.Condition.Race:
-
-                        if (tCard != null)
-                        {
-                            valid = tCard.card.race ==
-                                (Card.Race)spellCard.conditionValue;
-                        }
-                        break;
-
-                    case SpellCard.Condition.Friendly:
-                        if (tCard != null)
-                        {
-                            valid = tCard.team == GameManager.Team.Friendly;
-                        }
-                        break;
-
-                    case SpellCard.Condition.Enemy:
-                        if (tCard != null)
-                        {
-                            valid = tCard.team == GameManager.Team.Enemy;
-                        }
-                        break;
-
-                    case SpellCard.Condition.Status:
-                        valid = false;
-                        foreach (Status s in tEntity.GetStatuses())
-                        {
-                            if ((int)s.statusType == spellCard.conditionValue)
-                            {
-                                valid = true;
-                            }
-                        }
-                        break;
-
-                    default:
-                        Debug.LogWarning("Condition not implemented");
-                        break;
-                }
+                default:
+                    Debug.LogWarning("Condition not implemented");
+                    break;
             }
 
             // Remove target if marked invalid
@@ -320,14 +307,8 @@ public class SpellCardManager: CardManager
         // Execute Card Action on our list of valid targets
         foreach (GameObject t in targets)
         {
-            //unpack cell
-            GridCell tCell = t.GetComponent<GridCell>();
-            IEntity tEntity = tCell != null ?
-                tCell.GetCreature() :
-                t.GetComponent<IEntity>();
-            CardManager tCard = tCell != null ?
-                tCell.GetCreature() :
-                t.GetComponent<CardManager>();
+            IEntity tEntity = t.GetComponent<IEntity>();
+            CardManager tCard = t.GetComponent<CardManager>();
 
             switch (spellCard.cardBehavior.action)
             {
@@ -338,6 +319,10 @@ public class SpellCardManager: CardManager
 
                 case Card.Action.Heal:
                     tEntity.Heal(card.cardBehavior.actionValue);
+                    break;
+
+                case Card.Action.IncreaseHP:
+                    tEntity.IncreaseHP(card.cardBehavior.actionValue);
                     break;
 
                 case Card.Action.Destroy:

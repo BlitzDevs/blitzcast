@@ -20,6 +20,7 @@ public abstract class Card : ScriptableObject
     {
         Damage,
         Heal,
+        IncreaseHP,
         Destroy,
         Counter
     }
@@ -39,10 +40,11 @@ public abstract class Card : ScriptableObject
     public enum StatusType
     {
         None,
-        Confused,
-        Wounded,
-        Frozen,
-        Bleeding
+        Clumsy,
+        Wound,
+        Stun,
+        Poison,
+        Shield
     }
 
     [Serializable]
@@ -55,13 +57,12 @@ public abstract class Card : ScriptableObject
         public int stacks;
     }
 
-
     public string cardName = "New Card";
     public string description = "Something cool?";
-    public Texture2D spriteSheet;
+    public int spriteAnimateSpeed = 30;
     public Color color = Color.white;
-    public int castTime;
-    public int redrawTime;
+    public int castTime = 1;
+    public int redrawTime = 1;
     public Race race = Race.Generic;
     public Behavior cardBehavior;
     public float actionChance = 1.0f; // should be float btwn 0.0f & 1.0f
@@ -76,7 +77,6 @@ public abstract class Card : ScriptableObject
         copy.castTime = castTime;
         copy.redrawTime = redrawTime;
         copy.cardBehavior = cardBehavior;
-        copy.spriteSheet = spriteSheet;
         copy.color = color;
         copy.actionChance = actionChance;
         return copy;

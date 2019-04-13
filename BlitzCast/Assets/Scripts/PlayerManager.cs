@@ -2,30 +2,36 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Collections;
+using System;
 
-public class PlayerManager : MonoBehaviour, IEntity
+public class PlayerManager : MonoBehaviour, IEntity, IHighlightable
 {
     public Player player;
     public GameManager.Team team;
     public int health;
+    public int maxHealth;
     public List<Status> statuses;
+    public bool highlighted;
 
-    [SerializeField] private Image iconImage;
     [SerializeField] private TMP_Text usernameText;
     [SerializeField] private TMP_Text healthText;
+    [SerializeField] private Image frame;
     [SerializeField] private Slider healthSlider;
-    public GameObject spellCardPrefab;
-    public GameObject creatureCardPrefab;
+    [SerializeField] private GameObject handSlotPrefab;
+    [SerializeField] private Transform handSlotParent;
+    [SerializeField] private Transform statusesParent;
+    [SerializeField] private SpriteSheetAnimator animator;
 
     [SerializeField] private List<Card> playingDeck; // deck in play
 
     private GameManager gameManager;
     private System.Random randomGenerator = new System.Random();
-    private int maxHealth;
+    private int frameDamage;
+    private bool castedThisFrame;
+    private float deltaTimeForCardDraw;
 
 
-    public void Initialize(GameManager.Team team, int maxHealth)
+    public void Initialize(GameManager.Team team, int maxHealth, int handSize)
     {
         gameManager = FindObjectOfType<GameManager>();
         statuses = new List<Status>();
@@ -34,12 +40,24 @@ public class PlayerManager : MonoBehaviour, IEntity
         // initialize Player
         this.maxHealth = maxHealth;
         SetHealth(maxHealth);
-        iconImage.sprite = player.icon;
+        SpriteSheetAnimator.Animatable anim = new SpriteSheetAnimator.Animatable(
+            player.caster.name,
+            "Casters",
+            player.caster.spriteAnimateSpeed
+        );
+        animator.Initialize(anim);
         usernameText.text = player.username;
 
-        // draw first cards
         CloneDeck();
         Shuffle();
+
+        // create and initialize HandSlots
+        for (int i = 0; i < handSize; i++)
+        {
+            GameObject handSlotObject = Instantiate(handSlotPrefab, handSlotParent);
+            HandSlot handSlot = handSlotObject.GetComponent<HandSlot>();
+            handSlot.Initialize(this);
+        }
     }
 
     public Card DrawTop()
@@ -80,7 +98,7 @@ public class PlayerManager : MonoBehaviour, IEntity
     public void SetHealthText(int hp)
     {
         healthText.text = hp.ToString();
-        healthSlider.value = (float)hp / maxHealth;
+        healthSlider.value = (float) hp / maxHealth;
     }
 
     public void Damage(int hp)
@@ -90,13 +108,18 @@ public class PlayerManager : MonoBehaviour, IEntity
 
     public void Heal(int hp)
     {
-        SetHealth(health += hp);
+        SetHealth(Math.Min(health + hp, maxHealth));
+    }
+
+    public void IncreaseHP(int hp)
+    {
+        maxHealth += hp;
+        SetHealth(health + hp);
     }
 
     public void SetHealth(int hp)
     {
         health = hp;
-
         // change health display
         SetHealthText(health);
     }
@@ -108,21 +131,89 @@ public class PlayerManager : MonoBehaviour, IEntity
 
     void Update()
     {
+        deltaTimeForCardDraw = gameManager.timer.deltaTime;
         DoStatuses();
+        frameDamage = 0;
+        castedThisFrame = false;
     }
 
-    void DoStatuses()
+    public void DoStatuses()
     {
+        for (int i = 0; i < statuses.Count; i++)
+        {
+            // Careful! Structs are immutable types in C#,
+            // so have to make a new Status when changing a value.
+            Status status = statuses[i];
 
-    }
+            switch (status.statusType)
+            {
+                case Card.StatusType.Stun:
+                    // stop timer from progressing
+                    deltaTimeForCardDraw -= gameManager.timer.deltaTime;
+                    // after 1 second, remove 1 stack
+                    if (gameManager.timer.elapsedTime - statuses[i].startTime > 1f)
+                    {
+                        statuses[i] = new Status(
+                            status.statusType,
+                            status.stacks - 1,
+                            gameManager.timer.elapsedTime
+                        );
+                    }
+                    break;
 
-    void IEntity.DoStatuses()
-    {
-        throw new System.NotImplementedException();
+                case Card.StatusType.Poison:
+                    // after 1 second, deal (stacks) damage and remove 1 stack
+                    if (gameManager.timer.elapsedTime - statuses[i].startTime > 1f)
+                    {
+                        statuses[i] = new Status(
+                            status.statusType,
+                            status.stacks - 1,
+                            gameManager.timer.elapsedTime
+                        );
+                        frameDamage = status.stacks;
+                    }
+                    break;
+
+                case Card.StatusType.Shield:
+                    if (frameDamage > 0)
+                    {
+                        statuses[i] = new Status(
+                            status.statusType,
+                            status.stacks - 1,
+                            status.startTime
+                        );
+                        frameDamage = 0;
+                    }
+                    break;
+
+                case Card.StatusType.Wound:
+                    if (castedThisFrame)
+                    {
+                        //we don't care about startTime for wounded
+                        statuses[i] = new Status(
+                            status.statusType,
+                            status.stacks - 1,
+                            status.startTime
+                        );
+                        frameDamage = status.stacks;
+                    }
+                    break;
+                default:
+                    Debug.LogWarning("Status not implemented: " + status.statusType.ToString());
+                    break;
+            }
+
+            if (status.stacks == 0)
+            {
+                statuses.RemoveAt(i);
+                i--;
+            }
+        }
     }
 
     public void ApplyStatus(Card.StatusType statusType, int stacks)
     {
+        // if status already exists, add stacks
         for (int i = 0; i < statuses.Count; i++)
         {
             Status s = statuses[i];
@@ -133,12 +224,61 @@ public class PlayerManager : MonoBehaviour, IEntity
             }
         }
 
+        // otherwise add
         statuses.Add(new Status(statusType, stacks, gameManager.timer.elapsedTime));
+        Color color;
+        switch (statusType)
+        {
+            case Card.StatusType.Stun:
+                color = Color.yellow;
+                break;
+            case Card.StatusType.Poison:
+                color = Color.magenta;
+                break;
+            case Card.StatusType.Wound:
+                color = Color.red;
+                break;
+            case Card.StatusType.Clumsy:
+                color = Color.green;
+                break;
+            case Card.StatusType.Shield:
+                color = Color.blue;
+                break;
+            default:
+                color = Color.black;
+                break;
+        }
+
+        GameObject statusObject = Instantiate(gameManager.statusPrefab, statusesParent);
+        Image statusImage = statusObject.GetComponent<Image>();
+        statusImage.color = color;
     }
 
     public List<Status> GetStatuses()
     {
         return statuses;
     }
+
+    public float GetDeltaTime()
+    {
+        return deltaTimeForCardDraw;
+    }
+
+    public void CastedThisFrame()
+    {
+        castedThisFrame = true;
+    }
+
+    public void Highlight(Color color)
+    {
+        highlighted = true;
+        frame.color = color;
+    }
+
+    public void RemoveHighlight()
+    {
+        highlighted = false;
+        frame.color = Color.white;
+    }
 }
-    
+

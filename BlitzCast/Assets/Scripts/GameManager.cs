@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -12,30 +11,35 @@ public class GameManager : MonoBehaviour
         Neutral
     }
 
-    public GraphicRaycaster raycaster;
-    public EventSystem eventSystem;
-    public int maxHealth;
+    public int playerHealth = 100;
+    public int cardHandSize = 4;
+    public Vector2Int creatureGridSize = new Vector2Int(4, 7);
+    public CreatureGrid creatureGrid;
+
+    public GameTimer timer;
     public PlayerManager playerA;
     //public PlayerManager playerB;
-    public Transform handSlotsAParent;
-    //public GameObject handSlotsB;
-    public Transform draggingCardParent;
+    public Camera mainCamera;
+    public GraphicRaycaster raycaster;
+    public EventSystem eventSystem;
+
+    public Transform dragLocationParent;
+
     public GameObject circleTimerPrefab;
-    public GameTimer timer;
+    public GameObject spellCardPrefab;
+    public GameObject creatureCardPrefab;
+    public GameObject statusPrefab;
 
 
     // This function is called by Unity on the first frame that the object is active
     void Start()
     {
-        playerA.Initialize(Team.Friendly, maxHealth);
-        //playerB.Initialize(Team.B, maxHealth);
+        // Initialize Players
+        playerA.Initialize(Team.Friendly, playerHealth, cardHandSize);
+        //playerB.Initialize(Team.Enemy, playerHealth, cardHandSize);
 
-        for (int i = 0; i < handSlotsAParent.childCount; i++)
-        {
-            handSlotsAParent.GetChild(i).GetComponent<HandSlot>()
-                .Initialize(playerA);
-            //handSlotsB[i].Initialize(playerB);
-        }
+        // Initialize CreatureGrid
+        creatureGrid.Initialize(creatureGridSize);
     }
 
 
@@ -92,6 +96,12 @@ public class GameManager : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public PlayerManager GetPlayer(Team team)
+    {
+        return playerA;
+        //return team == Team.Friendly ? playerA : playerB;
     }
 
 }

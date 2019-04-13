@@ -1,35 +1,63 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CreatureGrid : MonoBehaviour {
 
     public Vector2Int size;
-    public Transform cellsParent;
+
+    public GameObject cellPrefab;
+    public GameObject linePrefab;
+    public GridLayoutGroup cellsGroup;
+    public GridLayoutGroup horiLinesGroup;
+    public GridLayoutGroup vertLinesGroup;
     public Transform playerCreaturesParent;
     public Transform enemyCreaturesParent;
-    public Dictionary<Vector2Int, CreatureCardManager> creatures;
 
+    public Dictionary<Vector2Int, CreatureCardManager> creatures;
     public List<GridCell> cells;
 
-    // Start is called by Unity on first time this object is active
-    void Start ()
+
+    public void Initialize(Vector2Int size)
     {
+        this.size = size;
+        RectTransform cellsGroupRect = cellsGroup.GetComponent<RectTransform>();
+
+        cellsGroupRect.sizeDelta = new Vector2(
+            cellsGroup.cellSize.x * size.y + 2,
+            cellsGroup.cellSize.y * size.x + 2
+        );
+        horiLinesGroup.cellSize = new Vector2(cellsGroupRect.rect.size.x, 2);
+        vertLinesGroup.cellSize = new Vector2(2, cellsGroupRect.rect.size.y);
+
         creatures = new Dictionary<Vector2Int, CreatureCardManager>();
 
         // initialize our cells
         cells = new List<GridCell>();
-        for (int i = 0; i < cellsParent.childCount; i++)
+        for (int r = 0; r < size.x; r++)
+        for (int c = 0; c < size.y; c++)
         {
-            GridCell cell = cellsParent.GetChild(i).GetComponent<GridCell>();
-            cell.coordinates = new Vector2Int(i / size.y, i % size.y);
+            GameObject cellObject = Instantiate(cellPrefab, cellsGroup.transform);
+            GridCell cell = cellObject.GetComponent<GridCell>();
+            cell.grid = this;
+            cell.coordinates = new Vector2Int(r, c);
             cells.Add(cell);
-            
         }
-	}
+
+        // create line objects
+        for (int r = 0; r < size.x + 1; r++)
+        {
+            Instantiate(linePrefab, horiLinesGroup.transform);
+        }
+        for (int c = 0; c < size.y + 1; c++)
+        {
+            Instantiate(linePrefab, vertLinesGroup.transform);
+        }
+    }
 
     public void HighlightRC(Vector2Int rc, Color color)
     {
-        GridCell temp = GetCellRC(rc);
+        GridCell temp = GetCell(rc);
         if (temp != null)
         {
             temp.Highlight(color);
@@ -81,7 +109,7 @@ public class CreatureGrid : MonoBehaviour {
         return null;
     }
 
-    public GridCell GetCellRC(Vector2Int rc)
+    public GridCell GetCell(Vector2Int rc)
     {
         if (rc.x < 0 ||
             rc.x >= size.x ||

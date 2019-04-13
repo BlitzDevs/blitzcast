@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d89e7822a6a0404aa5538e07d27da72, type: 3}
+  m_Name: Shield
+  m_EditorClassIdentifier: 
+  cardName: Shield
+  description: 2 Health + Shield
+  spriteAnimateSpeed: 30
+  color: {r: 0.22794116, g: 0.5207913, b: 1, a: 1}
+  castTime: 0
+  redrawTime: 2
+  race: 0
+  cardBehavior:
+    action: 2
+    actionValue: 2
+    targetArea: 1
+    statusInflicted: 5
+    stacks: 1
+  condition: 0
+  conditionValue: 0

@@ -13,12 +13,16 @@ public struct Status
         this.startTime = startTime;
     }
 }
+
 public interface IEntity
 {
     void Damage(int hp);
     void Heal(int hp);
+    void IncreaseHP(int hp);
     void DoStatuses();
-    List<Status> GetStatuses();
-    int GetHealth();
     void ApplyStatus(Card.StatusType statusType, int stacks);
+
+    int GetHealth();
+    float GetDeltaTime();
+    List<Status> GetStatuses();
 }

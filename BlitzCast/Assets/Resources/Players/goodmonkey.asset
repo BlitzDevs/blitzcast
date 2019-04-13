@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ca6bc100b1c64dd08653fc1789caa19, type: 3}
+  m_Name: goodmonkey
+  m_EditorClassIdentifier: 
+  username: goodmonkey
+  caster: {fileID: 11400000, guid: 4be89d3854f4f4996a37f34dc5bd7834, type: 2}
+  deck:
+  - {fileID: 11400000, guid: b95c0da3112f4c942b01cb5085d2d09c, type: 2}
+  - {fileID: 11400000, guid: ddbb7146e2dbd4b2cb227316ade73de3, type: 2}
+  - {fileID: 11400000, guid: fefc66cb78d8b4d4e8f45a0650612188, type: 2}
+  - {fileID: 11400000, guid: dc80ad6d727314250ae1632c381b5f02, type: 2}
+  - {fileID: 11400000, guid: 14a301b728cebdc42a9914db377f0490, type: 2}
+  - {fileID: 11400000, guid: 99ec334f96b49134f957f0f4e398e431, type: 2}
+  - {fileID: 11400000, guid: ffd14ae77ae969e42bfa1e7ff7c2294c, type: 2}
+  skin:
+    creatureCard: {fileID: 0}
+    spellCard: {fileID: 0}
+    handSlot: {fileID: 0}

@@ -14,6 +14,7 @@ public abstract class CardManager : MonoBehaviour,
     [SerializeField] protected GameObject cardBack;
     [SerializeField] protected GameObject targetableZone;
     [SerializeField] protected SpriteSheetAnimator animator;
+    [SerializeField] protected RectTransform castingSpriteParent;
     [SerializeField] protected Image sprite;
     [SerializeField] protected Image artImage;
     // TMP_Text is TextMeshPro text; much better than default Unity text
@@ -26,11 +27,11 @@ public abstract class CardManager : MonoBehaviour,
     public GameManager.Team team;
 
     protected GameManager gameManager;
-    protected Camera mainCamera;
     protected CreatureGrid grid;
     protected HandSlot slot;
-    [SerializeField] protected List<Image> previewImages;
+    protected List<IHighlightable> previewHighlightables;
 
+    private PlayerManager player;
     private CircleTimer castTimer;
     private bool casted = false;
 
@@ -40,42 +41,53 @@ public abstract class CardManager : MonoBehaviour,
     abstract public GameObject GetCastLocation();
     abstract public List<GameObject> GetCastTargets(GameObject target);
     abstract public void TryPreview();
-    abstract public void Cast(GameObject target);
+    abstract public void Cast(GameObject location);
 
 
     // virtual functions are overrideable but can have a body
     // Initialize is called by HandSlot
-    public virtual void Initialize(
-        Card card, GameManager.Team team, HandSlot slot)
+    public virtual void Initialize(Card card, HandSlot slot, PlayerManager player)
     {
         this.card = card;
-        this.team = team;
         this.slot = slot;
+        this.player = player;
+        team = player.team;
+
+        gameObject.layer = LayerMask.NameToLayer("Held");
+
+        gameObject.layer = LayerMask.NameToLayer("Held");
 
         nameText.text = card.cardName;
+        raceText.text = card.race.ToString();
         artImage.color = card.color;
         sprite.color = card.color;
-        animator.spriteSheet = card.spriteSheet;
+        SpriteSheetAnimator.Animatable anim = new SpriteSheetAnimator.Animatable(
+            card.name,
+            "Cards/" + (card is CreatureCard ? "Creatures" : "Spells"),
+            card.spriteAnimateSpeed
+        );
+        animator.Initialize(anim);
         castTimeText.text = card.castTime.ToString();
         redrawTimeText.text = card.redrawTime.ToString();
 
-        sprite.gameObject.SetActive(false);
+        castingSpriteParent.gameObject.SetActive(false);
     }
 
     public virtual void DestroySelf()
     {
         ClearPreview();
-        Destroy(sprite.gameObject);
+        Destroy(castingSpriteParent.gameObject);
         Destroy(gameObject);
     }
 
     protected void ClearPreview()
     {
-        foreach (Image image in previewImages)
+        sprite.transform.localPosition = Vector3.zero;
+        foreach (IHighlightable h in previewHighlightables)
         {
-            image.color = Color.white;
+            h.RemoveHighlight();
         }
-        previewImages.Clear();
+        previewHighlightables.Clear();
     }
 
 
@@ -83,10 +95,9 @@ public abstract class CardManager : MonoBehaviour,
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-        mainCamera = FindObjectOfType<Camera>();
-        grid = FindObjectOfType<CreatureGrid>();
+        grid = gameManager.creatureGrid;
 
-        previewImages = new List<Image>();
+        previewHighlightables = new List<IHighlightable>();
         castTimer = gameManager.NewCircleTimer(transform);
         castTimer.gameObject.SetActive(false);
     }
@@ -99,15 +110,15 @@ public abstract class CardManager : MonoBehaviour,
             return;
         }
 
-        if (gameObject.layer == SortingLayer.GetLayerValueFromName("Held")) {
+        if (gameObject.layer == LayerMask.NameToLayer("Held")) {
             // change layer to Active
-            gameObject.layer = SortingLayer.GetLayerValueFromName("Active");
+            gameObject.layer = LayerMask.NameToLayer("Active");
             // highlight card to show selected
             SetTint(new Color(1f, 1f, 0f, 0.5f));
             // enable sprite for preview
-            sprite.gameObject.SetActive(true);
+            castingSpriteParent.gameObject.SetActive(true);
             // move sprite to dragging in hierarchy
-            sprite.transform.SetParent(gameManager.draggingCardParent);
+            castingSpriteParent.SetParent(gameManager.dragLocationParent);
         }
     }
 
@@ -123,9 +134,9 @@ public abstract class CardManager : MonoBehaviour,
         Vector3 position = new Vector3(
             eventData.position.x,
             eventData.position.y,
-            mainCamera.nearClipPlane
+            gameManager.mainCamera.nearClipPlane
         );
-        sprite.transform.position = mainCamera.ScreenToWorldPoint(position);
+        castingSpriteParent.transform.position = gameManager.mainCamera.ScreenToWorldPoint(position);
 
         ClearPreview();
         TryPreview();
@@ -152,26 +163,29 @@ public abstract class CardManager : MonoBehaviour,
             // highlight card blue to show casting
             SetTint(new Color (0.2f, 0.2f, 1f, 0.5f));
 
+            // tell player that card casted this frame
+            player.CastedThisFrame();
+            
             StartCoroutine(CastTimer(target));
         }
         else
         {
             // change layer to Held
-            gameObject.layer = SortingLayer.GetLayerValueFromName("Held");
+            gameObject.layer = LayerMask.NameToLayer("Held");
             // remove card highlight
             SetTint(new Color(0, 0, 0, 0));
             // move card back to slot
             transform.SetParent(slot.transform);
             transform.position = slot.transform.position;
             // return sprite location and disable
-            sprite.transform.SetParent(transform);
-            sprite.transform.localPosition = Vector3.zero;
-            sprite.gameObject.SetActive(false);
+            castingSpriteParent.transform.SetParent(transform);
+            castingSpriteParent.transform.localPosition = Vector3.zero;
+            castingSpriteParent.gameObject.SetActive(false);
         }
 
     }
 
-    private IEnumerator CastTimer(GameObject target)
+    protected virtual IEnumerator CastTimer(GameObject target)
     {
         castTimer.gameObject.SetActive(true);
         castTimer.StartTimer(card.castTime);
