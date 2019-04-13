@@ -55,6 +55,8 @@ public abstract class CardManager : MonoBehaviour,
 
         gameObject.layer = LayerMask.NameToLayer("Held");
 
+        gameObject.layer = LayerMask.NameToLayer("Held");
+
         nameText.text = card.cardName;
         raceText.text = card.race.ToString();
         artImage.color = card.color;
