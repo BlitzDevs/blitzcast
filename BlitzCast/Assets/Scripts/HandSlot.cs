@@ -25,7 +25,7 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
         this.player = player;
 
         drawTimer = gameManager.NewCircleTimer(transform);
-        drawTimer.entityToBaseTimerOn = player;
+        drawTimer.entity = player.entity;
 
         DrawCard();
     }

@@ -29,7 +29,7 @@ public abstract class CardManager : MonoBehaviour,
     protected GameManager gameManager;
     protected CreatureGrid grid;
     protected HandSlot slot;
-    protected List<IHighlightable> previewHighlightables;
+    protected List<Highlightable> previewHighlightables;
 
     private PlayerManager player;
     private CircleTimer castTimer;
@@ -83,9 +83,9 @@ public abstract class CardManager : MonoBehaviour,
     protected void ClearPreview()
     {
         sprite.transform.localPosition = Vector3.zero;
-        foreach (IHighlightable h in previewHighlightables)
+        foreach (Highlightable h in previewHighlightables)
         {
-            h.RemoveHighlight();
+            h.RemoveHighlight(card.color);
         }
         previewHighlightables.Clear();
     }
@@ -97,7 +97,7 @@ public abstract class CardManager : MonoBehaviour,
         gameManager = FindObjectOfType<GameManager>();
         grid = gameManager.creatureGrid;
 
-        previewHighlightables = new List<IHighlightable>();
+        previewHighlightables = new List<Highlightable>();
         castTimer = gameManager.NewCircleTimer(transform);
         castTimer.gameObject.SetActive(false);
     }
@@ -162,7 +162,7 @@ public abstract class CardManager : MonoBehaviour,
             SetTint(new Color (0.2f, 0.2f, 1f, 0.5f));
 
             // tell player that card casted this frame
-            player.CastedThisFrame();
+            player.entity.ActionEvent += player.entity.OnDoAction;
             
             StartCoroutine(CastTimer(target));
         }

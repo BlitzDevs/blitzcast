@@ -1,24 +1,25 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using System;
 
 public class CreatureCardManager : CardManager
 {
-    [SerializeField] private TMP_Text actionValueText;
-    [SerializeField] private TMP_Text actionTimeText;
+    public Entity entity;
+
+    [SerializeField] private TMP_Text cardHealthText;
+    [SerializeField] private TMP_Text cardActionValueText;
+    [SerializeField] private TMP_Text cardActionTimeText;
 
     [SerializeField] private RectTransform gridDisplayRect;
     [SerializeField] private RectTransform gridStatusesParent;
     [SerializeField] private TMP_Text gridHealthText;
     [SerializeField] private TMP_Text gridActionValueText;
+    [SerializeField] private TMP_Text gridSpeedText;
     [SerializeField] private CircleTimer actionTimer;
 
     private int actionValue;
     private int actionTime;
-    private float deltaTimeForAction;
 
     private Vector2Int coordinates;
     private CreatureCard creatureCard;
@@ -26,24 +27,20 @@ public class CreatureCardManager : CardManager
     private Vector2 spriteSize;
     private Vector2 sizeOffset;
 
-    private Entity entity;
 
     // Initialize is our own function which is called by HandSlot
     public override void Initialize(Card card, HandSlot slot, PlayerManager player)
     {
         base.Initialize(card, slot, player);
 
-        statuses = new List<Status>();
         creatureCard = (CreatureCard) card;
 
-        health = creatureCard.health;
-        maxHealth = creatureCard.health;
-        frameDamage = 0;
+        // set text on card
         actionValue = creatureCard.cardBehavior.actionValue;
         actionTime = creatureCard.actionTime;
-        healthText.text = health.ToString();
-        actionValueText.text = actionValue.ToString();
-        actionTimeText.text = actionTime.ToString();
+        cardHealthText.text = creatureCard.health.ToString();
+        cardActionValueText.text = actionValue.ToString();
+        cardActionTimeText.text = actionTime.ToString();
 
         spriteSize = new Vector2(
             sprite.rectTransform.rect.width * creatureCard.size.y,
@@ -62,17 +59,6 @@ public class CreatureCardManager : CardManager
         gridDisplayRect.gameObject.SetActive(false);
     }
 
-    public void Update()
-    {
-        if (gameObject.layer == LayerMask.NameToLayer("Creatures"))
-        {
-            deltaTimeForAction = gameManager.timer.deltaTime;
-            DoStatuses();
-            SetHealth(health - frameDamage);
-            frameDamage = 0;
-        }
-    }
-
     public override void TryPreview()
     {
         GameObject target = GetCastLocation();
@@ -85,7 +71,7 @@ public class CreatureCardManager : CardManager
 
             foreach (GameObject targetObject in GetCastTargets(target))
             {
-                IHighlightable highlightable = targetObject.gameObject.GetComponent<IHighlightable>();
+                Highlightable highlightable = targetObject.gameObject.GetComponent<Highlightable>();
                 previewHighlightables.Add(highlightable);
                 highlightable.Highlight(card.color);
             }
@@ -173,9 +159,9 @@ public class CreatureCardManager : CardManager
 
         // Enable Grid Creature Display
         gridDisplayRect.gameObject.SetActive(true);
-        gridHealthText.text = health.ToString();
+        gridHealthText.text = creatureCard.health.ToString();
         gridActionValueText.text = actionValue.ToString();
-        actionTimer.entityToBaseTimerOn = this;
+        actionTimer.entity = entity;
         actionTimer.StartTimer(actionTime);
 
         // disable card display
@@ -189,7 +175,11 @@ public class CreatureCardManager : CardManager
 
         //create entity 
         entity = gameObject.AddComponent<Entity>();
-        entity.Initialize(creatureCard.health, creatureCard.health, 1f, new List<Status>(), gridHealthText); = 
+        entity.Initialize(creatureCard.health, 1f, new List<Entity.Status>(),
+            gridStatusesParent);
+        entity.HealthChangeEvent += SetHealthDisplay;
+        entity.SpeedChangeEvent += SetSpeedDisplay;
+
         // Start action timer coroutine
         StartCoroutine(DoAction());
     }
@@ -210,15 +200,12 @@ public class CreatureCardManager : CardManager
 
     private IEnumerator DoAction()
     {
-        while (health > 0)
+        while (entity.Health > 0)
         {
-            DoStatuses();
-            SetHealth(health - frameDamage);
-            frameDamage = 0;
             if (actionTimer.IsComplete())
             {
                 //raise event to let entity know
-                entity.Event += new Entity.Lorem(entity.OnDoAction);
+                entity.ActionEvent += entity.OnDoAction;
 
                 switch (card.cardBehavior.action)
                 {
@@ -232,6 +219,7 @@ public class CreatureCardManager : CardManager
                         Debug.Log(card.cardName + " destroys");
                         break;
                     default:
+                        Debug.LogWarning("Action not implemented");
                         break;
                 }
                 actionTimer.StartTimer(creatureCard.actionTime);
@@ -243,119 +231,23 @@ public class CreatureCardManager : CardManager
         DestroySelf();
     }
 
-    public void DoStatuses()
+    // added onto event OnHealthChange of entity
+    public void SetHealthDisplay(int hp)
     {
-        for (int i = 0; i < statuses.Count; i++)
+        gridHealthText.text = hp.ToString();
+    }
+
+    // added onto event OnSpeedChange of entity
+    public void SetSpeedDisplay(float s)
+    {
+        // if speed is ~1f
+        if (Mathf.Abs(s - 1) < Mathf.Epsilon)
         {
-            // Careful! Structs are immutable types in C#,
-            // so have to make a new Status when changing a value.
-            Status status = statuses[i];
-
-            switch (status.statusType)
-            {
-                case Card.StatusType.Stun:
-                    // stop timer from progressing
-                    deltaTimeForAction = 0;
-                    // after 1 second, remove 1 stack
-                    if (gameManager.timer.elapsedTime - statuses[i].startTime > 1f)
-                    {
-                        statuses[i] = new Status(
-                            status.statusType,
-                            status.stacks - 1,
-                            gameManager.timer.elapsedTime
-                        );
-                    }
-                    break;
-
-                case Card.StatusType.Poison:
-                    // after 1 second, deal (stacks) damage and remove 1 stack
-                    if (gameManager.timer.elapsedTime - statuses[i].startTime > 1f)
-                    {
-                        statuses[i] = new Status(
-                            status.statusType,
-                            status.stacks - 1,
-                            gameManager.timer.elapsedTime
-                        );
-                        frameDamage = status.stacks;
-                    }
-                    break;
-
-                case Card.StatusType.Shield:
-                    if (frameDamage > 0)
-                    {
-                        statuses[i] = new Status(
-                            status.statusType,
-                            status.stacks - 1,
-                            status.startTime
-                        );
-                        frameDamage = 0;
-                    }
-                    break;
-
-                case Card.StatusType.Wound:
-                    if (actionTimer.IsComplete())
-                    {
-                        //we don't care about startTime for wounded
-                        statuses[i] = new Status(
-                            status.statusType,
-                            status.stacks - 1,
-                            status.startTime
-                        );
-                        frameDamage = status.stacks;
-                    }
-                    break;
-                default:
-                    Debug.LogWarning("Status not implemented: " + status.statusType.ToString());
-                    break;
-            }
-
-            if (status.stacks == 0)
-            {
-                statuses.RemoveAt(i);
-                i--;
-            }
+            gridSpeedText.text = "";
         }
-    }
-
-    
-
-    public void Damage(int hp)
-    {
-        frameDamage = hp;
-    }
-
-    public void Heal(int hp)
-    {
-        SetHealth(Math.Min(health + hp, maxHealth));
-    }
-
-    public void IncreaseHP (int hp)
-    {
-        maxHealth += hp;
-        SetHealth(health + hp);
-    }
-
-
-    private void SetHealth(int hp)
-    {
-        health = hp;
-
-        // change health display
-        gridHealthText.text = health.ToString();
-    }
-
-    public int GetHealth()
-    {
-        return health;
-    }
-
-    public List<Status> GetStatuses()
-    {
-        return statuses;
-    }
-
-    public float GetDeltaTime()
-    {
-        return deltaTimeForAction;
+        else
+        {
+            gridSpeedText.text = "x" + (Mathf.Round(s * 10) / 10f).ToString();
+        }
     }
 }
