@@ -211,6 +211,13 @@ public class SpellCardManager: CardManager
 
     public override void Cast(GameObject location)
     {
+        // First off, let's see if this boi even lands a hit
+        if (Random.Range(0.0f, 1.0f) > spellCard.actionChance) {
+            DestroySelf();
+            Debug.Log("Destroyed");
+            return;
+        }
+
         // GetCastTargets adds targets to our list based on the TargetArea
         List<GameObject> locations = GetCastTargets(location);
 
