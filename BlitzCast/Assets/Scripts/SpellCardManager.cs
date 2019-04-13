@@ -214,7 +214,7 @@ public class SpellCardManager: CardManager
         // First off, let's see if this boi even lands a hit
         if (Random.Range(0.0f, 1.0f) > spellCard.actionChance) {
             DestroySelf();
-            Debug.Log("Destroyed");
+            Debug.Log(gameObject.name + " action failed, object destroyed");
             return;
         }
 
