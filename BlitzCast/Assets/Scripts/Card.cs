@@ -64,6 +64,7 @@ public abstract class Card : ScriptableObject
     public int redrawTime;
     public Race race = Race.Generic;
     public Behavior cardBehavior;
+    public float actionChance = 1.0f; // should be float btwn 0.0f & 1.0f
 
 
     // Cannot use newCard = oldCard because it becomes a reference! Use Clone()!
@@ -77,6 +78,7 @@ public abstract class Card : ScriptableObject
         copy.cardBehavior = cardBehavior;
         copy.spriteSheet = spriteSheet;
         copy.color = color;
+        copy.actionChance = actionChance;
         return copy;
     }
 }
