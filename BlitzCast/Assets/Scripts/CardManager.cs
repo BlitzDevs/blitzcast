@@ -141,7 +141,9 @@ public abstract class CardManager : MonoBehaviour,
         }
 
         GameObject target = GetCastLocation();
-        if (target != null)
+        if (Random.Range(0.0f, 1.0f) < card.actionChance)
+            return;
+        else if (target != null)
         {
             casted = true;
 
