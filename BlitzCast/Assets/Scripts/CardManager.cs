@@ -162,7 +162,7 @@ public abstract class CardManager : MonoBehaviour,
             SetTint(new Color (0.2f, 0.2f, 1f, 0.5f));
 
             // tell player that card casted this frame
-            player.entity.ActionEvent += player.entity.OnDoAction;
+            player.entity.TriggerActionEvent();
             
             StartCoroutine(CastTimer(target));
         }

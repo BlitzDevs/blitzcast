@@ -27,11 +27,12 @@ public class PlayerManager : MonoBehaviour
     public void Initialize(GameManager.Team team, int health, int handSize)
     {
         gameManager = FindObjectOfType<GameManager>();
+
         this.team = team;
 
         // initialize Player Entity
         entity = gameObject.AddComponent<Entity>();
-        entity.Initialize(health, 1f, new List<Entity.Status>(), statusesParent);
+        entity.Initialize(health, 1f, statusesParent);
         entity.HealthChangeEvent += SetHealthDisplay;
         entity.SpeedChangeEvent += SetSpeedDisplay;
 
@@ -93,17 +94,18 @@ public class PlayerManager : MonoBehaviour
     }
 
     // added onto event OnHealthChange of entity
-    public void SetHealthDisplay(int hp)
+    public void SetHealthDisplay(int oldHP, int newHP)
     {
-        healthText.text = hp.ToString();
-        healthSlider.value = (float) hp / entity.MaxHealth;
+        healthText.text = newHP.ToString();
+        healthSlider.value = (float)newHP / entity.MaxHealth;
     }
 
     // added onto event OnSpeedChange of entity
     public void SetSpeedDisplay(float s)
     {
-        speedText.text = "SPEED: x" + s.ToString();
+        speedText.text = "Speed: x" + s.ToString();
         // set color?
     }
+
 }
 

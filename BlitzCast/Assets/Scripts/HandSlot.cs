@@ -38,6 +38,7 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
     private IEnumerator DrawTimer(float time)
     {
         drawTimer.gameObject.SetActive(true);
+        drawTimer.entity = player.entity;
         drawTimer.StartTimer(time);
         while (!drawTimer.IsComplete())
         {

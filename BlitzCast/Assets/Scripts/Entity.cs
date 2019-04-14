@@ -1,38 +1,71 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 
 public class Entity : MonoBehaviour
 {
-    public struct Status
+
+    public class Status
     {
-        public Card.StatusType statusType;
-        public int stacks;
+        public enum StatusType
+        {
+            None,
+            Clumsy,
+            Wound,
+            Stun,
+            Poison,
+            Shield
+        }
+
+        public StatusType statusType;
+        public Color color;
         public float startTime;
 
-        public Status(Card.StatusType statusType, int stacks, float startTime)
+        private Entity entity;
+        private int _stacks;
+
+        public int Stacks
+        {
+            get
+            {
+                return _stacks;
+            }
+            set
+            {
+                int oldStacks = _stacks;
+                _stacks = value;
+                entity.OnStackChange(statusType, oldStacks, _stacks);
+            }
+        }
+
+        public Status(StatusType statusType, Color color, int stacks, float startTime, Entity entity)
         {
             this.statusType = statusType;
-            this.stacks = stacks;
+            this.color = color;
             this.startTime = startTime;
+            this.entity = entity;
+            Stacks = stacks;
         }
     }
 
+
+    public List<Status> statuses;
+
     public delegate void ActionHandler();
     public event ActionHandler ActionEvent;
-    public delegate void DeathHandler(Entity sender);
-    public event DeathHandler DeathEvent;
-    public delegate void IntChangeHandler(int i);
+    public delegate void IntChangeHandler(int oldInt, int newInt);
     public event IntChangeHandler HealthChangeEvent;
     public event IntChangeHandler MaxHealthChangeEvent;
-    public delegate void FloatChangeHandler(float i);
-    public event FloatChangeHandler SpeedChangeEvent;
-
-    public List<Status> statuses = new List<Status>();
-
-    private Transform statusesParent;
+    public delegate void SpeedChangeHandler(float s);
+    public event SpeedChangeHandler SpeedChangeEvent;
+    public delegate void StatusChangeHandler(Status.StatusType statusType, int oldStacks, int newStacks);
+    public event StatusChangeHandler StatusChangeEvent;
 
     private GameManager gameManager;
+    private Transform statusesParent;
+    private Dictionary<Status.StatusType, TMP_Text> statusDisplays;
 
     private int _health;
     private int _maxHealth;
@@ -46,8 +79,9 @@ public class Entity : MonoBehaviour
         }
         set
         {
+            int oldHealth = _health;
             _health = Mathf.Min(value, _maxHealth);
-            OnHealthChange(_health);
+            OnHealthChange(oldHealth, _health);
         }
     }
 
@@ -73,17 +107,18 @@ public class Entity : MonoBehaviour
         }
         set
         {
-            Health += value - _maxHealth;
+            int oldMaxHealth = _maxHealth;
             _maxHealth = value;
-            OnMaxHealthChange(value);
+            Health += _maxHealth - oldMaxHealth;
+            OnMaxHealthChange(oldMaxHealth, _maxHealth);
         }
     }
 
-    private void OnHealthChange(int hp)
+    private void OnHealthChange(int oldHP, int newHP)
     {
         if (HealthChangeEvent != null)
         {
-            HealthChangeEvent(hp);
+            HealthChangeEvent(oldHP, newHP);
         }
     }
 
@@ -95,145 +130,194 @@ public class Entity : MonoBehaviour
         }
     }
 
-    private void OnMaxHealthChange(int hp)
+    private void OnMaxHealthChange(int oldHP, int newHP)
     {
         if (MaxHealthChangeEvent != null)
         {
-            MaxHealthChangeEvent(hp);
+            MaxHealthChangeEvent(oldHP, newHP);
+        }
+    }
+
+    private void OnStackChange(Status.StatusType statusType, int oldStacks, int newStacks)
+    {
+        if (StatusChangeEvent != null)
+        {
+            StatusChangeEvent(statusType, oldStacks, newStacks);
         }
     }
 
 
-    public void Initialize(int health, float speed, List<Status> statuses,
-        Transform statusesParent)
+    public void Initialize(int health, float speed, Transform statusesParent)
     {
         gameManager = FindObjectOfType<GameManager>();
 
         MaxHealth = health;
         Health = health;
         Speed = speed;
-        this.statuses = statuses;
 
-        this.statusesParent = statusesParent;
-    }
-
-    public void OnDoAction() {
-        //handle Wounded
-    }
-    
-    public void ApplyStatus(Card.StatusType statusType, int stacks)
-    {
-        for (int i = 0; i < statuses.Count; i++)
+        statusDisplays = new Dictionary<Status.StatusType, TMP_Text>();
+        statuses = new List<Status>
         {
-            // Careful! Structs are immutable types in C#,
-            // so have to make a new Status when changing a value.
-        //    Status status = statuses[i];
+            new Status(Status.StatusType.Clumsy, Color.green, 0, 0f, this),
+            new Status(Status.StatusType.Wound, Color.red, 0, 0f, this),
+            new Status(Status.StatusType.Stun, Color.yellow, 0, 0f, this),
+            new Status(Status.StatusType.Poison, Color.magenta, 0, 0f, this),
+            new Status(Status.StatusType.Shield, Color.blue, 0, 0f, this)
+        };
+        this.statusesParent = statusesParent;
 
-        //    switch (status.statusType)
-        //    {
-        //        case Card.StatusType.Stun:
-        //            // stop timer from progressing
-        //            deltaTimeForCardDraw -= gameManager.timer.deltaTime;
-        //            // after 1 second, remove 1 stack
-        //            if (gameManager.timer.elapsedTime - statuses[i].startTime > 1f)
-        //            {
-        //                statuses[i] = new Status(
-        //                    status.statusType,
-        //                    status.stacks - 1,
-        //                    gameManager.timer.elapsedTime
-        //                );
-        //            }
-        //            break;
+        StatusChangeEvent += SetStatusDisplay;
+    }
 
-        //        case Card.StatusType.Poison:
-        //            // after 1 second, deal (stacks) damage and remove 1 stack
-        //            if (gameManager.timer.elapsedTime - statuses[i].startTime > 1f)
-        //            {
-        //                statuses[i] = new Status(
-        //                    status.statusType,
-        //                    status.stacks - 1,
-        //                    gameManager.timer.elapsedTime
-        //                );
-        //                frameDamage = status.stacks;
-        //            }
-        //            break;
+    public void TriggerActionEvent()
+    {
+        if (ActionEvent != null)
+        {
+            ActionEvent();
+        }
+    }
 
-        //        case Card.StatusType.Shield:
-        //            if (frameDamage > 0)
-        //            {
-        //                statuses[i] = new Status(
-        //                    status.statusType,
-        //                    status.stacks - 1,
-        //                    status.startTime
-        //                );
-        //                frameDamage = 0;
-        //            }
-        //            break;
-
-        //        case Card.StatusType.Wound:
-        //            if (castedThisFrame)
-        //            {
-        //                //we don't care about startTime for wounded
-        //                statuses[i] = new Status(
-        //                    status.statusType,
-        //                    status.stacks - 1,
-        //                    status.startTime
-        //                );
-        //                frameDamage = status.stacks;
-        //            }
-        //            break;
-        //        default:
-        //            Debug.LogWarning("Status not implemented: " + status.statusType.ToString());
-        //            break;
-        //    }
-
-        //    if (status.stacks == 0)
-        //    {
-        //        statuses.RemoveAt(i);
-        //        i--;
-        //    }
+    public void ApplyStatus(Status.StatusType statusType, int stacks)
+    {
+        if (statusType == Status.StatusType.None || stacks == 0)
+        {
+            return;
         }
 
+        Status status = GetStatus(statusType);
+        status.Stacks += stacks;
 
-        // if status already exists, add stacks
-        for (int i = 0; i < statuses.Count; i++)
+        if (status.Stacks - stacks == 0)
         {
-            Status s = statuses[i];
-            if (s.statusType == statusType)
+            switch (statusType)
             {
-                s.stacks += stacks;
-                return;
+                case Status.StatusType.Clumsy:
+                    // different for creature and player...
+                    break;
+
+                case Status.StatusType.Wound:
+                    ActionEvent += Wound;
+                    break;
+
+                case Status.StatusType.Stun:
+                    StartCoroutine(Stun());
+                    break;
+
+                case Status.StatusType.Poison:
+                    StartCoroutine(Poison());
+                    break;
+
+                case Status.StatusType.Shield:
+                    HealthChangeEvent += Shield;
+                    break;
+
+                default:
+                    Debug.LogWarning("Status not implemented");
+                    break;
             }
         }
 
-        // otherwise add
-        statuses.Add(new Status(statusType, stacks, gameManager.timer.elapsedTime));
-        Color color;
-        switch (statusType)
+    }
+
+    private void Wound()
+    {
+        Status status = GetStatus(Status.StatusType.Wound);
+        Health -= status.Stacks;
+        status.Stacks--;
+
+        if (status.Stacks < 1)
         {
-            case Card.StatusType.Stun:
-                color = Color.yellow;
-                break;
-            case Card.StatusType.Poison:
-                color = Color.magenta;
-                break;
-            case Card.StatusType.Wound:
-                color = Color.red;
-                break;
-            case Card.StatusType.Clumsy:
-                color = Color.green;
-                break;
-            case Card.StatusType.Shield:
-                color = Color.blue;
-                break;
-            default:
-                color = Color.black;
-                break;
+            ActionEvent -= Wound;
+        }
+    }
+
+    private IEnumerator Stun()
+    {
+        Status status = GetStatus(Status.StatusType.Stun);
+        status.startTime = gameManager.timer.elapsedTime;
+        Speed = 0;
+
+        while (status.Stacks > 0)
+        {
+            if (gameManager.timer.elapsedTime - status.startTime > 1f)
+            {
+                status.Stacks--;
+                status.startTime = gameManager.timer.elapsedTime;
+            }
+            yield return null;
         }
 
-        // TODO:
-        GameObject statusObject = Instantiate(gameManager.statusPrefab, statusesParent);
-        Image statusImage = statusObject.GetComponent<Image>();
-        statusImage.color = color;
+        Speed = 1f;
+    }
+
+    private IEnumerator Poison()
+    {
+        Status status = GetStatus(Status.StatusType.Poison);
+
+        while (status.Stacks > 0)
+        {
+            if (gameManager.timer.elapsedTime - status.startTime > 1f)
+            {
+                Health -= status.Stacks;
+                status.Stacks--;
+                status.startTime = gameManager.timer.elapsedTime;
+            }
+            yield return null;
+        }
+    }
+
+    private void Shield(int oldHP, int newHP)
+    {
+        Status status = GetStatus(Status.StatusType.Shield);
+
+        // if damaged, negate
+        if (newHP - oldHP < 0)
+        {
+            Health = oldHP;
+            status.Stacks--;
+
+            if (status.Stacks < 1)
+            {
+                HealthChangeEvent -= Shield;
+            }
+        }
+    }
+
+    public Status GetStatus(Status.StatusType type)
+    {
+        Debug.Log(statuses);
+        int i = (int)type - 1;
+        if (i < 0 || i > statuses.Count)
+        {
+            return null;
+        }
+        return statuses[(int) type - 1];
+    }
+
+    // added onto event StatusChangeEvent
+    public void SetStatusDisplay(Status.StatusType statusType, int oldStacks, int newStacks)
+    {
+        Status status = GetStatus(statusType);
+        TMP_Text statusDisplay;
+        statusDisplays.TryGetValue(statusType, out statusDisplay);
+
+        if (oldStacks < 1 && newStacks > 0)
+        {
+            GameObject statusObject = Instantiate(gameManager.statusPrefab, statusesParent);
+            Image statusImage = statusObject.GetComponent<Image>();
+            statusImage.color = status.color;
+            statusDisplay = statusObject.GetComponentInChildren<TMP_Text>();
+            statusDisplays.Add(statusType, statusDisplay);
+        }
+        else if (oldStacks > 0 && newStacks < 1)
+        {
+            statusDisplays.Remove(statusType);
+            Destroy(statusDisplay.transform.parent.gameObject);
+        }
+
+        if (statusDisplay != null)
+        {
+            statusDisplay.text = newStacks.ToString();
+        }
     }
 }

@@ -341,8 +341,8 @@ public class SpellCardManager: CardManager
             }
 
             tEntity.ApplyStatus(
-                spellCard.cardBehavior.statusInflicted,
-                spellCard.cardBehavior.stacks
+                card.cardBehavior.statusInflicted,
+                card.cardBehavior.stacks
             );
         }
 

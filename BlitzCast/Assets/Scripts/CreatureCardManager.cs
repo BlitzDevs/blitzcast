@@ -20,10 +20,8 @@ public class CreatureCardManager : CardManager
 
     private int actionValue;
     private int actionTime;
-
     private Vector2Int coordinates;
     private CreatureCard creatureCard;
-
     private Vector2 spriteSize;
     private Vector2 sizeOffset;
 
@@ -144,13 +142,27 @@ public class CreatureCardManager : CardManager
 
         gameObject.layer = LayerMask.NameToLayer("Creatures");
 
+        //create entity 
+        entity = gameObject.AddComponent<Entity>();
+        entity.Initialize(creatureCard.health, 1f, gridStatusesParent);
+        entity.HealthChangeEvent += SetHealthDisplay;
+        entity.SpeedChangeEvent += SetSpeedDisplay;
+        if (creatureCard.statuses != null && creatureCard.statuses.Count > 0)
+        {
+            foreach (Entity.Status s in creatureCard.statuses)
+            {
+                entity.ApplyStatus(s.statusType, s.Stacks);
+            }
+        }
+
         // Turn CreatureCard into Creature on grid
         gameObject.name = card.cardName;
         // set creature rect size (parent GameObject)
         RectTransform creatureRect = gameObject.GetComponent<RectTransform>();
         creatureRect.sizeDelta = spriteSize;
         // move out of the hierarchy
-        castingSpriteParent.transform.SetParent(transform);
+        castingSpriteParent.transform.SetParent(gridDisplayRect);
+        castingSpriteParent.SetAsFirstSibling();
         castingSpriteParent.transform.localPosition = Vector3.zero;
         transform.SetParent(grid.playerCreaturesParent);
         //transform.position = target.transform.position + sizeOffset;
@@ -161,6 +173,7 @@ public class CreatureCardManager : CardManager
         gridDisplayRect.gameObject.SetActive(true);
         gridHealthText.text = creatureCard.health.ToString();
         gridActionValueText.text = actionValue.ToString();
+        gridStatusesParent.sizeDelta = new Vector2(spriteSize.x, 8);
         actionTimer.entity = entity;
         actionTimer.StartTimer(actionTime);
 
@@ -173,12 +186,6 @@ public class CreatureCardManager : CardManager
         // set color/transparency to normal
         sprite.color = card.color;
 
-        //create entity 
-        entity = gameObject.AddComponent<Entity>();
-        entity.Initialize(creatureCard.health, 1f, new List<Entity.Status>(),
-            gridStatusesParent);
-        entity.HealthChangeEvent += SetHealthDisplay;
-        entity.SpeedChangeEvent += SetSpeedDisplay;
 
         // Start action timer coroutine
         StartCoroutine(DoAction());
@@ -205,7 +212,7 @@ public class CreatureCardManager : CardManager
             if (actionTimer.IsComplete())
             {
                 //raise event to let entity know
-                entity.ActionEvent += entity.OnDoAction;
+                entity.TriggerActionEvent();
 
                 switch (card.cardBehavior.action)
                 {
@@ -232,9 +239,9 @@ public class CreatureCardManager : CardManager
     }
 
     // added onto event OnHealthChange of entity
-    public void SetHealthDisplay(int hp)
+    public void SetHealthDisplay(int oldHP, int newHP)
     {
-        gridHealthText.text = hp.ToString();
+        gridHealthText.text = newHP.ToString();
     }
 
     // added onto event OnSpeedChange of entity
