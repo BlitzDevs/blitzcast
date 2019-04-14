@@ -8,22 +8,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d89e7822a6a0404aa5538e07d27da72, type: 3}
-  m_Name: Banana
+  m_Script: {fileID: 11500000, guid: c3718d06e4808074db547e4a69a967fc, type: 3}
+  m_Name: Wosp
   m_EditorClassIdentifier: 
-  cardName: Banana
-  description: 2 stun
-  spriteAnimateSpeed: 30
-  color: {r: 1, g: 0.9760649, b: 0.13235295, a: 1}
+  cardName: Wosp
+  description: bzzzz
+  spriteAnimateSpeed: 10
+  color: {r: 1, g: 0.8482759, b: 0, a: 1}
   castTime: 1
-  redrawTime: 2
+  redrawTime: 1
   race: 0
   cardBehavior:
     action: 0
     actionValue: 1
     targetArea: 0
-    statusInflicted: 3
-    stacks: 2
+    statusInflicted: 4
+    stacks: 1
   actionChance: 1
-  condition: 0
-  conditionValue: 0
+  health: 1
+  actionTime: 2
+  size: {x: 1, y: 1}

@@ -25,7 +25,7 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
         this.player = player;
 
         drawTimer = gameManager.NewCircleTimer(transform);
-        drawTimer.entityToBaseTimerOn = player;
+        drawTimer.entity = player.entity;
 
         DrawCard();
     }
@@ -38,6 +38,7 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
     private IEnumerator DrawTimer(float time)
     {
         drawTimer.gameObject.SetActive(true);
+        drawTimer.entity = player.entity;
         drawTimer.StartTimer(time);
         while (!drawTimer.IsComplete())
         {

@@ -32,7 +32,7 @@ public class SpellCardManager: CardManager
 
             foreach (GameObject targetObject in GetCastTargets(target))
             {
-                IHighlightable highlightable = targetObject.gameObject.GetComponent<IHighlightable>();
+                Highlightable highlightable = targetObject.gameObject.GetComponent<Highlightable>();
                 previewHighlightables.Add(highlightable);
                 highlightable.Highlight(card.color);
             }
@@ -99,7 +99,7 @@ public class SpellCardManager: CardManager
         switch (spellCard.cardBehavior.targetArea)
         {
             case Card.TargetArea.Single:
-                if (target.GetComponent<PlayerManager>() != null)
+                if (target.GetComponent<Entity>() != null)
                 {
                     targets.Add(target);
                 }
@@ -144,7 +144,7 @@ public class SpellCardManager: CardManager
                     Vector2Int location = new
                         Vector2Int(cell.coordinates.x, cell.coordinates.y);
 
-                    // dr/c stands for Delta Row/Column 
+                    // dr/c stands for Delta Row/Column
                     for (int dr = -1; dr <= 1; dr++)
                         for (int dc = -1; dc <= 1; dc++)
                         {
@@ -225,9 +225,10 @@ public class SpellCardManager: CardManager
         HashSet<GameObject> targets = new HashSet<GameObject>();
         foreach(GameObject g in locations)
         {
-            if (g.GetComponent<CardManager>() != null)
+            if (g.GetComponent<CardManager>() != null ||
+                g.GetComponent<Entity>() != null)
             {
-                targets.Add(g.GetComponent<CardManager>().gameObject);
+                targets.Add(g);
             }
             else if (g.GetComponent<GridCell>() != null &&
                      g.GetComponent<GridCell>().GetCreature() != null)
@@ -243,7 +244,7 @@ public class SpellCardManager: CardManager
         {
             bool valid = true;
 
-            IEntity tEntity = t.GetComponent<IEntity>();
+            Entity tEntity = t.GetComponent<Entity>();
             CardManager tCard = t.GetComponent<CardManager>();
 
             switch (spellCard.condition)
@@ -254,14 +255,14 @@ public class SpellCardManager: CardManager
                 case SpellCard.Condition.HPGreaterThan:
                     if (tEntity != null)
                     {
-                        valid = tEntity.GetHealth() > spellCard.conditionValue;
+                        valid = tEntity.Health > spellCard.conditionValue;
                     }
                     break;
 
                 case SpellCard.Condition.HPLessThan:
                     if (tEntity != null)
                     {
-                        valid = tEntity.GetHealth() < spellCard.conditionValue;
+                        valid = tEntity.Health < spellCard.conditionValue;
                     }
                     break;
 
@@ -290,7 +291,7 @@ public class SpellCardManager: CardManager
 
                 case SpellCard.Condition.Status:
                     valid = false;
-                    foreach (Status s in tEntity.GetStatuses())
+                    foreach (Entity.Status s in tEntity.statuses)
                     {
                         if ((int)s.statusType == spellCard.conditionValue)
                         {
@@ -314,22 +315,22 @@ public class SpellCardManager: CardManager
         // Execute Card Action on our list of valid targets
         foreach (GameObject t in targets)
         {
-            IEntity tEntity = t.GetComponent<IEntity>();
+            Entity tEntity = t.GetComponent<Entity>();
             CardManager tCard = t.GetComponent<CardManager>();
 
             switch (spellCard.cardBehavior.action)
             {
                 case Card.Action.Damage:
                     if (tEntity != null)
-                    tEntity.Damage(card.cardBehavior.actionValue);
+                    tEntity.Health -= card.cardBehavior.actionValue;
                     break;
 
                 case Card.Action.Heal:
-                    tEntity.Heal(card.cardBehavior.actionValue);
+                    tEntity.Health += card.cardBehavior.actionValue;
                     break;
 
                 case Card.Action.IncreaseHP:
-                    tEntity.IncreaseHP(card.cardBehavior.actionValue);
+                    tEntity.MaxHealth += card.cardBehavior.actionValue;
                     break;
 
                 case Card.Action.Destroy:
@@ -342,8 +343,8 @@ public class SpellCardManager: CardManager
             }
 
             tEntity.ApplyStatus(
-                spellCard.cardBehavior.statusInflicted,
-                spellCard.cardBehavior.stacks
+                card.cardBehavior.statusInflicted,
+                card.cardBehavior.stacks
             );
         }
 

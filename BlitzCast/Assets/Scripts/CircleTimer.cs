@@ -6,7 +6,7 @@ public class CircleTimer : MonoBehaviour {
 
     public float time = 3f;
     public float countdown;
-    public IEntity entityToBaseTimerOn;
+    public Entity entity;
 
     public Color backgroundColor = Color.black;
     public Color fillColor = Color.gray;
@@ -37,8 +37,8 @@ public class CircleTimer : MonoBehaviour {
 	void Update () {
         if (!IsComplete())
         {
-            deltaTime = entityToBaseTimerOn == null ? gameTimer.deltaTime :
-                entityToBaseTimerOn.GetDeltaTime();
+            deltaTime = entity == null ? gameTimer.deltaTime :
+                entity.Speed * gameTimer.deltaTime;
             countdown -= deltaTime;
             text.text = Mathf.Round(countdown).ToString();
             fill.fillAmount = countdown / time;

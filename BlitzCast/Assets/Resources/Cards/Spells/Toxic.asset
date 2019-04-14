@@ -9,21 +9,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d89e7822a6a0404aa5538e07d27da72, type: 3}
-  m_Name: Fireball
-  m_EditorClassIdentifier:
-  cardName: Fireball
-  description: 1 damage, 2 wound
+  m_Name: Toxic
+  m_EditorClassIdentifier: 
+  cardName: Toxic
+  description: Apply 3 poison
   spriteAnimateSpeed: 30
-  color: {r: 1, g: 0.48397565, b: 0.29411763, a: 1}
+  color: {r: 0.53103447, g: 0, b: 1, a: 1}
   castTime: 1
-  redrawTime: 2
+  redrawTime: 1
   race: 0
   cardBehavior:
     action: 0
-    actionValue: 1
-    targetArea: 3
-    statusInflicted: 2
-    stacks: 2
+    actionValue: 0
+    targetArea: 0
+    statusInflicted: 4
+    stacks: 3
   actionChance: 1
   condition: 0
   conditionValue: 0

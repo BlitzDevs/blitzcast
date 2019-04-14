@@ -1,15 +1,9 @@
 fileFormatVersion: 2
-guid: e83a77e8d474c47988cca828cb7c616e
+guid: fefb5595e0d124fc9a1a9d55d9f99dfe
 TextureImporter:
   fileIDToRecycleName:
-    21300000: slime_0
-    21300002: slime_1
-    21300004: slime_2
-    21300006: slime_3
-    21300008: slime_4
-    21300010: slime_5
-    21300012: slime_6
-    21300014: slime_7
+    21300000: wosp-idle_0
+    21300002: wosp-idle_1
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -87,113 +81,29 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: slime_0
+      name: wosp-idle_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 84
-        width: 42
-        height: 42
-      alignment: 1
-      pivot: {x: 0, y: 1}
+        y: 40
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: slime_1
-      rect:
-        serializedVersion: 2
-        x: 42
-        y: 84
-        width: 42
-        height: 42
-      alignment: 1
-      pivot: {x: 0, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: slime_2
-      rect:
-        serializedVersion: 2
-        x: 84
-        y: 84
-        width: 42
-        height: 42
-      alignment: 1
-      pivot: {x: 0, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: slime_3
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 42
-        width: 42
-        height: 42
-      alignment: 1
-      pivot: {x: 0, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: slime_4
-      rect:
-        serializedVersion: 2
-        x: 42
-        y: 42
-        width: 42
-        height: 42
-      alignment: 1
-      pivot: {x: 0, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: slime_5
-      rect:
-        serializedVersion: 2
-        x: 84
-        y: 42
-        width: 42
-        height: 42
-      alignment: 1
-      pivot: {x: 0, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: slime_6
+      name: wosp-idle_1
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 42
-        height: 42
-      alignment: 1
-      pivot: {x: 0, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: slime_7
-      rect:
-        serializedVersion: 2
-        x: 42
-        y: 0
-        width: 42
-        height: 42
-      alignment: 1
-      pivot: {x: 0, y: 1}
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

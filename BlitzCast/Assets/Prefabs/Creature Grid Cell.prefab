@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 222347653029996576}
   - component: {fileID: 114965914356585680}
   - component: {fileID: 114860057885525216}
+  - component: {fileID: 114655162897910718}
   m_Layer: 0
   m_Name: Creature Grid Cell
   m_TagString: Untagged
@@ -29,6 +30,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &114655162897910718
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1606094757981996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fdb91375223b402a86db607f19ebc3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 114965914356585680}
+  highlights: []
+  colorPulseSpeed: 0.3
 --- !u!114 &114860057885525216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -42,7 +57,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coordinates: {x: 0, y: 0}
   sprite: {fileID: 114965914356585680}
-  highlighted: 0
+  highlightable: {fileID: 114655162897910718}
   grid: {fileID: 0}
 --- !u!114 &114965914356585680
 MonoBehaviour:

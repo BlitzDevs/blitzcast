@@ -55,15 +55,6 @@ public class CreatureGrid : MonoBehaviour {
         }
     }
 
-    public void HighlightRC(Vector2Int rc, Color color)
-    {
-        GridCell temp = GetCell(rc);
-        if (temp != null)
-        {
-            temp.Highlight(color);
-        }
-    }
-
     public List<CreatureCardManager> GetPlayerCreatures()
     {
         List<CreatureCardManager> creaturesList = new List<CreatureCardManager>();

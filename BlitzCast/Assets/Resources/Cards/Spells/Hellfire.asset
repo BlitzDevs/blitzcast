@@ -15,8 +15,8 @@ MonoBehaviour:
   description: Damage 3 to all
   spriteAnimateSpeed: 30
   color: {r: 0.8235294, g: 0, b: 0, a: 1}
-  castTime: 3
-  redrawTime: 3
+  castTime: 2
+  redrawTime: 2
   race: 0
   cardBehavior:
     action: 0
@@ -24,5 +24,6 @@ MonoBehaviour:
     targetArea: 7
     statusInflicted: 0
     stacks: 1
+  actionChance: 1
   condition: 0
   conditionValue: 0

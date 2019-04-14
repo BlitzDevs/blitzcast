@@ -37,23 +37,13 @@ public abstract class Card : ScriptableObject
         All
     }
 
-    public enum StatusType
-    {
-        None,
-        Clumsy,
-        Wound,
-        Stun,
-        Poison,
-        Shield
-    }
-
     [Serializable]
     public struct Behavior
     {
         public Action action;
         public int actionValue;
         public TargetArea targetArea;
-        public StatusType statusInflicted;
+        public Entity.Status.StatusType statusInflicted;
         public int stacks;
     }
 
