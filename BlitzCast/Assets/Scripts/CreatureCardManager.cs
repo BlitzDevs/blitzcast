@@ -10,7 +10,6 @@ public class CreatureCardManager : CardManager
     [SerializeField] private TMP_Text cardHealthText;
     [SerializeField] private TMP_Text cardActionValueText;
     [SerializeField] private TMP_Text cardActionTimeText;
-
     [SerializeField] private RectTransform gridDisplayRect;
     [SerializeField] private RectTransform gridStatusesParent;
     [SerializeField] private TMP_Text gridHealthText;
@@ -50,10 +49,10 @@ public class CreatureCardManager : CardManager
         );
 
         sprite.rectTransform.sizeDelta = spriteSize;
-        castingSpriteParent.sizeDelta = spriteSize;
+        castingSpriteParent.sizeDelta = grid.cellsGroup.cellSize;
 
-        gridStatusesParent.sizeDelta = new Vector2(spriteSize.x, gridStatusesParent.rect.y);
-        gridDisplayRect.sizeDelta = spriteSize;
+        gridStatusesParent.sizeDelta = new Vector2(grid.cellsGroup.cellSize.x, gridStatusesParent.rect.y);
+        gridDisplayRect.sizeDelta = grid.cellsGroup.cellSize;
         gridDisplayRect.gameObject.SetActive(false);
     }
 
@@ -142,16 +141,23 @@ public class CreatureCardManager : CardManager
 
         gameObject.layer = LayerMask.NameToLayer("Creatures");
 
-        //create entity 
+        // Create entity 
         entity = gameObject.AddComponent<Entity>();
-        entity.Initialize(creatureCard.health, 1f, gridStatusesParent);
+        entity.Initialize(creatureCard.health, gridStatusesParent);
         entity.HealthChangeEvent += SetHealthDisplay;
         entity.SpeedChangeEvent += SetSpeedDisplay;
-        if (creatureCard.statuses != null && creatureCard.statuses.Count > 0)
+        if (creatureCard.statusModifiers != null && creatureCard.statusModifiers.Count > 0)
         {
-            foreach (Entity.Status s in creatureCard.statuses)
+            foreach (Entity.StatusModifier s in creatureCard.statusModifiers)
             {
-                entity.ApplyStatus(s.statusType, s.Stacks);
+                entity.ApplyStatus(s.statusType, s.stacks);
+            }
+        }
+        if (creatureCard.statModifiers != null && creatureCard.statModifiers.Count > 0)
+        {
+            foreach (Entity.StatModifier s in creatureCard.statModifiers)
+            {
+                entity.ApplyStatModification(s.statChange, s.statChangeValue);
             }
         }
 
@@ -165,27 +171,29 @@ public class CreatureCardManager : CardManager
         castingSpriteParent.SetAsFirstSibling();
         castingSpriteParent.transform.localPosition = Vector3.zero;
         transform.SetParent(grid.playerCreaturesParent);
-        //transform.position = target.transform.position + sizeOffset;
         transform.position = location.transform.position;
         transform.localPosition += (Vector3) sizeOffset;
 
-        // Enable Grid Creature Display
+        // Disable Card display
+        SetTint(new Color(0f, 0f, 0f, 0f));
+        cardFront.SetActive(false);
+        cardBack.SetActive(false);
+        // Enable Grid Creature display
         gridDisplayRect.gameObject.SetActive(true);
         gridHealthText.text = creatureCard.health.ToString();
         gridActionValueText.text = actionValue.ToString();
         gridStatusesParent.sizeDelta = new Vector2(spriteSize.x, 8);
         actionTimer.entity = entity;
         actionTimer.StartTimer(actionTime);
-
-        // disable card display
-        SetTint(new Color(0f, 0f, 0f, 0f));
-        cardFront.SetActive(false);
-        cardBack.SetActive(false);
-        // enable sprite display
+        SpriteSheetAnimator.Animatable anim = new SpriteSheetAnimator.Animatable(
+            card.name,
+            "Cards/" + (card is CreatureCard ? "Creatures" : "Spells"),
+            card.spriteAnimateSpeed,
+            entity
+        );
+        animator.Initialize(anim);
         sprite.gameObject.SetActive(true);
-        // set color/transparency to normal
         sprite.color = card.color;
-
 
         // Start action timer coroutine
         StartCoroutine(DoAction());
@@ -194,7 +202,7 @@ public class CreatureCardManager : CardManager
 
     public override void DestroySelf()
     {
-        //delete creature locations from CreatureGrid
+        // Delete creature locations from CreatureGrid
         for (int r = 0; r < creatureCard.size.x; r++)
             for (int c = 0; c < creatureCard.size.y; c++)
             {
@@ -211,22 +219,32 @@ public class CreatureCardManager : CardManager
         {
             if (actionTimer.IsComplete())
             {
-                //raise event to let entity know
+                // Raise event to let entity know
                 entity.TriggerActionEvent();
 
                 switch (card.cardBehavior.action)
                 {
+                    case Card.Action.None:
+                        break;
+
                     case Card.Action.Damage:
                         Debug.Log(card.cardName + " deal damage");
                         break;
+
                     case Card.Action.Heal:
                         Debug.Log(card.cardName + " heals");
                         break;
+
                     case Card.Action.Destroy:
                         Debug.Log(card.cardName + " destroys");
                         break;
+
+                    case Card.Action.Counter:
+                        Debug.LogWarning(card.cardName + " illegal action: Counter");
+                        break;
+
                     default:
-                        Debug.LogWarning("Action not implemented");
+                        Debug.LogWarning(card.cardName + " Action not implemented: " + card.cardBehavior.action.ToString());
                         break;
                 }
                 actionTimer.StartTimer(creatureCard.actionTime);

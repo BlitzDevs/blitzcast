@@ -34,12 +34,11 @@ public class GameManager : MonoBehaviour
     // This function is called by Unity on the first frame that the object is active
     void Start()
     {
+        // Initialize CreatureGrid
+        creatureGrid.Initialize(creatureGridSize);
         // Initialize Players
         playerA.Initialize(Team.Friendly, playerHealth, cardHandSize);
         //playerB.Initialize(Team.Enemy, playerHealth, cardHandSize);
-
-        // Initialize CreatureGrid
-        creatureGrid.Initialize(creatureGridSize);
     }
 
 

@@ -32,7 +32,7 @@ public class PlayerManager : MonoBehaviour
 
         // initialize Player Entity
         entity = gameObject.AddComponent<Entity>();
-        entity.Initialize(health, 1f, statusesParent);
+        entity.Initialize(health, statusesParent);
         entity.HealthChangeEvent += SetHealthDisplay;
         entity.SpeedChangeEvent += SetSpeedDisplay;
 
@@ -40,7 +40,8 @@ public class PlayerManager : MonoBehaviour
         SpriteSheetAnimator.Animatable anim = new SpriteSheetAnimator.Animatable(
             player.caster.name,
             "Casters",
-            player.caster.spriteAnimateSpeed
+            player.caster.spriteAnimateSpeed,
+            entity
         );
         animator.Initialize(anim);
         // set text

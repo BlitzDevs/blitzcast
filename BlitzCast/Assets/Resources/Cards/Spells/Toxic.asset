@@ -21,9 +21,11 @@ MonoBehaviour:
   cardBehavior:
     action: 0
     actionValue: 0
+    statChange: 0
+    statChangeValue: 0
     targetArea: 0
     statusInflicted: 4
     stacks: 3
-  actionChance: 1
+  actionChance: 100
   condition: 0
   conditionValue: 0

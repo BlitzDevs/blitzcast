@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "New Creature Card", menuName = "Creature Card")]
@@ -7,7 +8,8 @@ public class CreatureCard : Card
     public int health = 1;
     public int actionTime = 1;
     public Vector2Int size = Vector2Int.one;
-    public List<Entity.Status> statuses = new List<Entity.Status>();
+    public List<Entity.StatusModifier> statusModifiers = new List<Entity.StatusModifier>();
+    public List<Entity.StatModifier> statModifiers = new List<Entity.StatModifier>();
 
 
     // Cannot use newCard = oldCard because it becomes a reference! Use Clone()!
@@ -17,7 +19,8 @@ public class CreatureCard : Card
         copy.health = health;
         copy.actionTime = actionTime;
         copy.size = size;
-        copy.statuses = statuses;
+        copy.statusModifiers = statusModifiers;
+        copy.statModifiers = statModifiers;
         return copy;
     }
 

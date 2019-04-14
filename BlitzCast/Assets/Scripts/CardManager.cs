@@ -48,12 +48,17 @@ public abstract class CardManager : MonoBehaviour,
     // Initialize is called by HandSlot
     public virtual void Initialize(Card card, HandSlot slot, PlayerManager player)
     {
+        gameManager = FindObjectOfType<GameManager>();
+        grid = gameManager.creatureGrid;
+
+        previewHighlightables = new List<Highlightable>();
+        castTimer = gameManager.NewCircleTimer(transform);
+        castTimer.gameObject.SetActive(false);
+
         this.card = card;
         this.slot = slot;
         this.player = player;
         team = player.team;
-
-        gameObject.layer = LayerMask.NameToLayer("Held");
 
         gameObject.layer = LayerMask.NameToLayer("Held");
 
@@ -64,7 +69,8 @@ public abstract class CardManager : MonoBehaviour,
         SpriteSheetAnimator.Animatable anim = new SpriteSheetAnimator.Animatable(
             card.name,
             "Cards/" + (card is CreatureCard ? "Creatures" : "Spells"),
-            card.spriteAnimateSpeed
+            card.spriteAnimateSpeed,
+            null
         );
         animator.Initialize(anim);
         castTimeText.text = card.castTime.ToString();
@@ -88,18 +94,6 @@ public abstract class CardManager : MonoBehaviour,
             h.RemoveHighlight(card.color);
         }
         previewHighlightables.Clear();
-    }
-
-
-    // Start is called by Unity on first time this object is active
-    void Start()
-    {
-        gameManager = FindObjectOfType<GameManager>();
-        grid = gameManager.creatureGrid;
-
-        previewHighlightables = new List<Highlightable>();
-        castTimer = gameManager.NewCircleTimer(transform);
-        castTimer.gameObject.SetActive(false);
     }
 
     // When begin dragging card, move card to Active layer

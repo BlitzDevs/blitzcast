@@ -16,8 +16,9 @@ public class SpriteSheetAnimator : MonoBehaviour
     public struct Animatable {
         public Dictionary<State, Sprite[]> spritesDict;
         public float speed;
+        public Entity entity;
 
-        public Animatable(string name, string category, float speed)
+        public Animatable(string name, string category, float speed, Entity entity)
         {
             spritesDict = new Dictionary<State, Sprite[]>();
             foreach (State s in Enum.GetValues(typeof(State)))
@@ -34,6 +35,7 @@ public class SpriteSheetAnimator : MonoBehaviour
                 spritesDict.Add(s, sprites);
             }
             this.speed = speed;
+            this.entity = entity;
         }
     }
 

@@ -19,11 +19,13 @@ MonoBehaviour:
   redrawTime: 2
   race: 0
   cardBehavior:
-    action: 0
+    action: 1
     actionValue: 3
+    statChange: 0
+    statChangeValue: 0
     targetArea: 7
     statusInflicted: 0
     stacks: 1
-  actionChance: 1
+  actionChance: 100
   condition: 0
   conditionValue: 0

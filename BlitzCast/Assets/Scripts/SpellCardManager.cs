@@ -47,12 +47,11 @@ public class SpellCardManager: CardManager
             case Card.TargetArea.Single:
                 switch (spellCard.cardBehavior.action)
                 {
+                    case Card.Action.None:
                     case Card.Action.Damage:
                     case Card.Action.Heal:
-                    case Card.Action.IncreaseHP:
                         // Target Creature or Player
-                        GameObject cellObject = gameManager
-                            .GetFirstUnderCursor<GridCell>();
+                        GameObject cellObject = gameManager.GetFirstUnderCursor<GridCell>();
                         if (cellObject != null)
                         {
                             return cellObject;
@@ -212,7 +211,7 @@ public class SpellCardManager: CardManager
     public override void Cast(GameObject location)
     {
         // First off, let's see if this boi even lands a hit
-        if (Random.Range(0.0f, 1.0f) > spellCard.actionChance) {
+        if (Random.Range(0, 100) > spellCard.actionChance) {
             DestroySelf();
             Debug.Log(gameObject.name + " action failed, object destroyed");
             return;
@@ -320,6 +319,9 @@ public class SpellCardManager: CardManager
 
             switch (spellCard.cardBehavior.action)
             {
+                case Card.Action.None:
+                    break;
+
                 case Card.Action.Damage:
                     if (tEntity != null)
                     tEntity.Health -= card.cardBehavior.actionValue;
@@ -329,16 +331,35 @@ public class SpellCardManager: CardManager
                     tEntity.Health += card.cardBehavior.actionValue;
                     break;
 
-                case Card.Action.IncreaseHP:
-                    tEntity.MaxHealth += card.cardBehavior.actionValue;
-                    break;
-
                 case Card.Action.Destroy:
                     tCard.DestroySelf();
                     break;
 
                 default:
                     Debug.LogWarning("Card Action not implemented");
+                    break;
+            }
+
+            switch (spellCard.cardBehavior.statChange)
+            {
+                case Card.StatChange.None:
+                    break;
+
+                case Card.StatChange.SetHealth:
+                    tEntity.Health = card.cardBehavior.statChangeValue;
+                    tEntity.MaxHealth = card.cardBehavior.statChangeValue;
+                    break;
+
+                case Card.StatChange.IncreaseHealth:
+                    tEntity.MaxHealth += card.cardBehavior.statChangeValue;
+                    break;
+
+                case Card.StatChange.IncreaseSpeed:
+                    tEntity.Speed += card.cardBehavior.statChangeValue / 100f;
+                    break;
+
+                default:
+                    Debug.LogWarning("Card Stat Change not implemented");
                     break;
             }
 

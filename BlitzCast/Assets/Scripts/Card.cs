@@ -11,18 +11,26 @@ public abstract class Card : ScriptableObject
     public enum Race
     {
         Generic,
-        Dwarf,
-        Elf,
-        Auto
+        Automaton,
+        Undead,
+        Critter
     }
 
     public enum Action
     {
+        None,
         Damage,
         Heal,
-        IncreaseHP,
         Destroy,
         Counter
+    }
+
+    public enum StatChange
+    {
+        None,
+        SetHealth,
+        IncreaseHealth,
+        IncreaseSpeed
     }
 
     public enum TargetArea
@@ -41,21 +49,23 @@ public abstract class Card : ScriptableObject
     public struct Behavior
     {
         public Action action;
-        public int actionValue;
+        [Range(0, 30)] public int actionValue;
+        public StatChange statChange;
+        [Range(-100, 100)] public int statChangeValue;
         public TargetArea targetArea;
         public Entity.Status.StatusType statusInflicted;
-        public int stacks;
+        [Range(0, 10)] public int stacks;
     }
 
     public string cardName = "New Card";
     public string description = "Something cool?";
-    public int spriteAnimateSpeed = 30;
+    [Range(0, 100)] public int spriteAnimateSpeed = 30;
     public Color color = Color.white;
-    public int castTime = 1;
-    public int redrawTime = 1;
+    [Range(0, 30)] public int castTime = 1;
+    [Range(0, 30)] public int redrawTime = 1;
     public Race race = Race.Generic;
     public Behavior cardBehavior;
-    public float actionChance = 1.0f; // should be float btwn 0.0f & 1.0f
+    [Range(0, 100)] public int actionChance = 100;
 
 
     // Cannot use newCard = oldCard because it becomes a reference! Use Clone()!

@@ -21,6 +21,8 @@ MonoBehaviour:
   cardBehavior:
     action: 0
     actionValue: 1
+    statChange: 0
+    statChangeValue: 0
     targetArea: 0
     statusInflicted: 4
     stacks: 1
@@ -28,3 +30,7 @@ MonoBehaviour:
   health: 1
   actionTime: 2
   size: {x: 1, y: 1}
+  statusModifiers: []
+  statModifiers:
+  - statChange: 3
+    statChangeValue: 50

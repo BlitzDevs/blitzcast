@@ -1,11 +1,26 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 public class Entity : MonoBehaviour
 {
+
+    [Serializable]
+    public struct StatusModifier
+    {
+        public Status.StatusType statusType;
+        [Range(0, 10)] public int stacks;
+    }
+
+    [Serializable]
+    public struct StatModifier
+    {
+        public Card.StatChange statChange;
+        [Range(-100, 100)] public int statChangeValue;
+    }
 
     public class Status
     {
@@ -147,13 +162,13 @@ public class Entity : MonoBehaviour
     }
 
 
-    public void Initialize(int health, float speed, Transform statusesParent)
+    public void Initialize(int health, Transform statusesParent)
     {
         gameManager = FindObjectOfType<GameManager>();
 
         MaxHealth = health;
         Health = health;
-        Speed = speed;
+        Speed = 1f;
 
         statusDisplays = new Dictionary<Status.StatusType, TMP_Text>();
         statuses = new List<Status>
@@ -216,7 +231,32 @@ public class Entity : MonoBehaviour
                     break;
             }
         }
+    }
 
+    public void ApplyStatModification(Card.StatChange statChangeType, int statChangeValue)
+    {
+        switch (statChangeType)
+        {
+            case Card.StatChange.None:
+                break;
+
+            case Card.StatChange.SetHealth:
+                Health = statChangeValue;
+                MaxHealth = statChangeValue;
+                break;
+
+            case Card.StatChange.IncreaseHealth:
+                MaxHealth += statChangeValue;
+                break;
+
+            case Card.StatChange.IncreaseSpeed:
+                Speed += statChangeValue / 100f;
+                break;
+
+            default:
+                Debug.LogWarning("Card Stat Change not implemented");
+                break;
+        }
     }
 
     private void Wound()

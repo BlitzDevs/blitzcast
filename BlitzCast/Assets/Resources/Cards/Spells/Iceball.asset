@@ -12,17 +12,20 @@ MonoBehaviour:
   m_Name: Iceball
   m_EditorClassIdentifier: 
   cardName: Iceball
-  description: Damage 2
+  description: Damage 1, Slow
   spriteAnimateSpeed: 30
   color: {r: 0.64716697, g: 0.88213074, b: 0.97794116, a: 1}
   castTime: 1
   redrawTime: 2
   race: 0
   cardBehavior:
-    action: 0
-    actionValue: 3
+    action: 1
+    actionValue: 1
+    statChange: 3
+    statChangeValue: -50
     targetArea: 0
     statusInflicted: 0
     stacks: 1
+  actionChance: 100
   condition: 0
   conditionValue: 0
