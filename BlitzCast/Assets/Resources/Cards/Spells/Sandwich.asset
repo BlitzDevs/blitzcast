@@ -18,14 +18,13 @@ MonoBehaviour:
   castTime: 1
   redrawTime: 2
   race: 0
-  cardBehavior:
-    action: 2
-    actionValue: 5
-    statChange: 0
-    statChangeValue: 0
-    targetArea: 0
-    statusInflicted: 0
-    stacks: 0
+  action: 2
+  actionValue: 5
+  statChange: 0
+  statChangeValue: 0
+  statusInflicted: 0
+  stacks: 0
   actionChance: 100
   condition: 5
   conditionValue: 0
+  targetArea: 0

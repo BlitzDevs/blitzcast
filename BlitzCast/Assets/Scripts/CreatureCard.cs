@@ -1,10 +1,20 @@
 using UnityEngine;
-using System;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "New Creature Card", menuName = "Creature Card")]
 public class CreatureCard : Card
 {
+
+    public enum CreatureTarget
+    {
+        Front,
+        Adjacent,
+        Row,
+        Column,
+        AllCreatures,
+        All
+    }
+
     public int health = 1;
     public int actionTime = 1;
     public Vector2Int size = Vector2Int.one;

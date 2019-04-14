@@ -42,10 +42,10 @@ public class SpellCardManager: CardManager
 
     public override GameObject GetCastLocation()
     {
-        switch (spellCard.cardBehavior.targetArea)
+        switch (spellCard.targetArea)
         {
-            case Card.TargetArea.Single:
-                switch (spellCard.cardBehavior.action)
+            case SpellCard.SpellTarget.Single:
+                switch (spellCard.action)
                 {
                     case Card.Action.None:
                     case Card.Action.Damage:
@@ -70,15 +70,15 @@ public class SpellCardManager: CardManager
                 break;
 
             // When target area is a shape (not single), target is Creature Grid
-            case Card.TargetArea.Cross:
-            case Card.TargetArea.Square:
-            case Card.TargetArea.Row:
-            case Card.TargetArea.Column:
-            case Card.TargetArea.SingleCreature:
+            case SpellCard.SpellTarget.Cross:
+            case SpellCard.SpellTarget.Square:
+            case SpellCard.SpellTarget.Row:
+            case SpellCard.SpellTarget.Column:
+            case SpellCard.SpellTarget.SingleCreature:
                 return gameManager.GetFirstUnderCursor<GridCell>();
 
-            case Card.TargetArea.AllCreatures:
-            case Card.TargetArea.All:
+            case SpellCard.SpellTarget.AllCreatures:
+            case SpellCard.SpellTarget.All:
                 int castAllZoneLayer = LayerMask.NameToLayer("Cast All Zone");
                 return gameManager.GetFirstUnderCursor(castAllZoneLayer);
 
@@ -95,24 +95,24 @@ public class SpellCardManager: CardManager
         List<GameObject> targets = new List<GameObject>();
         GridCell cell = target.GetComponent<GridCell>();
 
-        switch (spellCard.cardBehavior.targetArea)
+        switch (spellCard.targetArea)
         {
-            case Card.TargetArea.Single:
+            case SpellCard.SpellTarget.Single:
                 if (target.GetComponent<Entity>() != null)
                 {
                     targets.Add(target);
                 }
-                else goto case Card.TargetArea.SingleCreature;
+                else goto case SpellCard.SpellTarget.SingleCreature;
                 break;
 
-            case Card.TargetArea.SingleCreature:
+            case SpellCard.SpellTarget.SingleCreature:
                 if (cell != null)
                 {
                     targets.Add(cell.gameObject);
                 }
                 break;
 
-            case Card.TargetArea.Cross:
+            case SpellCard.SpellTarget.Cross:
                 if (cell != null)
                 {
                     Vector2Int location = new
@@ -137,7 +137,7 @@ public class SpellCardManager: CardManager
                 }
                 break;
 
-            case Card.TargetArea.Square:
+            case SpellCard.SpellTarget.Square:
                 if (cell != null)
                 {
                     Vector2Int location = new
@@ -158,7 +158,7 @@ public class SpellCardManager: CardManager
                 }
                 break;
 
-            case Card.TargetArea.Row:
+            case SpellCard.SpellTarget.Row:
                 if (cell != null)
                 {
                     for (int c = 0; c < grid.size.y; c++)
@@ -173,7 +173,7 @@ public class SpellCardManager: CardManager
                 }
                 break;
 
-            case Card.TargetArea.Column:
+            case SpellCard.SpellTarget.Column:
                 if (cell != null)
                 {
                     for (int r = 0; r < grid.size.x; r++)
@@ -188,12 +188,12 @@ public class SpellCardManager: CardManager
                 }
                 break;
 
-            case Card.TargetArea.All:
+            case SpellCard.SpellTarget.All:
                 targets.Add(gameManager.playerA.gameObject);
                 //targets.Add(gameManager.playerB.gameObject);
-                goto case Card.TargetArea.AllCreatures;
+                goto case SpellCard.SpellTarget.AllCreatures;
 
-            case Card.TargetArea.AllCreatures:
+            case SpellCard.SpellTarget.AllCreatures:
                 foreach (GridCell c in grid.cells)
                 {
                     targets.Add(c.gameObject);
@@ -208,21 +208,14 @@ public class SpellCardManager: CardManager
         return targets;
     }
 
-    public override void Cast(GameObject location)
+    public override HashSet<GameObject> GetActionTargets(GameObject location)
     {
-        // First off, let's see if this boi even lands a hit
-        if (Random.Range(0, 100) > spellCard.actionChance) {
-            DestroySelf();
-            Debug.Log(gameObject.name + " action failed, object destroyed");
-            return;
-        }
-
         // GetCastTargets adds targets to our list based on the TargetArea
         List<GameObject> locations = GetCastTargets(location);
 
         //turn locations into targets
         HashSet<GameObject> targets = new HashSet<GameObject>();
-        foreach(GameObject g in locations)
+        foreach (GameObject g in locations)
         {
             if (g.GetComponent<CardManager>() != null ||
                 g.GetComponent<Entity>() != null)
@@ -236,138 +229,21 @@ public class SpellCardManager: CardManager
             }
         }
 
-        // Filter targets based on conditions
-        HashSet<GameObject> targetsCopy = new HashSet<GameObject>(targets);
+        return targets;
+    }
 
-        foreach (GameObject t in targetsCopy)
-        {
-            bool valid = true;
-
-            Entity tEntity = t.GetComponent<Entity>();
-            CardManager tCard = t.GetComponent<CardManager>();
-
-            switch (spellCard.condition)
-            {
-                case SpellCard.Condition.None:
-                    break;
-
-                case SpellCard.Condition.HPGreaterThan:
-                    if (tEntity != null)
-                    {
-                        valid = tEntity.Health > spellCard.conditionValue;
-                    }
-                    break;
-
-                case SpellCard.Condition.HPLessThan:
-                    if (tEntity != null)
-                    {
-                        valid = tEntity.Health < spellCard.conditionValue;
-                    }
-                    break;
-
-                case SpellCard.Condition.Race:
-
-                    if (tCard != null)
-                    {
-                        valid = tCard.card.race ==
-                            (Card.Race)spellCard.conditionValue;
-                    }
-                    break;
-
-                case SpellCard.Condition.Friendly:
-                    if (tCard != null)
-                    {
-                        valid = tCard.team == GameManager.Team.Friendly;
-                    }
-                    break;
-
-                case SpellCard.Condition.Enemy:
-                    if (tCard != null)
-                    {
-                        valid = tCard.team == GameManager.Team.Enemy;
-                    }
-                    break;
-
-                case SpellCard.Condition.Status:
-                    valid = false;
-                    foreach (Entity.Status s in tEntity.statuses)
-                    {
-                        if ((int)s.statusType == spellCard.conditionValue)
-                        {
-                            valid = true;
-                        }
-                    }
-                    break;
-
-                default:
-                    Debug.LogWarning("Condition not implemented");
-                    break;
-            }
-
-            // Remove target if marked invalid
-            if (!valid)
-            {
-                targets.Remove(t);
-            }
-        } // end Conditions foreach loop
-
-        // Execute Card Action on our list of valid targets
-        foreach (GameObject t in targets)
-        {
-            Entity tEntity = t.GetComponent<Entity>();
-            CardManager tCard = t.GetComponent<CardManager>();
-
-            switch (spellCard.cardBehavior.action)
-            {
-                case Card.Action.None:
-                    break;
-
-                case Card.Action.Damage:
-                    if (tEntity != null)
-                    tEntity.Health -= card.cardBehavior.actionValue;
-                    break;
-
-                case Card.Action.Heal:
-                    tEntity.Health += card.cardBehavior.actionValue;
-                    break;
-
-                case Card.Action.Destroy:
-                    tCard.DestroySelf();
-                    break;
-
-                default:
-                    Debug.LogWarning("Card Action not implemented");
-                    break;
-            }
-
-            switch (spellCard.cardBehavior.statChange)
-            {
-                case Card.StatChange.None:
-                    break;
-
-                case Card.StatChange.SetHealth:
-                    tEntity.Health = card.cardBehavior.statChangeValue;
-                    tEntity.MaxHealth = card.cardBehavior.statChangeValue;
-                    break;
-
-                case Card.StatChange.IncreaseHealth:
-                    tEntity.MaxHealth += card.cardBehavior.statChangeValue;
-                    break;
-
-                case Card.StatChange.IncreaseSpeed:
-                    tEntity.Speed += card.cardBehavior.statChangeValue / 100f;
-                    break;
-
-                default:
-                    Debug.LogWarning("Card Stat Change not implemented");
-                    break;
-            }
-
-            tEntity.ApplyStatus(
-                card.cardBehavior.statusInflicted,
-                card.cardBehavior.stacks
-            );
+    public override void Cast(GameObject location)
+    {
+        // First off, let's see if this boi even lands a hit
+        if (Random.Range(0, 100) > spellCard.actionChance) {
+            DestroySelf();
+            Debug.Log(gameObject.name + " action failed, object destroyed");
+            return;
         }
+
+        HashSet<GameObject> targets = GetActionTargets(location);
+        targets = FilterTargetsByCondition(targets);
+        ExecuteActionOnTargets(targets);
 
         DestroySelf();
     }

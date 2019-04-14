@@ -125,6 +125,7 @@ GameObject:
   - component: {fileID: 224461859050765230}
   - component: {fileID: 222185122745897832}
   - component: {fileID: 114886130771183420}
+  - component: {fileID: 114443660951759760}
   m_Layer: 0
   m_Name: Grid Cell Display
   m_TagString: Untagged
@@ -1064,6 +1065,20 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114443660951759760
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1335673244041384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fdb91375223b402a86db607f19ebc3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 114886130771183420}
+  highlights: []
+  colorPulseSpeed: 1
 --- !u!114 &114527917170290070
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1906,6 +1921,7 @@ MonoBehaviour:
   cardActionValueText: {fileID: 114586087886055664}
   cardActionTimeText: {fileID: 114213857973493944}
   gridDisplayRect: {fileID: 224461859050765230}
+  gridDisplayHighlightable: {fileID: 114443660951759760}
   gridStatusesParent: {fileID: 224489065755432112}
   gridHealthText: {fileID: 114064513350211962}
   gridActionValueText: {fileID: 114913322286422072}

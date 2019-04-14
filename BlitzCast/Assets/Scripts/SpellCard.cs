@@ -4,28 +4,25 @@ using UnityEngine;
 public class SpellCard : Card
 {
 
-    // Conditions mean cast spell only if target is/has x
-    public enum Condition
+    public enum SpellTarget
     {
-        None,
-        HPGreaterThan,
-        HPLessThan,
-        Race,
-        Status,
-        Friendly,
-        Enemy
+        Single,
+        SingleCreature,
+        Cross,
+        Square,
+        Row,
+        Column,
+        AllCreatures,
+        All
     }
 
-    public Condition condition;
-    public int conditionValue;
+    public SpellTarget targetArea;
 
 
     // Cannot use newCard = oldCard because it becomes a reference! Use Clone()!
     public override Card Clone()
     {
         SpellCard copy = (SpellCard) base.Clone();
-        copy.condition = condition;
-        copy.conditionValue = conditionValue;
         return copy;
     }
 }

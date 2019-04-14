@@ -33,29 +33,18 @@ public abstract class Card : ScriptableObject
         IncreaseSpeed
     }
 
-    public enum TargetArea
+    // Filter targets based on condition
+    public enum Condition
     {
-        Single,
-        SingleCreature,
-        Cross,
-        Square,
-        Row,
-        Column,
-        AllCreatures,
-        All
+        None,
+        HPGreaterThan,
+        HPLessThan,
+        Race,
+        Status,
+        Friendly,
+        Enemy
     }
 
-    [Serializable]
-    public struct Behavior
-    {
-        public Action action;
-        [Range(0, 30)] public int actionValue;
-        public StatChange statChange;
-        [Range(-100, 100)] public int statChangeValue;
-        public TargetArea targetArea;
-        public Entity.Status.StatusType statusInflicted;
-        [Range(0, 10)] public int stacks;
-    }
 
     public string cardName = "New Card";
     public string description = "Something cool?";
@@ -64,21 +53,37 @@ public abstract class Card : ScriptableObject
     [Range(0, 30)] public int castTime = 1;
     [Range(0, 30)] public int redrawTime = 1;
     public Race race = Race.Generic;
-    public Behavior cardBehavior;
+    public Action action;
+    [Range(0, 30)] public int actionValue;
+    public StatChange statChange;
+    [Range(-100, 100)] public int statChangeValue;
+    public Entity.Status.StatusType statusInflicted;
+    [Range(0, 10)] public int stacks;
     [Range(0, 100)] public int actionChance = 100;
+    public Condition condition;
+    public int conditionValue;
 
 
     // Cannot use newCard = oldCard because it becomes a reference! Use Clone()!
     public virtual Card Clone()
     {
         Card copy = (CreatureCard)CreateInstance(typeof(CreatureCard));
-        copy.cardName = cardName;
-        copy.description = description;
-        copy.castTime = castTime;
-        copy.redrawTime = redrawTime;
-        copy.cardBehavior = cardBehavior;
-        copy.color = color;
-        copy.actionChance = actionChance;
+        cardName = copy.cardName;
+        description = copy.description;
+        spriteAnimateSpeed = copy.spriteAnimateSpeed;
+        color = copy.color;
+        castTime = copy.castTime;
+        redrawTime = copy.redrawTime;
+        race = copy.race;
+        action = copy.action;
+        actionValue = copy.actionValue;
+        statChange = copy.statChange;
+        statChangeValue = copy.statChangeValue;
+        statusInflicted = copy.statusInflicted;
+        stacks = copy.stacks;
+        actionChance = copy.actionChance;
+        copy.condition = condition;
+        copy.conditionValue = conditionValue;
         return copy;
     }
 }

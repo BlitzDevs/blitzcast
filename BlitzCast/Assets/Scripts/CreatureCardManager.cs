@@ -11,6 +11,7 @@ public class CreatureCardManager : CardManager
     [SerializeField] private TMP_Text cardActionValueText;
     [SerializeField] private TMP_Text cardActionTimeText;
     [SerializeField] private RectTransform gridDisplayRect;
+    [SerializeField] private Highlightable gridDisplayHighlightable;
     [SerializeField] private RectTransform gridStatusesParent;
     [SerializeField] private TMP_Text gridHealthText;
     [SerializeField] private TMP_Text gridActionValueText;
@@ -33,26 +34,30 @@ public class CreatureCardManager : CardManager
         creatureCard = (CreatureCard) card;
 
         // set text on card
-        actionValue = creatureCard.cardBehavior.actionValue;
+        actionValue = creatureCard.actionValue;
         actionTime = creatureCard.actionTime;
         cardHealthText.text = creatureCard.health.ToString();
         cardActionValueText.text = actionValue.ToString();
         cardActionTimeText.text = actionTime.ToString();
 
+        Vector2 cellSize = new Vector2(
+            grid.cellsGroup.cellSize.x * creatureCard.size.y,
+            grid.cellsGroup.cellSize.y * creatureCard.size.x
+        );
         spriteSize = new Vector2(
             sprite.rectTransform.rect.width * creatureCard.size.y,
             sprite.rectTransform.rect.height * creatureCard.size.x
         );
         sizeOffset = new Vector2(
-            sprite.rectTransform.rect.width / 2 * (creatureCard.size.y - 1),
-            -sprite.rectTransform.rect.height / 2 * (creatureCard.size.x - 1)
+             grid.cellsGroup.cellSize.x / 2 * (creatureCard.size.y - 1),
+            -grid.cellsGroup.cellSize.y / 2 * (creatureCard.size.x - 1)
         );
 
         sprite.rectTransform.sizeDelta = spriteSize;
         castingSpriteParent.sizeDelta = grid.cellsGroup.cellSize;
 
-        gridStatusesParent.sizeDelta = new Vector2(grid.cellsGroup.cellSize.x, gridStatusesParent.rect.y);
-        gridDisplayRect.sizeDelta = grid.cellsGroup.cellSize;
+        gridStatusesParent.sizeDelta = new Vector2(cellSize.x, gridStatusesParent.rect.y);
+        gridDisplayRect.sizeDelta = cellSize;
         gridDisplayRect.gameObject.SetActive(false);
     }
 
@@ -196,7 +201,7 @@ public class CreatureCardManager : CardManager
         sprite.color = card.color;
 
         // Start action timer coroutine
-        StartCoroutine(DoAction());
+        StartCoroutine(ActionLoop());
     }
 
 
@@ -204,16 +209,39 @@ public class CreatureCardManager : CardManager
     {
         // Delete creature locations from CreatureGrid
         for (int r = 0; r < creatureCard.size.x; r++)
-            for (int c = 0; c < creatureCard.size.y; c++)
-            {
-                Vector2Int rc = new Vector2Int(coordinates.x + r, coordinates.y + c);
-                grid.creatures.Remove(rc);
-            }
+        for (int c = 0; c < creatureCard.size.y; c++)
+        {
+            Vector2Int rc = new Vector2Int(coordinates.x + r, coordinates.y + c);
+            grid.creatures.Remove(rc);
+        }
 
         base.DestroySelf();
     }
 
-    private IEnumerator DoAction()
+    public override HashSet<GameObject> GetActionTargets(GameObject location)
+    {
+        // location is the upper left grid cell our creature is in
+
+        //turn locations into targets
+        HashSet<GameObject> targets = new HashSet<GameObject>();
+        //foreach (GameObject g in locations)
+        //{
+        //    if (g.GetComponent<CardManager>() != null ||
+        //        g.GetComponent<Entity>() != null)
+        //    {
+        //        targets.Add(g);
+        //    }
+        //    else if (g.GetComponent<GridCell>() != null &&
+        //             g.GetComponent<GridCell>().GetCreature() != null)
+        //    {
+        //        targets.Add(g.GetComponent<GridCell>().GetCreature().gameObject);
+        //    }
+        //}
+
+        return targets;
+    }
+
+    private IEnumerator ActionLoop()
     {
         while (entity.Health > 0)
         {
@@ -222,32 +250,19 @@ public class CreatureCardManager : CardManager
                 // Raise event to let entity know
                 entity.TriggerActionEvent();
 
-                switch (card.cardBehavior.action)
+                if (Random.Range(0, 100) > card.actionChance)
                 {
-                    case Card.Action.None:
-                        break;
-
-                    case Card.Action.Damage:
-                        Debug.Log(card.cardName + " deal damage");
-                        break;
-
-                    case Card.Action.Heal:
-                        Debug.Log(card.cardName + " heals");
-                        break;
-
-                    case Card.Action.Destroy:
-                        Debug.Log(card.cardName + " destroys");
-                        break;
-
-                    case Card.Action.Counter:
-                        Debug.LogWarning(card.cardName + " illegal action: Counter");
-                        break;
-
-                    default:
-                        Debug.LogWarning(card.cardName + " Action not implemented: " + card.cardBehavior.action.ToString());
-                        break;
+                    Debug.Log(gameObject.name + " action failed");
                 }
-                actionTimer.StartTimer(creatureCard.actionTime);
+                else
+                {
+                    HashSet<GameObject> targets = GetActionTargets(grid.GetCell(coordinates).gameObject);
+                    targets = FilterTargetsByCondition(targets);
+                    ExecuteActionOnTargets(targets);
+
+                    actionTimer.StartTimer(creatureCard.actionTime);
+                }
+
             }
             yield return null;
         }

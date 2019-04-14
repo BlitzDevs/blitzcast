@@ -40,6 +40,7 @@ public abstract class CardManager : MonoBehaviour,
     // HashSets are Collections which can only contain unique values
     abstract public GameObject GetCastLocation();
     abstract public List<GameObject> GetCastTargets(GameObject target);
+    abstract public HashSet<GameObject> GetActionTargets(GameObject location);
     abstract public void TryPreview();
     abstract public void Cast(GameObject location);
 
@@ -193,6 +194,147 @@ public abstract class CardManager : MonoBehaviour,
         Cast(target);
 
         ClearPreview();
+    }
+
+    protected HashSet<GameObject> FilterTargetsByCondition(HashSet<GameObject> targets)
+    {
+        // Filter targets based on conditions
+        HashSet<GameObject> targetsCopy = new HashSet<GameObject>(targets);
+
+        foreach (GameObject t in targetsCopy)
+        {
+            bool valid = true;
+
+            Entity tEntity = t.GetComponent<Entity>();
+            CardManager tCard = t.GetComponent<CardManager>();
+
+            switch (card.condition)
+            {
+                case Card.Condition.None:
+                    break;
+
+                case Card.Condition.HPGreaterThan:
+                    if (tEntity != null)
+                    {
+                        valid = tEntity.Health > card.conditionValue;
+                    }
+                    break;
+
+                case Card.Condition.HPLessThan:
+                    if (tEntity != null)
+                    {
+                        valid = tEntity.Health < card.conditionValue;
+                    }
+                    break;
+
+                case Card.Condition.Race:
+
+                    if (tCard != null)
+                    {
+                        valid = tCard.card.race ==
+                            (Card.Race) card.conditionValue;
+                    }
+                    break;
+
+                case Card.Condition.Friendly:
+                    if (tCard != null)
+                    {
+                        valid = tCard.team == GameManager.Team.Friendly;
+                    }
+                    break;
+
+                case Card.Condition.Enemy:
+                    if (tCard != null)
+                    {
+                        valid = tCard.team == GameManager.Team.Enemy;
+                    }
+                    break;
+
+                case Card.Condition.Status:
+                    valid = false;
+                    foreach (Entity.Status s in tEntity.statuses)
+                    {
+                        if ((int)s.statusType == card.conditionValue)
+                        {
+                            valid = true;
+                        }
+                    }
+                    break;
+
+                default:
+                    Debug.LogWarning("Condition not implemented");
+                    break;
+            }
+
+            // Remove target if marked invalid
+            if (!valid)
+            {
+                targets.Remove(t);
+            }
+        }
+
+        return targets;
+    }
+
+    protected void ExecuteActionOnTargets(HashSet<GameObject> targets)
+    {
+        // Execute Card Action on our list of valid targets
+        foreach (GameObject t in targets)
+        {
+            Entity tEntity = t.GetComponent<Entity>();
+            CardManager tCard = t.GetComponent<CardManager>();
+
+            switch (card.action)
+            {
+                case Card.Action.None:
+                    break;
+
+                case Card.Action.Damage:
+                    if (tEntity != null)
+                        tEntity.Health -= card.actionValue;
+                    break;
+
+                case Card.Action.Heal:
+                    tEntity.Health += card.actionValue;
+                    break;
+
+                case Card.Action.Destroy:
+                    tCard.DestroySelf();
+                    break;
+
+                default:
+                    Debug.LogWarning("Card Action not implemented");
+                    break;
+            }
+
+            switch (card.statChange)
+            {
+                case Card.StatChange.None:
+                    break;
+
+                case Card.StatChange.SetHealth:
+                    tEntity.Health = card.statChangeValue;
+                    tEntity.MaxHealth = card.statChangeValue;
+                    break;
+
+                case Card.StatChange.IncreaseHealth:
+                    tEntity.MaxHealth += card.statChangeValue;
+                    break;
+
+                case Card.StatChange.IncreaseSpeed:
+                    tEntity.Speed += card.statChangeValue / 100f;
+                    break;
+
+                default:
+                    Debug.LogWarning("Card Stat Change not implemented");
+                    break;
+            }
+
+            tEntity.ApplyStatus(
+                card.statusInflicted,
+                card.stacks
+            );
+        }
     }
 
     // in the future, replace this with some animation possibly

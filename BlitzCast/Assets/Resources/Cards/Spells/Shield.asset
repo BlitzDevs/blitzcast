@@ -12,20 +12,19 @@ MonoBehaviour:
   m_Name: Shield
   m_EditorClassIdentifier: 
   cardName: Shield
-  description: 2 Health + Shield
+  description: 2 Health + 1 Shield
   spriteAnimateSpeed: 30
   color: {r: 0.22794116, g: 0.5207913, b: 1, a: 1}
   castTime: 0
   redrawTime: 2
   race: 0
-  cardBehavior:
-    action: 0
-    actionValue: 2
-    statChange: 2
-    statChangeValue: 2
-    targetArea: 1
-    statusInflicted: 5
-    stacks: 1
+  action: 0
+  actionValue: 0
+  statChange: 2
+  statChangeValue: 2
+  statusInflicted: 5
+  stacks: 1
   actionChance: 100
   condition: 0
   conditionValue: 0
+  targetArea: 0
