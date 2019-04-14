@@ -9,9 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1ca6bc100b1c64dd08653fc1789caa19, type: 3}
-  m_Name: goodmonkey
+  m_Name: testmonkey
   m_EditorClassIdentifier: 
-  username: goodmonkey
+  username: testmonkey
   caster: {fileID: 11400000, guid: 4be89d3854f4f4996a37f34dc5bd7834, type: 2}
   deck:
   - {fileID: 11400000, guid: ffd14ae77ae969e42bfa1e7ff7c2294c, type: 2}
@@ -21,9 +21,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 14a301b728cebdc42a9914db377f0490, type: 2}
   - {fileID: 11400000, guid: 99ec334f96b49134f957f0f4e398e431, type: 2}
   - {fileID: 11400000, guid: b95c0da3112f4c942b01cb5085d2d09c, type: 2}
-  - {fileID: 11400000, guid: b95c0da3112f4c942b01cb5085d2d09c, type: 2}
+  - {fileID: 11400000, guid: ef68115947b2247339e136db363e3245, type: 2}
   - {fileID: 11400000, guid: 75bccd7ce720c4d88a4379925d7641a6, type: 2}
   - {fileID: 11400000, guid: 53a36ab45021e40c189040938ba42ac5, type: 2}
+  - {fileID: 11400000, guid: 953040b044fab471c91b6ce3ab598b59, type: 2}
+  - {fileID: 11400000, guid: b95c0da3112f4c942b01cb5085d2d09c, type: 2}
   skin:
     creatureCard: {fileID: 0}
     spellCard: {fileID: 0}
