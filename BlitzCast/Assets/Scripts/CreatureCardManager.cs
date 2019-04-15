@@ -54,6 +54,8 @@ public class CreatureCardManager : CardManager
         );
 
         sprite.rectTransform.sizeDelta = spriteSize;
+        sprite.transform.localPosition += (Vector3)sizeOffset;
+
         castingSpriteParent.sizeDelta = grid.cellsGroup.cellSize;
 
         gridStatusesParent.sizeDelta = new Vector2(cellSize.x, gridStatusesParent.rect.y);
@@ -69,7 +71,8 @@ public class CreatureCardManager : CardManager
             //set color/transparency
             sprite.color = new Color(0, 0, 0, 0.5f);
             //snap to target
-            castingSpriteParent.transform.position = target.transform.position;
+            //castingSpriteParent.transform.position = target.transform.position;
+            spriteMover.SetPosition(target.transform.position);
 
             foreach (GameObject targetObject in GetCastTargets(target))
             {
@@ -82,8 +85,6 @@ public class CreatureCardManager : CardManager
         {
             sprite.color = card.color;
         }
-
-        castingSpriteParent.transform.localPosition += (Vector3) sizeOffset;
     }
 
     public override GameObject GetCastLocation()
@@ -93,8 +94,9 @@ public class CreatureCardManager : CardManager
         GridCell cell = cellObject != null ?
             cellObject.GetComponent<GridCell>() : null;
 
-        if (cell != null &&
-            cell.coordinates.x >= grid.size.x / 2 &&
+        if (cell != null && (team == GameManager.Team.Friendly ?
+                cell.coordinates.x >= grid.size.x / 2 :
+                cell.coordinates.x < grid.size.x / 2) &&
             cell.coordinates.y + creatureCard.size.y - 1 < grid.size.y &&
             cell.coordinates.x + creatureCard.size.x - 1 < grid.size.x)
         {
@@ -175,6 +177,7 @@ public class CreatureCardManager : CardManager
         castingSpriteParent.transform.SetParent(gridDisplayRect);
         castingSpriteParent.SetAsFirstSibling();
         castingSpriteParent.transform.localPosition = Vector3.zero;
+        sprite.transform.localPosition = Vector3.zero;
         transform.SetParent(grid.playerCreaturesParent);
         transform.position = location.transform.position;
         transform.localPosition += (Vector3) sizeOffset;

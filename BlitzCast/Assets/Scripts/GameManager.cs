@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
 
     public GameTimer timer;
     public PlayerManager playerA;
-    //public PlayerManager playerB;
+    public PlayerManager playerB;
     public Camera mainCamera;
     public GraphicRaycaster raycaster;
     public EventSystem eventSystem;
@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
         creatureGrid.Initialize(creatureGridSize);
         // Initialize Players
         playerA.Initialize(Team.Friendly, playerHealth, cardHandSize);
-        //playerB.Initialize(Team.Enemy, playerHealth, cardHandSize);
+        playerB.Initialize(Team.Enemy, playerHealth, cardHandSize);
     }
 
 
@@ -99,8 +99,7 @@ public class GameManager : MonoBehaviour
 
     public PlayerManager GetPlayer(Team team)
     {
-        return playerA;
-        //return team == Team.Friendly ? playerA : playerB;
+        return team == Team.Friendly ? playerA : playerB;
     }
 
 }

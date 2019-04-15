@@ -28,7 +28,8 @@ public class SpellCardManager: CardManager
         if (target != null)
         {
             //snap to target
-            sprite.transform.position = target.transform.position;
+            //sprite.transform.position = target.transform.position;
+            spriteMover.SetPosition(target.transform.position);
 
             foreach (GameObject targetObject in GetCastTargets(target))
             {
@@ -190,7 +191,7 @@ public class SpellCardManager: CardManager
 
             case SpellCard.SpellTarget.All:
                 targets.Add(gameManager.playerA.gameObject);
-                //targets.Add(gameManager.playerB.gameObject);
+                targets.Add(gameManager.playerB.gameObject);
                 goto case SpellCard.SpellTarget.AllCreatures;
 
             case SpellCard.SpellTarget.AllCreatures:

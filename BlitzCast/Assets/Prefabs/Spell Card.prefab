@@ -71,6 +71,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224573179716825638}
   - component: {fileID: 114540155732257528}
+  - component: {fileID: 114141343737047016}
   m_Layer: 0
   m_Name: Spell Card
   m_TagString: Untagged
@@ -189,6 +190,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224691278728573670}
+  - component: {fileID: 114130227021492874}
   m_Layer: 0
   m_Name: Spell (Casting Sprite Parent)
   m_TagString: Untagged
@@ -351,9 +353,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84191e5c2182d469daf26c57e4a81bc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  card: {fileID: 0}
-  sprites: []
+  animatable:
+    speed: 0
+    entity: {fileID: 0}
+  state: 0
+  currentSprites: []
   frame: 0
+--- !u!114 &114130227021492874
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1403233460009394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41d4f7ecf16394b9aab5bae50dcfbff5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useLocalPosition: 0
+--- !u!114 &114141343737047016
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1243322330585536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41d4f7ecf16394b9aab5bae50dcfbff5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useLocalPosition: 1
 --- !u!114 &114174219490966922
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -773,6 +802,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cd202fdc90bfbc498bb094e16696e4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  card: {fileID: 0}
+  team: 0
+  cardMover: {fileID: 114141343737047016}
+  spriteMover: {fileID: 114130227021492874}
   cardFront: {fileID: 1276552354467992}
   cardBack: {fileID: 1313113861035576}
   targetableZone: {fileID: 1427296473608388}
@@ -784,9 +817,6 @@ MonoBehaviour:
   raceText: {fileID: 114465972324191766}
   redrawTimeText: {fileID: 114174219490966922}
   castTimeText: {fileID: 114821733064869154}
-  card: {fileID: 0}
-  team: 0
-  previewImages: []
   trail: {fileID: 96441862486602426}
   descriptionText: {fileID: 114743841807125818}
 --- !u!114 &114617551581465120

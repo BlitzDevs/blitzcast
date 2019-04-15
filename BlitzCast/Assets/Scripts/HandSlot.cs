@@ -7,7 +7,7 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
                             IPointerEnterHandler, IPointerExitHandler
 {
 
-    public GameObject slotObject;
+    public CardManager slotObject;
 
     private CircleTimer drawTimer;
     private Vector2 originalPosition = Vector2.zero;
@@ -64,12 +64,12 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
         }
 
         GameObject cardObject = Instantiate(cardPrefab);
-        cardObject.GetComponent<CardManager>().Initialize(card, this, player);
+        slotObject = cardObject.GetComponent<CardManager>();
+        slotObject.Initialize(card, this, player);
 
-        slotObject = cardObject;
         slotObject.transform.SetParent(transform);
-        slotObject.transform.localScale = Vector3.one;
         slotObject.transform.localPosition = Vector3.zero;
+        slotObject.transform.localScale = Vector3.one;
         slotObject.transform.localRotation = Quaternion.identity;
     }
 
@@ -89,8 +89,11 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
         if (slotObject != null)
         {
             // Float
-            slotObject.transform.localPosition = new Vector3(
-                originalPosition.x, originalPosition.y + pixelsToFloatWhenSelected, 0);
+            //slotObject.transform.localPosition = new Vector3(
+            //originalPosition.x, originalPosition.y + pixelsToFloatWhenSelected, 0);
+
+            slotObject.cardMover.SetPosition(new Vector3(
+                originalPosition.x, originalPosition.y + pixelsToFloatWhenSelected, 0));
         }
     }
 
@@ -99,7 +102,8 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
         if (slotObject != null)
         {
             // Unfloat
-            slotObject.transform.localPosition = originalPosition;
+            //slotObject.transform.localPosition = originalPosition;
+            slotObject.cardMover.SetPosition(originalPosition);
         }
     }
 

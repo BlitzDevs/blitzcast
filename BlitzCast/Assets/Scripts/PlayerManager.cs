@@ -21,7 +21,6 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private List<Card> playingDeck; // deck in play
 
     private GameManager gameManager;
-    private System.Random randomGenerator = new System.Random();
 
 
     public void Initialize(GameManager.Team team, int health, int handSize)
@@ -87,7 +86,7 @@ public class PlayerManager : MonoBehaviour
     {
         for (int i = 0; i < playingDeck.Count; i++)
         {
-            int j = randomGenerator.Next(0, playingDeck.Count);
+            int j = Random.Range(0, playingDeck.Count);
             var temp = playingDeck[i];
             playingDeck[i] = playingDeck[j];
             playingDeck[j] = temp;

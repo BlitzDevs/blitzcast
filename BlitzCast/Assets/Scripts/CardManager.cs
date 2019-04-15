@@ -8,6 +8,12 @@ using TMPro;
 public abstract class CardManager : MonoBehaviour,
                            IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+
+    public Card card;
+    public GameManager.Team team;
+    public SmoothMover cardMover;
+    public SmoothMover spriteMover;
+
     // SeralizeField tells the Unity editor to display variable even if private
     // protected is a private variable accessible by inheriting members
     [SerializeField] protected GameObject cardFront;
@@ -23,8 +29,6 @@ public abstract class CardManager : MonoBehaviour,
     [SerializeField] protected TMP_Text redrawTimeText;
     [SerializeField] protected TMP_Text castTimeText;
 
-    public Card card;
-    public GameManager.Team team;
 
     protected GameManager gameManager;
     protected CreatureGrid grid;
@@ -89,7 +93,6 @@ public abstract class CardManager : MonoBehaviour,
 
     protected void ClearPreview()
     {
-        sprite.transform.localPosition = Vector3.zero;
         foreach (Highlightable h in previewHighlightables)
         {
             h.RemoveHighlight(card.color);
@@ -126,12 +129,13 @@ public abstract class CardManager : MonoBehaviour,
         }
 
         // Convert screen location to camera position
-        Vector3 position = new Vector3(
+        Vector3 pointPosition = new Vector3(
             eventData.position.x,
             eventData.position.y,
             gameManager.mainCamera.nearClipPlane
         );
-        castingSpriteParent.transform.position = gameManager.mainCamera.ScreenToWorldPoint(position);
+        //castingSpriteParent.transform.position = gameManager.mainCamera.ScreenToWorldPoint(pointPosition);
+        spriteMover.SetPosition(gameManager.mainCamera.ScreenToWorldPoint(pointPosition));
 
         ClearPreview();
         TryPreview();
@@ -150,6 +154,9 @@ public abstract class CardManager : MonoBehaviour,
         if (target != null)
         {
             casted = true;
+
+            cardMover.enabled = false;
+            spriteMover.enabled = false;
 
             // remove self from card slot
             slot.slotObject = null;

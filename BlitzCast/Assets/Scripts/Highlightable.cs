@@ -6,7 +6,7 @@ public class Highlightable : MonoBehaviour
 {
     public Image image;
     public List<Color> highlights;
-    public float colorPulseSpeed = 0.3f;
+    public float colorPulseSpeed = 1f;
 
     private Color defaultColor;
     private GameTimer gameTimer;
