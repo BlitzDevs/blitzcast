@@ -94,17 +94,18 @@ public class CreatureCardManager : CardManager
         GridCell cell = cellObject != null ?
             cellObject.GetComponent<GridCell>() : null;
 
+        //will probably need to be changed as we implement player2 and networking
         if (cell != null && (team == GameManager.Team.Friendly ?
                 cell.coordinates.x >= grid.size.x / 2 :
                 cell.coordinates.x < grid.size.x / 2) &&
             cell.coordinates.y + creatureCard.size.y - 1 < grid.size.y &&
             cell.coordinates.x + creatureCard.size.x - 1 < grid.size.x)
         {
+            //error checking to make sure all tiles are clear
             for (int r = 0; r < creatureCard.size.x; r++)
             for (int c = 0; c < creatureCard.size.y; c++)
             {
-                Vector2Int rc = new Vector2Int(
-                    cell.coordinates.x + r, cell.coordinates.y + c);
+                Vector2Int rc = new Vector2Int(cell.coordinates.x + r, cell.coordinates.y + c);
                 if (grid.creatures.ContainsKey(rc))
                 {
                     return null;

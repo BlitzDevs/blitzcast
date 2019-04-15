@@ -155,6 +155,12 @@ public abstract class CardManager : MonoBehaviour,
         {
             casted = true;
 
+            //Finish the move before disabling the movers
+            cardMover.InstantMove();
+            spriteMover.InstantMove();
+
+            //disable card and sprite movers so they can't move after casting
+            //might need to change for creature attack animations
             cardMover.enabled = false;
             spriteMover.enabled = false;
 
@@ -165,7 +171,7 @@ public abstract class CardManager : MonoBehaviour,
 
             // tell player that card casted this frame
             player.entity.TriggerActionEvent();
-
+            
             StartCoroutine(CastTimer(target));
         }
         else

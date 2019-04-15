@@ -16,8 +16,22 @@ public class SmoothMover : MonoBehaviour
         this.targetPosition = targetPosition;
     }
 
+    public void InstantMove()
+    {
+        //moves to target location instantly
+        if (useLocalPosition)
+        {
+            transform.localPosition = Vector3Int.RoundToInt(targetPosition);
+        }
+        else
+        {
+            transform.position = Vector3Int.RoundToInt(targetPosition);
+        }
+    }
+
     private void Update()
     {
+        //uses Vector3.SmoothDamp so cards move smoothly
         if (useLocalPosition)
         {
             transform.localPosition = Vector3Int.RoundToInt(Vector3.SmoothDamp(
