@@ -142,13 +142,12 @@ public abstract class CardManager : MonoBehaviour,
         raceText.text = card.race.ToString();
         artImage.color = card.color;
         sprite.color = card.color;
-        SpriteSheetAnimator.Animatable anim = new SpriteSheetAnimator.Animatable(
+        animator.Initialize(
             card.name,
             "Cards/" + (card is CreatureCard ? "Creatures" : "Spells"),
             card.spriteAnimateSpeed,
             null
         );
-        animator.Initialize(anim);
         castTimeText.text = card.castTime.ToString();
         redrawTimeText.text = card.redrawTime.ToString();
 
@@ -248,7 +247,12 @@ public abstract class CardManager : MonoBehaviour,
             // set our casted flag so that cannot cast twice/move this object
             casted = true;
 
-            // card/sprite no longer needs to move
+            //Finish the move before disabling the movers
+            cardMover.InstantMove();
+            spriteMover.InstantMove();
+
+            //disable card and sprite movers so they can't move after casting
+            //might need to change for creature attack animations
             cardMover.enabled = false;
             spriteMover.enabled = false;
 
@@ -288,7 +292,7 @@ public abstract class CardManager : MonoBehaviour,
     /// </para>
     /// </summary>
     /// <param name="target">
-    /// The target location of the cast, as determined by GetCastLocation() 
+    /// The target location of the cast, as determined by GetCastLocation()
     /// previously.
     /// </param>
     protected virtual IEnumerator CastTimer(GameObject target)

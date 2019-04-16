@@ -33,11 +33,27 @@ public class SmoothMover : MonoBehaviour
     }
 
     /// <summary>
+    /// Move to target location instantly.
+    /// </summary>
+    public void InstantMove()
+    {
+        if (useLocalPosition)
+        {
+            transform.localPosition = Vector3Int.RoundToInt(targetPosition);
+        }
+        else
+        {
+            transform.position = Vector3Int.RoundToInt(targetPosition);
+        }
+    }
+
+    /// <summary>
     /// Called by Unity every frame.
     /// Move towards position.
     /// </summary>
     private void Update()
     {
+        //uses Vector3.SmoothDamp so cards move smoothly
         if (useLocalPosition)
         {
             // use local position

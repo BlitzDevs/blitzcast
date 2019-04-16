@@ -166,8 +166,7 @@ public class CreatureCardManager : CardManager
             for (int r = 0; r < creatureCard.size.x; r++)
             for (int c = 0; c < creatureCard.size.y; c++)
             {
-                Vector2Int rc = new Vector2Int(
-                    cell.coordinates.x + r, cell.coordinates.y + c);
+                Vector2Int rc = new Vector2Int(cell.coordinates.x + r, cell.coordinates.y + c);
                 if (grid.creatures.ContainsKey(rc))
                 {
                     return null;
@@ -210,7 +209,7 @@ public class CreatureCardManager : CardManager
     /// </para>
     /// </summary>
     /// <param name="target">
-    /// The target location of the cast, as determined by GetCastLocation() 
+    /// The target location of the cast, as determined by GetCastLocation()
     /// previously.
     /// </param>
     protected override IEnumerator CastTimer(GameObject target)
@@ -239,7 +238,7 @@ public class CreatureCardManager : CardManager
 
         gameObject.layer = LayerMask.NameToLayer("Creatures");
 
-        // Create entity 
+        // Create entity
         entity = gameObject.AddComponent<Entity>();
         entity.Initialize(creatureCard.health, gridStatusesParent);
         entity.HealthChangeEvent += SetHealthDisplay;
