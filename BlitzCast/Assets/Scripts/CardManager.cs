@@ -5,17 +5,35 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
+/// <summary>
+/// The abstract CardManager that other CardManagers should inherit from.
+/// Handles all of the displays and events that a card object does.
+/// The card itself is determined by Card.
+/// </summary>
+/// <seealso cref="Card"/>
+/// <seealso cref="CreatureCardManager"/>
+/// <seealso cref="SpellCardManager"/>
 public abstract class CardManager : MonoBehaviour,
                            IBeginDragHandler, IDragHandler, IEndDragHandler
 {
 
+    // FOR REFERENCE:
+    // [SeralizeField]  tells the Unity editor to display variable even if private
+    // protected        private variable accessible by inheriting members
+    // abstract         functions to be implemented by inherting classes
+    // virtual          functions that are overrideable but can have a body
+    // HashSet          Collections which can only contain unique values
+
+
     public Card card;
     public GameManager.Team team;
+    // smooth movements for moving our card (the peeking) and sprite (casting)
     public SmoothMover cardMover;
     public SmoothMover spriteMover;
 
-    // SeralizeField tells the Unity editor to display variable even if private
-    // protected is a private variable accessible by inheriting members
+    // These fields are references to our displayable components.
+    // These are set through the Unity Editor and should already be set in the
+    // prefab of the card.
     [SerializeField] protected GameObject cardFront;
     [SerializeField] protected GameObject cardBack;
     [SerializeField] protected GameObject targetableZone;
@@ -29,44 +47,97 @@ public abstract class CardManager : MonoBehaviour,
     [SerializeField] protected TMP_Text redrawTimeText;
     [SerializeField] protected TMP_Text castTimeText;
 
-
+    // references to useful objects
     protected GameManager gameManager;
     protected CreatureGrid grid;
     protected HandSlot slot;
+
+    // list of highlightable components we are currently highlighting for preview
+    // this is needed so that we can remove our highlights after done
     protected List<Highlightable> previewHighlightables;
 
     private PlayerManager player;
     private CircleTimer castTimer;
+
+    // once we know we have casted, we want to be able to prevent some actions
     private bool casted = false;
 
-
-    // abstract functions are to be implemented by inherting classes
-    // HashSets are Collections which can only contain unique values
+    /// <summary>
+    /// Get the GameObject of a valid cast location based on where the
+    /// mouse cursor currently is.
+    /// </summary>
+    /// <returns>
+    /// The GameObject of a valid cast location; otherwise, null.
+    /// </returns>
     abstract public GameObject GetCastLocation();
-    abstract public List<GameObject> GetCastTargets(GameObject target);
-    abstract public HashSet<GameObject> GetActionTargets(GameObject location);
+
+    /// <summary>
+    /// Get the targets for the cast based on the location of the cast.
+    /// </summary>
+    /// <returns>
+    /// List of GameObjects containing the target GameObjects.
+    /// </returns>
+    abstract public List<GameObject> GetCastTargets(GameObject locationObject);
+
+    /// <summary>
+    /// Get the targets for the action based on the location GameObject and the
+    /// action type of this card.
+    /// </summary>
+    /// <returns>
+    /// List of GameObjects containing the target GameObjects.
+    /// </returns>
+    abstract public HashSet<GameObject> GetActionTargets(GameObject locationObject);
+
+    /// <summary>
+    /// Called every frame inside OnDrag(); for showing cast location through
+    /// cell highlighting.
+    /// </summary>
     abstract public void TryPreview();
-    abstract public void Cast(GameObject location);
 
+    /// <summary>
+    /// Cast this card onto a location GameObject. Only a valid locationObject
+    /// should be passed.
+    /// </summary>
+    abstract public void Cast(GameObject locationObject);
 
-    // virtual functions are overrideable but can have a body
-    // Initialize is called by HandSlot
+    /// <summary>
+    /// Initialize this CardManager; set values and initiate displays.
+    /// (This function should be called by HandSlot after drawing/creating
+    /// the card.)
+    /// </summary>
+    /// <param name="card">
+    /// The card which defines the values and behavior of this card object.
+    /// </param>
+    /// <param name="slot">
+    /// The card hand slot which this card belongs to. DrawCard() will be
+    /// called to this hand slot.
+    /// </param>
+    /// <param name="player">
+    /// The reference to the player, which is needed to determine team.
+    /// </param>
     public virtual void Initialize(Card card, HandSlot slot, PlayerManager player)
     {
+        // find our GameManager so that we can have a reference to it
         gameManager = FindObjectOfType<GameManager>();
         grid = gameManager.creatureGrid;
 
+        // initiate highlightables list
         previewHighlightables = new List<Highlightable>();
+
+        // create castTimer object and deactivate it for now
         castTimer = gameManager.NewCircleTimer(transform);
         castTimer.gameObject.SetActive(false);
 
+        // set our variables
         this.card = card;
         this.slot = slot;
         this.player = player;
         team = player.team;
 
+        // on creation, this card should be Held
         gameObject.layer = LayerMask.NameToLayer("Held");
 
+        // set the display texts/colors to their proper values
         nameText.text = card.cardName;
         raceText.text = card.race.ToString();
         artImage.color = card.color;
@@ -84,6 +155,9 @@ public abstract class CardManager : MonoBehaviour,
         castingSpriteParent.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Do some clean up, then destroy this gameObject.
+    /// </summary>
     public virtual void DestroySelf()
     {
         ClearPreview();
@@ -91,6 +165,10 @@ public abstract class CardManager : MonoBehaviour,
         Destroy(gameObject);
     }
 
+    /// <summary>
+    /// Called every frame within OnDrag.
+    /// Removes all preview highlights.
+    /// </summary>
     protected void ClearPreview()
     {
         foreach (Highlightable h in previewHighlightables)
@@ -100,7 +178,11 @@ public abstract class CardManager : MonoBehaviour,
         previewHighlightables.Clear();
     }
 
-    // When begin dragging card, move card to Active layer
+    /// <summary>
+    /// Unity Event. On first frame of dragging this object, change the layer
+    /// and displays.
+    /// Does not do anything if card has already been casted.
+    /// </summary>
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (casted)
@@ -120,7 +202,11 @@ public abstract class CardManager : MonoBehaviour,
         }
     }
 
-    // While dragging, move the card and try preview
+    /// <summary>
+    /// Unity Event. While dragging this object, set the position of the sprite
+    /// to the mouse and show previews of the cast if valid.
+    /// Does not do anything if card has already been casted.
+    /// </summary>
     public void OnDrag(PointerEventData eventData)
     {
         if (casted)
@@ -128,21 +214,27 @@ public abstract class CardManager : MonoBehaviour,
             return;
         }
 
-        // Convert screen location to camera position
+        // convert screen location to camera position
+        // this is necessary because the Canvas's Render Mode is Camera
         Vector3 pointPosition = new Vector3(
             eventData.position.x,
             eventData.position.y,
             gameManager.mainCamera.nearClipPlane
         );
-        //castingSpriteParent.transform.position = gameManager.mainCamera.ScreenToWorldPoint(pointPosition);
         spriteMover.SetPosition(gameManager.mainCamera.ScreenToWorldPoint(pointPosition));
 
+        // update the cell highlighting/preview as we move mouse
         ClearPreview();
         TryPreview();
-
     }
 
-    // When stop dragging, start casting if valid; else return to hand
+    /// <summary>
+    /// Unity Event. Once finished dragging this object, depending on whether
+    /// the location of the current mouse position points to a GameObject which
+    /// is a valid cast location, begin the cast and prepare displays. Else,
+    /// reset the position of the sprite back into the hand slot.
+    /// Does not do anything if card has already been casted.
+    /// </summary>
     public void OnEndDrag(PointerEventData eventData)
     {
         if (casted)
@@ -153,8 +245,10 @@ public abstract class CardManager : MonoBehaviour,
         GameObject target = GetCastLocation();
         if (target != null)
         {
+            // set our casted flag so that cannot cast twice/move this object
             casted = true;
 
+            // card/sprite no longer needs to move
             cardMover.enabled = false;
             spriteMover.enabled = false;
 
@@ -166,6 +260,7 @@ public abstract class CardManager : MonoBehaviour,
             // tell player that card casted this frame
             player.entity.TriggerActionEvent();
 
+            // begin the cast timer
             StartCoroutine(CastTimer(target));
         }
         else
@@ -185,27 +280,45 @@ public abstract class CardManager : MonoBehaviour,
 
     }
 
+    /// <summary>
+    /// Start timer, then cast this card with the passed target once the timer
+    /// is complete.
+    /// <para>
+    /// Use with StartCoroutine(CastTimer).
+    /// </para>
+    /// </summary>
+    /// <param name="target">
+    /// The target location of the cast, as determined by GetCastLocation() 
+    /// previously.
+    /// </param>
     protected virtual IEnumerator CastTimer(GameObject target)
     {
+        // start the cast timer
         castTimer.gameObject.SetActive(true);
         castTimer.StartTimer(card.castTime);
         while (!castTimer.IsComplete())
         {
+            // stuck here until timer is complete
             yield return null;
         }
         castTimer.gameObject.SetActive(false);
 
         // start card draw timer after casted
         slot.StartDrawTimer(card.redrawTime);
-        // cast
-        Cast(target);
 
         ClearPreview();
+        // cast
+        Cast(target);
     }
 
+    /// <summary>
+    /// Filter a list of GameObject targets depending on the condition type and
+    /// value of this card.
+    /// </summary>
     protected HashSet<GameObject> FilterTargetsByCondition(HashSet<GameObject> targets)
     {
-        // Filter targets based on conditions
+        // A copy of our list is needed because you cannot modify a list that
+        // you are looping over.
         HashSet<GameObject> targetsCopy = new HashSet<GameObject>(targets);
 
         foreach (GameObject t in targetsCopy)
@@ -238,8 +351,7 @@ public abstract class CardManager : MonoBehaviour,
 
                     if (tCard != null)
                     {
-                        valid = tCard.card.race ==
-                            (Card.Race) card.conditionValue;
+                        valid = tCard.card.race == (Card.Race) card.conditionValue;
                     }
                     break;
 
@@ -273,7 +385,7 @@ public abstract class CardManager : MonoBehaviour,
                     break;
             }
 
-            // Remove target if marked invalid
+            // Remove target (from original list) if marked invalid
             if (!valid)
             {
                 targets.Remove(t);
@@ -283,6 +395,13 @@ public abstract class CardManager : MonoBehaviour,
         return targets;
     }
 
+    /// <summary>
+    /// Unity Event. Once finished dragging this object, depending on whether
+    /// the location of the current mouse position points to a GameObject which
+    /// is a valid cast location, begin the cast and prepare displays. Else,
+    /// reset the position of the sprite back into the hand slot.
+    /// Does not do anything if card has already been casted.
+    /// </summary>
     protected void ExecuteActionOnTargets(HashSet<GameObject> targets)
     {
         // Execute Card Action on our list of valid targets
@@ -337,14 +456,19 @@ public abstract class CardManager : MonoBehaviour,
                     break;
             }
 
-            tEntity.ApplyStatus(
+            tEntity.ApplyStatus(new Entity.StatusModifier(
                 card.statusInflicted,
                 card.stacks
-            );
+            ));
         }
     }
 
-    // in the future, replace this with some animation possibly
+
+    /// <summary>
+    /// Temporary display function which changes the color of the targetableZone
+    /// which overlays on top of the card. Cheap, but useful.
+    /// TODO: Replace this with an animation, possibly.
+    /// </summary>
     public void SetTint(Color color)
     {
         targetableZone.GetComponent<Image>().color = color;

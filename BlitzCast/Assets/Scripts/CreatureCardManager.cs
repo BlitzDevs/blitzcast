@@ -3,77 +3,128 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 
+/// <summary>
+/// Handles all of the displays and events that a card object does.
+/// Inherits from CardManager and deals with display/cast/action specific to
+/// CreatureCards.
+/// The card itself is determined by Card.
+/// </summary>
+/// <seealso cref="Card"/>
+/// <seealso cref="CardManager"/>
+/// <seealso cref="SpellCardManager"/>
 public class CreatureCardManager : CardManager
 {
+
+    // FOR REFERENCE:
+    // Due to inheritance, the fields to the other properties already exist.
+    // localPosition    the position in relation to the parent transform
+
+
+    // the Entity is created/set after cast
     public Entity entity;
 
+    // These fields are references to displayable components unique to Creature.
+    // These are set through the Unity Editor and should already be set in the
+    // prefab of the card.
     [SerializeField] private TMP_Text cardHealthText;
     [SerializeField] private TMP_Text cardActionValueText;
     [SerializeField] private TMP_Text cardActionTimeText;
-    [SerializeField] private RectTransform gridDisplayRect;
-    [SerializeField] private Highlightable gridDisplayHighlightable;
-    [SerializeField] private RectTransform gridStatusesParent;
     [SerializeField] private TMP_Text gridHealthText;
     [SerializeField] private TMP_Text gridActionValueText;
     [SerializeField] private TMP_Text gridSpeedText;
+    [SerializeField] private Highlightable gridDisplayHighlightable;
+    [SerializeField] private RectTransform gridDisplayRect;
+    [SerializeField] private RectTransform gridStatusesParent;
     [SerializeField] private CircleTimer actionTimer;
 
-    private int actionValue;
-    private int actionTime;
-    private Vector2Int coordinates;
-    private CreatureCard creatureCard;
+    // size and offset for displaying
     private Vector2 spriteSize;
     private Vector2 sizeOffset;
+    // current action value/time of the Creature
+    private int actionValue;
+    private int actionTime;
+    // the type-casted version of the card, because it is useful
+    private CreatureCard creatureCard;
+    // top-left coordinate in which creature casted onto
+    private Vector2Int coordinates;
 
 
-    // Initialize is our own function which is called by HandSlot
+    /// <summary>
+    /// Initialize this CardManager; set values and initiate displays.
+    /// Also initiate displays specific to Creatures.
+    /// </summary>
+    /// <param name="card">
+    /// The card which defines the values and behavior of this card object.
+    /// </param>
+    /// <param name="slot">
+    /// The card hand slot which this card belongs to. DrawCard() will be
+    /// called to this hand slot.
+    /// </param>
+    /// <param name="player">
+    /// The reference to the player, which is needed to determine team.
+    /// </param>
     public override void Initialize(Card card, HandSlot slot, PlayerManager player)
     {
         base.Initialize(card, slot, player);
 
+        // set our private creatureCard variable to the type-casted version
+        // of card for easy access
+        // this is possible because of inheritance (CreatureCard is Card)
         creatureCard = (CreatureCard) card;
 
-        // set text on card
+        // set the display texts/colors to their proper values
         actionValue = creatureCard.actionValue;
         actionTime = creatureCard.actionTime;
         cardHealthText.text = creatureCard.health.ToString();
         cardActionValueText.text = actionValue.ToString();
         cardActionTimeText.text = actionTime.ToString();
 
+        // cellSize is based on the size of the grid cells
+        // (and creature card size; ex. 2x1 -> 84x42)
         Vector2 cellSize = new Vector2(
             grid.cellsGroup.cellSize.x * creatureCard.size.y,
             grid.cellsGroup.cellSize.y * creatureCard.size.x
         );
+        // spriteSize is based on the original size of our sprite
+        // (and creature card size; ex. 2x1 -> 80x40)
         spriteSize = new Vector2(
             sprite.rectTransform.rect.width * creatureCard.size.y,
             sprite.rectTransform.rect.height * creatureCard.size.x
         );
+        // sizeOffset is needed to calculate position shifted so that the pivot
+        // is the top left corner of the sprite
         sizeOffset = new Vector2(
              grid.cellsGroup.cellSize.x / 2 * (creatureCard.size.y - 1),
             -grid.cellsGroup.cellSize.y / 2 * (creatureCard.size.x - 1)
         );
 
-        sprite.rectTransform.sizeDelta = spriteSize;
-        sprite.transform.localPosition += (Vector3)sizeOffset;
-
+        // now set the actual size to the calculated size
         castingSpriteParent.sizeDelta = grid.cellsGroup.cellSize;
+        sprite.rectTransform.sizeDelta = spriteSize;
+        // add the calculated offset to local position
+        sprite.transform.localPosition += (Vector3) sizeOffset;
 
         gridStatusesParent.sizeDelta = new Vector2(cellSize.x, gridStatusesParent.rect.y);
         gridDisplayRect.sizeDelta = cellSize;
         gridDisplayRect.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Called every frame inside OnDrag(); for showing cast location through
+    /// cell highlighting.  For Creature, also shows creature "shadow" sprite
+    /// </summary>
     public override void TryPreview()
     {
         GameObject target = GetCastLocation();
+
+        // if the current mouse position points to a valid cast target position...
         if (target != null)
         {
-            //set color/transparency
+            // set color/transparency ("shadow" sprite; black with transparency)
             sprite.color = new Color(0, 0, 0, 0.5f);
-            //snap to target
-            //castingSpriteParent.transform.position = target.transform.position;
+            // snap to target
             spriteMover.SetPosition(target.transform.position);
-
+            // add cell highlighting
             foreach (GameObject targetObject in GetCastTargets(target))
             {
                 Highlightable highlightable = targetObject.gameObject.GetComponent<Highlightable>();
@@ -83,10 +134,20 @@ public class CreatureCardManager : CardManager
         }
         else
         {
+            // reset the sprite color to normal (not "shadow")
             sprite.color = card.color;
         }
     }
 
+    /// <summary>
+    /// Get the GameObject of a valid cast location based on where the
+    /// mouse cursor currently is.
+    /// For Creatures, valid position is a GridCell where the creature fits
+    /// (based on its size and CreatureGrid).
+    /// </summary>
+    /// <returns>
+    /// The GameObject of a valid cast location; otherwise, null.
+    /// </returns>
     public override GameObject GetCastLocation()
     {
         // Get first GridCell under cursor
@@ -94,12 +155,14 @@ public class CreatureCardManager : CardManager
         GridCell cell = cellObject != null ?
             cellObject.GetComponent<GridCell>() : null;
 
+        // ensure cell is valid (cell exists, player side, creature fits)
         if (cell != null && (team == GameManager.Team.Friendly ?
                 cell.coordinates.x >= grid.size.x / 2 :
                 cell.coordinates.x < grid.size.x / 2) &&
             cell.coordinates.y + creatureCard.size.y - 1 < grid.size.y &&
             cell.coordinates.x + creatureCard.size.x - 1 < grid.size.x)
         {
+            // if a creature already exists on one of the cells, exit
             for (int r = 0; r < creatureCard.size.x; r++)
             for (int c = 0; c < creatureCard.size.y; c++)
             {
@@ -110,25 +173,46 @@ public class CreatureCardManager : CardManager
                     return null;
                 }
             }
+
+            // if reach here, target location is valid cell
             return cellObject;
         }
         return null;
     }
 
-    public override List<GameObject> GetCastTargets(GameObject target)
+    /// <summary>
+    /// Get the targets for the cast based on the location of the cast.
+    /// </summary>
+    /// <returns>
+    /// List of GameObjects containing the target GameObjects.
+    /// </returns>
+    public override List<GameObject> GetCastTargets(GameObject locationObject)
     {
         List<GameObject> targets = new List<GameObject>();
-        GridCell cell = target.GetComponent<GridCell>();
+        GridCell cell = locationObject.GetComponent<GridCell>();
         for (int r = 0; r < creatureCard.size.x; r++)
         for (int c = 0; c < creatureCard.size.y; c++)
         {
             Vector2Int rc = new Vector2Int(
-                cell.coordinates.x + r, cell.coordinates.y + c);
+                cell.coordinates.x + r,
+                cell.coordinates.y + c
+            );
             targets.Add(grid.GetCell(rc).gameObject);
         }
         return targets;
     }
 
+    /// <summary>
+    /// Start timer, add the creature location the grid, then, once the timer
+    /// is complete, cast the creature onto the passed target cell.
+    /// <para>
+    /// Use with StartCoroutine(CastTimer).
+    /// </para>
+    /// </summary>
+    /// <param name="target">
+    /// The target location of the cast, as determined by GetCastLocation() 
+    /// previously.
+    /// </param>
     protected override IEnumerator CastTimer(GameObject target)
     {
         // add creature location to grid
@@ -141,9 +225,16 @@ public class CreatureCardManager : CardManager
         return base.CastTimer(target);
     }
 
-    public override void Cast(GameObject location)
+    /// <summary>
+    /// Get the object of a valid cast location based on where the mouse cursor
+    /// currently is.
+    /// </summary>
+    /// <returns>
+    /// The GameObject of a valid cast location; otherwise, null.
+    /// </returns>
+    public override void Cast(GameObject locationObject)
     {
-        GridCell cell = location.GetComponent<GridCell>();
+        GridCell cell = locationObject.GetComponent<GridCell>();
         coordinates = cell.coordinates;
 
         gameObject.layer = LayerMask.NameToLayer("Creatures");
@@ -155,16 +246,16 @@ public class CreatureCardManager : CardManager
         entity.SpeedChangeEvent += SetSpeedDisplay;
         if (creatureCard.statusModifiers != null && creatureCard.statusModifiers.Count > 0)
         {
-            foreach (Entity.StatusModifier s in creatureCard.statusModifiers)
+            foreach (Entity.StatusModifier statusMod in creatureCard.statusModifiers)
             {
-                entity.ApplyStatus(s.statusType, s.stacks);
+                entity.ApplyStatus(statusMod);
             }
         }
         if (creatureCard.statModifiers != null && creatureCard.statModifiers.Count > 0)
         {
-            foreach (Entity.StatModifier s in creatureCard.statModifiers)
+            foreach (Entity.StatModifier statMod in creatureCard.statModifiers)
             {
-                entity.ApplyStatModification(s.statChange, s.statChangeValue);
+                entity.ApplyStatModification(statMod);
             }
         }
 
@@ -179,7 +270,7 @@ public class CreatureCardManager : CardManager
         castingSpriteParent.transform.localPosition = Vector3.zero;
         sprite.transform.localPosition = Vector3.zero;
         transform.SetParent(grid.playerCreaturesParent);
-        transform.position = location.transform.position;
+        transform.position = locationObject.transform.position;
         transform.localPosition += (Vector3) sizeOffset;
 
         // Disable Card display
@@ -193,13 +284,12 @@ public class CreatureCardManager : CardManager
         gridStatusesParent.sizeDelta = new Vector2(spriteSize.x, 8);
         actionTimer.entity = entity;
         actionTimer.StartTimer(actionTime);
-        SpriteSheetAnimator.Animatable anim = new SpriteSheetAnimator.Animatable(
+        animator.Initialize(
             card.name,
             "Cards/" + (card is CreatureCard ? "Creatures" : "Spells"),
             card.spriteAnimateSpeed,
             entity
         );
-        animator.Initialize(anim);
         sprite.gameObject.SetActive(true);
         sprite.color = card.color;
 
@@ -208,6 +298,9 @@ public class CreatureCardManager : CardManager
     }
 
 
+    /// <summary>
+    /// Do some clean up, then destroy this gameObject.
+    /// </summary>
     public override void DestroySelf()
     {
         // Delete creature locations from CreatureGrid
@@ -221,29 +314,38 @@ public class CreatureCardManager : CardManager
         base.DestroySelf();
     }
 
-    public override HashSet<GameObject> GetActionTargets(GameObject location)
+    /// <summary>
+    /// Get the targets for the action based on the location GameObject and the
+    /// action type of this card.
+    /// </summary>
+    /// <returns>
+    /// List of GameObjects containing the target GameObjects.
+    /// </returns>
+    public override HashSet<GameObject> GetActionTargets(GameObject locationObject)
     {
         // location is the upper left grid cell our creature is in
 
+        //TODO: implement Creature Target Area
+
         //turn locations into targets
         HashSet<GameObject> targets = new HashSet<GameObject>();
-        //foreach (GameObject g in locations)
-        //{
-        //    if (g.GetComponent<CardManager>() != null ||
-        //        g.GetComponent<Entity>() != null)
-        //    {
-        //        targets.Add(g);
-        //    }
-        //    else if (g.GetComponent<GridCell>() != null &&
-        //             g.GetComponent<GridCell>().GetCreature() != null)
-        //    {
-        //        targets.Add(g.GetComponent<GridCell>().GetCreature().gameObject);
-        //    }
-        //}
+        switch (creatureCard.targetArea)
+        {
+            default:
+                Debug.LogWarning("Creature Target Area not implemented");
+                break;
+        }
 
         return targets;
     }
 
+    /// <summary>
+    /// Start action timer, then do action once timer is complete, reset timer,
+    /// and loop while the creature Entity is alive.
+    /// <para>
+    /// Use with StartCoroutine(ActionLoop).
+    /// </para>
+    /// </summary>
     private IEnumerator ActionLoop()
     {
         while (entity.Health > 0)
@@ -253,16 +355,20 @@ public class CreatureCardManager : CardManager
                 // Raise event to let entity know
                 entity.TriggerActionEvent();
 
+                // RNG chance of failure
                 if (Random.Range(0, 100) > card.actionChance)
                 {
                     Debug.Log(gameObject.name + " action failed");
                 }
                 else
                 {
+                    // get targets based on current cell
                     HashSet<GameObject> targets = GetActionTargets(grid.GetCell(coordinates).gameObject);
+                    // filter targets by condition and execute action on each
                     targets = FilterTargetsByCondition(targets);
                     ExecuteActionOnTargets(targets);
 
+                    // reset action timer countdown
                     actionTimer.StartTimer(creatureCard.actionTime);
                 }
 
@@ -274,23 +380,29 @@ public class CreatureCardManager : CardManager
         DestroySelf();
     }
 
-    // added onto event OnHealthChange of entity
+    /// <summary>
+    /// Update the health display.
+    /// This should be added onto HealthChangeEvent of the creature Entity.
+    /// </summary>
     public void SetHealthDisplay(int oldHP, int newHP)
     {
         gridHealthText.text = newHP.ToString();
     }
 
-    // added onto event OnSpeedChange of entity
-    public void SetSpeedDisplay(float s)
+    /// <summary>
+    /// Update the speed display.
+    /// This should be added onto SpeedChangeEvent of the creature Entity.
+    /// </summary>
+    public void SetSpeedDisplay(float oldSpeed, float newSpeed)
     {
         // if speed is ~1f
-        if (Mathf.Abs(s - 1) < Mathf.Epsilon)
+        if (Mathf.Abs(newSpeed - 1) < Mathf.Epsilon)
         {
             gridSpeedText.text = "";
         }
         else
         {
-            gridSpeedText.text = "x" + (Mathf.Round(s * 10) / 10f).ToString();
+            gridSpeedText.text = "x" + (Mathf.Round(newSpeed * 10) / 10f).ToString();
         }
     }
 }

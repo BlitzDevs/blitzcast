@@ -1,5 +1,9 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Contains all the properties for a Caster, which is avatar/class-like and
+/// can grant the player a unique passive.
+/// </summary>
 [CreateAssetMenu(fileName = "New Caster", menuName = "Caster")]
 public class Caster : ScriptableObject {
 
@@ -7,8 +11,6 @@ public class Caster : ScriptableObject {
     public float spriteAnimateSpeed = 30f;
     public Color color = Color.white;
 
-    // unique passive for different Casters
-    // somewhat like an avatar/class
-
+    //TODO: Fully implement the "passive" effect
     // public void DoYourThing() ?
 }

@@ -27,4 +27,4 @@ MonoBehaviour:
   actionChance: 100
   condition: 0
   conditionValue: 0
-  targetArea: 0
+  targetArea: 3

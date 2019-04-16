@@ -35,14 +35,13 @@ public class PlayerManager : MonoBehaviour
         entity.HealthChangeEvent += SetHealthDisplay;
         entity.SpeedChangeEvent += SetSpeedDisplay;
 
-        // initialize animation
-        SpriteSheetAnimator.Animatable anim = new SpriteSheetAnimator.Animatable(
+        // initialize animator
+        animator.Initialize(
             player.caster.name,
             "Casters",
             player.caster.spriteAnimateSpeed,
             entity
         );
-        animator.Initialize(anim);
         // set text
         usernameText.text = player.username;
 
@@ -101,9 +100,9 @@ public class PlayerManager : MonoBehaviour
     }
 
     // added onto event OnSpeedChange of entity
-    public void SetSpeedDisplay(float s)
+    public void SetSpeedDisplay(float oldSpeed, float newSpeed)
     {
-        speedText.text = "Speed: x" + s.ToString();
+        speedText.text = "Speed: x" + newSpeed.ToString();
         // set color?
     }
 

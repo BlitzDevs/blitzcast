@@ -27,8 +27,7 @@ public class SpellCardManager: CardManager
         GameObject target = GetCastLocation();
         if (target != null)
         {
-            //snap to target
-            //sprite.transform.position = target.transform.position;
+            // snap position to target
             spriteMover.SetPosition(target.transform.position);
 
             foreach (GameObject targetObject in GetCastTargets(target))
