@@ -17,7 +17,7 @@ public class CreatureCardManager : CardManager
 
     // FOR REFERENCE:
     // Due to inheritance, the fields to the other properties already exist.
-    // localPosition    the position in relation to the parent transform
+    // localPosition - the position in relation to the parent transform
 
 
     // the Entity is created/set after cast

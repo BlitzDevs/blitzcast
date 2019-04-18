@@ -5,6 +5,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// Entity contains Health, MaxHealth, Speed, and Statuses
+/// Attached to Player and Creature
+/// Has Listeners to for Player and Creature action execution
+/// </summary>
 public class Entity : MonoBehaviour
 {
 

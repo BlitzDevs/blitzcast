@@ -71,13 +71,18 @@ public class Highlightable : MonoBehaviour
     }
 
     // TODO: Color pulsing
-    //private void Update()
-    //{
-    //    if (highlights.Count > 0 && colorPulseSpeed < gameTimer.elapsedTime)
-    //    {
-    //        image.color = highlights[colorIndex];
-    //        colorIndex = colorIndex >= highlights.Count ? 0 : colorIndex + 1;
-    //    }
-    //}
+    // Should work? - Derek
+    /*
+    private void Update()
+    {
+        // could just be == 0
+        if (highlights.Count > 0 &&
+            gameTimer.elapsedTime % colorPulseSpeed < 0.001f)
+        {
+            image.color = highlights[colorIndex];
+            colorIndex = (colorIndex + 1) % highlights.Count;
+        }
+    }
+    */
 
 }
