@@ -1,18 +1,20 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-// Mark a ScriptableObject-derived type to be automatically listed in the
-// Assets/Create submenu, so that instances of the type can be easily created
-// and stored in the project as ".asset" files.
-[CreateAssetMenu(fileName = "New Creature Card", menuName = "Creature Card")]
-
 /// <summary>
 /// Contains all the properties of a Card and properties unique to a Creature.
 /// </summary>
 /// <seealso cref="Card"/>
 /// <seealso cref="CreatureCard"/>
+[CreateAssetMenu(fileName = "New Creature Card", menuName = "Creature Card")]
 public class CreatureCard : Card
 {
+    // FOR REFERENCE:
+    // [CreateAssetMenu]    An Attribute from UnityEngine; Allow a
+    //                      ScriptableObject derived object to be listed in the
+    //                      Assets/Create submenu, so that instances of the type
+    //                      can be easily created and stored in the project as
+    //                      ".asset" files.
 
     /// <summary>
     /// Types of action targets for Creature, in relation to the creature's
@@ -20,11 +22,17 @@ public class CreatureCard : Card
     /// </summary>
     public enum CreatureTarget
     {
+        [Display("FRONT", "FRO", 0, 255, 110)]
         Front,
+        [Display("ADJACENT", "ADJ", 255, 240, 0)]
         Adjacent,
+        [Display("ROW", "ROW", 0, 255, 40)]
         Row,
+        [Display("COLUMN", "COL", 160, 0, 255)]
         Column,
+        [Display("CREATURES", "CRE", 255, 110, 0)]
         AllCreatures,
+        [Display("ALL", "ALL", 220, 0, 0)]
         All
     }
 

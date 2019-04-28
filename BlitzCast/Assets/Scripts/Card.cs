@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// The abstract Card that other Cards should inherit from.
@@ -24,10 +24,10 @@ public abstract class Card : ScriptableObject
     /// </summary>
     public enum Race
     {
-        Generic,
-        Automaton,
-        Undead,
-        Critter
+        [Display("Generic", "GEN", 255, 255, 255)] Generic,
+        [Display("Automaton", "AUTO", 100, 150, 200)] Automaton,
+        [Display("Undead", "UND", 120, 0, 190)] Undead,
+        [Display("Critter", "CRI", 40, 220, 40)] Critter
     }
 
     /// <summary>
@@ -39,11 +39,24 @@ public abstract class Card : ScriptableObject
     /// </note>
     public enum Action
     {
-        None,
-        Damage,
-        Heal,
-        Destroy,
-        Counter
+        [Display("NONE", "-", 255, 255, 255)] None,
+        [Display("DAMAGE", "DMG", 255, 255, 255)] Damage,
+        [Display("HEAL", "HEAL", 255, 255, 255)] Heal,
+        [Display("DESTROY", "DST", 255, 255, 255)] Destroy,
+        [Display("COUNTER", "CTR", 255, 255, 255)] Counter
+    }
+
+    /// <summary>
+    /// Possible status types that can be applied on an Entity.
+    /// </summary>
+    public enum Status
+    {
+        [Display("NONE", "-", 255, 255, 255)] None,
+        [Display("CLUMSY", "CLM", 40, 255, 0)] Clumsy,
+        [Display("WOUND", "WND", 220, 0, 0)] Wound,
+        [Display("STUN", "STN", 255, 220, 10)] Stun,
+        [Display("POISON", "PSN", 140, 10, 255)] Poison,
+        [Display("SHIELD", "SHD", 20, 70, 255)] Shield
     }
 
     /// <summary>
@@ -51,10 +64,10 @@ public abstract class Card : ScriptableObject
     /// </summary>
     public enum StatChange
     {
-        None,
-        SetHealth,
-        IncreaseHealth,
-        IncreaseSpeed
+        [Display("NONE", "-", 255, 255, 255)] None,
+        [Display("SET HEALTH", "SET", 0, 200, 255)] SetHealth,
+        [Display("HEALTH", "HP", 255, 0, 0)] Health,
+        [Display("SPEED", "SPD", 255, 255, 0)] Speed
     }
 
     /// <summary>
@@ -62,13 +75,13 @@ public abstract class Card : ScriptableObject
     /// </summary>
     public enum Condition
     {
-        None,
-        HPGreaterThan,
-        HPLessThan,
-        Race,
-        Status,
-        Friendly,
-        Enemy
+        [Display("NONE", "-", 255, 255, 255)] None,
+        [Display("HP>", "HP>", 220, 0, 0)] HPGreaterThan,
+        [Display("HP<", "HP<", 0, 0, 220)] HPLessThan,
+        [Display("RACE", "RAC", 100, 100, 100)] Race,
+        [Display("STATUS", "STS", 100, 100, 100)] Status,
+        [Display("FRIENDLY", "FRI", 0, 220, 0)] Friendly,
+        [Display("ENEMY", "ENM", 220, 0, 0)] Enemy,
     }
 
 
@@ -91,7 +104,7 @@ public abstract class Card : ScriptableObject
     [Range(0, 30)] public int actionValue;
     public StatChange statChange;
     [Range(-100, 100)] public int statChangeValue;
-    public Entity.Status.StatusType statusInflicted;
+    public Status statusInflicted;
     [Range(0, 10)] public int stacks;
     [Range(0, 100)] public int actionChance = 100;
     public Condition condition;

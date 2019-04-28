@@ -3,8 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Arranges GridCell Objects using a GridLayout
-/// Also provides interface for cell highlighting and accessing creatures
+/// Arranges GridCell Objects using a GridLayout.
+/// Also provides interface for cell highlighting and accessing creatures.
 /// </summary>
 public class CreatureGrid : MonoBehaviour {
 

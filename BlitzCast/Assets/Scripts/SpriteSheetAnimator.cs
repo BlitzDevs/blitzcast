@@ -52,6 +52,7 @@ public class SpriteSheetAnimator : MonoBehaviour
         this.speed = speed;
         this.entity = entity;
 
+        currentSprites = new Sprite[] { };
         spritesDict = new Dictionary<State, Sprite[]>();
         foreach (State s in Enum.GetValues(typeof(State)))
         {

@@ -26,9 +26,6 @@ public class CreatureCardManager : CardManager
     // These fields are references to displayable components unique to Creature.
     // These are set through the Unity Editor and should already be set in the
     // prefab of the card.
-    [SerializeField] private TMP_Text cardHealthText;
-    [SerializeField] private TMP_Text cardActionValueText;
-    [SerializeField] private TMP_Text cardActionTimeText;
     [SerializeField] private TMP_Text gridHealthText;
     [SerializeField] private TMP_Text gridActionValueText;
     [SerializeField] private TMP_Text gridSpeedText;
@@ -39,7 +36,6 @@ public class CreatureCardManager : CardManager
 
     // size and offset for displaying
     private Vector2 spriteSize;
-    private Vector2 sizeOffset;
     // current action value/time of the Creature
     private int actionValue;
     private int actionTime;
@@ -75,9 +71,6 @@ public class CreatureCardManager : CardManager
         // set the display texts/colors to their proper values
         actionValue = creatureCard.actionValue;
         actionTime = creatureCard.actionTime;
-        cardHealthText.text = creatureCard.health.ToString();
-        cardActionValueText.text = actionValue.ToString();
-        cardActionTimeText.text = actionTime.ToString();
 
         // cellSize is based on the size of the grid cells
         // (and creature card size; ex. 2x1 -> 84x42)
@@ -93,7 +86,7 @@ public class CreatureCardManager : CardManager
         );
         // sizeOffset is needed to calculate position shifted so that the pivot
         // is the top left corner of the sprite
-        sizeOffset = new Vector2(
+        spriteOffset = new Vector2(
              grid.cellsGroup.cellSize.x / 2 * (creatureCard.size.y - 1),
             -grid.cellsGroup.cellSize.y / 2 * (creatureCard.size.x - 1)
         );
@@ -102,7 +95,7 @@ public class CreatureCardManager : CardManager
         castingSpriteParent.sizeDelta = grid.cellsGroup.cellSize;
         sprite.rectTransform.sizeDelta = spriteSize;
         // add the calculated offset to local position
-        sprite.transform.localPosition += (Vector3) sizeOffset;
+        sprite.transform.localPosition += (Vector3) spriteOffset;
 
         gridStatusesParent.sizeDelta = new Vector2(cellSize.x, gridStatusesParent.rect.y);
         gridDisplayRect.sizeDelta = cellSize;
@@ -111,12 +104,11 @@ public class CreatureCardManager : CardManager
 
     /// <summary>
     /// Called every frame inside OnDrag(); for showing cast location through
-    /// cell highlighting.  For Creature, also shows creature "shadow" sprite
+    /// cell highlighting.  For Creature, also shows creature "shadow" sprite.
     /// </summary>
     public override void TryPreview()
     {
         GameObject target = GetCastLocation();
-
         // if the current mouse position points to a valid cast target position...
         if (target != null)
         {
@@ -225,12 +217,10 @@ public class CreatureCardManager : CardManager
     }
 
     /// <summary>
-    /// Get the object of a valid cast location based on where the mouse cursor
-    /// currently is.
+    /// Cast this card onto a valid location (which should have been determined
+    /// by GetCastLocation()).
+    /// For Creature, create an Entity and activate the Creature on the grid.
     /// </summary>
-    /// <returns>
-    /// The GameObject of a valid cast location; otherwise, null.
-    /// </returns>
     public override void Cast(GameObject locationObject)
     {
         GridCell cell = locationObject.GetComponent<GridCell>();
@@ -270,12 +260,10 @@ public class CreatureCardManager : CardManager
         sprite.transform.localPosition = Vector3.zero;
         transform.SetParent(grid.playerCreaturesParent);
         transform.position = locationObject.transform.position;
-        transform.localPosition += (Vector3) sizeOffset;
+        transform.localPosition += (Vector3) spriteOffset;
 
         // Disable Card display
-        SetTint(new Color(0f, 0f, 0f, 0f));
-        cardFront.SetActive(false);
-        cardBack.SetActive(false);
+        cardDisplay.gameObject.SetActive(false);
         // Enable Grid Creature display
         gridDisplayRect.gameObject.SetActive(true);
         gridHealthText.text = creatureCard.health.ToString();

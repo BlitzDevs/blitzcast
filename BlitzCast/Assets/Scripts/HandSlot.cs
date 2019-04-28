@@ -1,29 +1,22 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using System.Collections;
 
 /// <summary>
 /// Handslot, mostly independent of player object
 /// Has references to card it contains and manages redraw time
 /// </summary>
-public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
-                            IPointerEnterHandler, IPointerExitHandler
+public class HandSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    //whatever card is in the hand
-    public CardManager slotObject;
-    //visual representation of redraw
+    // whatever card is in the hand
+    public CardManager cardInSlot;
+    // visual representation of redraw
     private CircleTimer drawTimer;
-    //if cast fails/mouse released card returns here
-    private Vector2 originalPosition = Vector2.zero;
-    //card bobs upwards by this many pixels when hovered
-    private const int pixelsToFloatWhenSelected = 20;
 
-    private EventSystem eventSystem;
-    //reference to player
-    private PlayerManager player;
-    //reference to gameManager
+    // references to useful objects
     private GameManager gameManager;
+    private EventSystem eventSystem;
+    private PlayerManager player;
 
 
     /// <summary>
@@ -107,15 +100,15 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
 
         GameObject cardObject = Instantiate(cardPrefab);
         //define slotObject which is actually a CardManager
-        slotObject = cardObject.GetComponent<CardManager>();
+        cardInSlot = cardObject.GetComponent<CardManager>();
         //initialize slotObject with some properties
-        slotObject.Initialize(card, this, player);
+        cardInSlot.Initialize(card, this, player);
 
         //move the slotObject to the handSlot and scale it correctly
-        slotObject.transform.SetParent(transform);
-        slotObject.transform.localPosition = Vector3.zero;
-        slotObject.transform.localScale = Vector3.one;
-        slotObject.transform.localRotation = Quaternion.identity;
+        cardInSlot.transform.SetParent(transform);
+        cardInSlot.transform.localPosition = Vector3.zero;
+        cardInSlot.transform.localScale = Vector3.one;
+        cardInSlot.transform.localRotation = Quaternion.identity;
     }
 
     /// <summary>
@@ -124,9 +117,12 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
     /// <param name="eventData">
     /// pointer info
     /// </param>
-    public override void OnPointerEnter(PointerEventData eventData)
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        eventSystem.SetSelectedGameObject(gameObject);
+        if (cardInSlot != null)
+        {
+            eventSystem.SetSelectedGameObject(cardInSlot.gameObject);
+        }
     }
 
     /// <summary>
@@ -135,43 +131,9 @@ public class HandSlot : Selectable, IDeselectHandler, ISelectHandler,
     /// <param name="eventData">
     /// pointer info
     /// </param>
-    public override void OnPointerExit(PointerEventData eventData)
+    public void OnPointerExit(PointerEventData eventData)
     {
         eventSystem.SetSelectedGameObject(null);
-    }
-
-    /// <summary>
-    /// peeks card when selected
-    /// </summary>
-    /// <param name="eventData"></param>
-    public override void OnSelect(BaseEventData eventData)
-    {
-        if (slotObject != null)
-        {
-            //Float
-            //slotObject.transform.localPosition = new Vector3(
-            //originalPosition.x, originalPosition.y + pixelsToFloatWhenSelected, 0);
-
-            //slides card upwards
-            slotObject.cardMover.SetPosition(new Vector3(
-                originalPosition.x, originalPosition.y + pixelsToFloatWhenSelected, 0));
-        }
-    }
-
-    /// <summary>
-    /// unpeeks card when deselected
-    /// </summary>
-    /// <param name="eventData"></param>
-    public override void OnDeselect(BaseEventData eventData)
-    {
-        if (slotObject != null)
-        {
-            //Unfloat
-            //slotObject.transform.localPosition = originalPosition;
-
-            //moves card back
-            slotObject.cardMover.SetPosition(originalPosition);
-        }
     }
 
 }

@@ -19,17 +19,16 @@ public class SpellCard : Card
     /// </summary>
     public enum SpellTarget
     {
-        Single,
-        SingleCreature,
-        Cross,
-        Square,
-        Row,
-        Column,
-        AllCreatures,
-        All
+        [Display("SINGLE", "1", 0, 255, 110)] Single,
+        [Display("SINGLE", "1CR", 0, 255, 110)] SingleCreature,
+        [Display("CROSS", "CRO", 0, 255, 110)] Cross,
+        [Display("SQUARE", "SQR", 0, 255, 110)] Square,
+        [Display("ROW", "ROW", 0, 255, 40)] Row,
+        [Display("COLUMN", "COL", 160, 0, 255)] Column,
+        [Display("CREATURES", "CRE", 255, 110, 0)] AllCreatures,
+        [Display("ALL", "ALL", 220, 0, 0)] All
     }
 
-    //
     public SpellTarget targetArea;
 
 

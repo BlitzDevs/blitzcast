@@ -15,7 +15,7 @@ public class Entity : MonoBehaviour
 
     // FOR REFERENCE:
     // [Serializable]  part of System; indicates that object can be serialized,
-    //                 or turned into a stream of bytes
+    //                 or turned into a stream of bytes.
     //                 For our purposes: allows Unity to show struct in editor.
     //
     // get/set         All properties have an underlying get/set, but it can be
@@ -43,10 +43,10 @@ public class Entity : MonoBehaviour
     /// </summary>
     [Serializable] public struct StatusModifier
     {
-        public Status.StatusType type;
+        public Card.Status type;
         [Range(0, 10)] public int stacks;
 
-        public StatusModifier(Status.StatusType type, int stacks)
+        public StatusModifier(Card.Status type, int stacks)
         {
             this.type = type;
             this.stacks = stacks;
@@ -73,25 +73,11 @@ public class Entity : MonoBehaviour
     /// A subclass within Entity which defines a Status and holds the properties
     /// needed to execute the status.
     /// </summary>
-    public class Status
+    public class StatusInfo
     {
-        /// <summary>
-        /// Possible status types that can be applied on an Entity.
-        /// </summary>
-        public enum StatusType
-        {
-            None,
-            Clumsy,
-            Wound,
-            Stun,
-            Poison,
-            Shield
-        }
 
         // StatusType defines the behavior
-        public StatusType statusType;
-        // the color associated with the StatusType
-        public Color color;
+        public Card.Status status;
         // startTime is used for time based statues; e.g. Stun
         public float startTime;
 
@@ -113,15 +99,14 @@ public class Entity : MonoBehaviour
                 int oldStacks = _stacks;
                 _stacks = value;
                 // tell the entity that this status's stacks has been modified
-                entity.OnStackChange(statusType, oldStacks, _stacks);
+                entity.OnStackChange(status, oldStacks, _stacks);
             }
         }
 
         // simple constructor for a new Status
-        public Status(StatusType statusType, Color color, int stacks, float startTime, Entity entity)
+        public StatusInfo(Card.Status statusType, int stacks, float startTime, Entity entity)
         {
-            this.statusType = statusType;
-            this.color = color;
+            this.status = statusType;
             this.startTime = startTime;
             this.entity = entity;
             Stacks = stacks;
@@ -134,7 +119,7 @@ public class Entity : MonoBehaviour
     public delegate void ActionHandler();
     public delegate void IntChangeHandler(int oldInt, int newInt);
     public delegate void FloatChangeHandler(float oldFloat, float newFloat);
-    public delegate void StatusChangeHandler(Status.StatusType statusType, int oldStacks, int newStacks);
+    public delegate void StatusChangeHandler(Card.Status statusType, int oldStacks, int newStacks);
 
     // define the events we want to be able to be notified of
     public event ActionHandler ActionEvent;
@@ -148,10 +133,10 @@ public class Entity : MonoBehaviour
     // statusesParent is where we can attach status displays to
     private Transform statusesParent;
     // dictionary for accessing the text component based on status type
-    private Dictionary<Status.StatusType, TMP_Text> statusDisplays;
+    private Dictionary<Card.Status, TMP_Text> statusDisplays;
 
     // Entity variables
-    public List<Status> statuses;
+    public List<StatusInfo> statuses;
 
     // internal variables
     private int _health;
@@ -235,16 +220,13 @@ public class Entity : MonoBehaviour
         Speed = 1f;
 
         // initiate Dictionary to empty
-        statusDisplays = new Dictionary<Status.StatusType, TMP_Text>();
+        statusDisplays = new Dictionary<Card.Status, TMP_Text>();
         // fill statuses list with possible statuses (all the status types)
-        statuses = new List<Status>
+        statuses = new List<StatusInfo>();
+        foreach (Card.Status s in Enum.GetValues(typeof(Card.Status)))
         {
-            new Status(Status.StatusType.Clumsy, Color.green, 0, 0f, this),
-            new Status(Status.StatusType.Wound, Color.red, 0, 0f, this),
-            new Status(Status.StatusType.Stun, Color.yellow, 0, 0f, this),
-            new Status(Status.StatusType.Poison, Color.magenta, 0, 0f, this),
-            new Status(Status.StatusType.Shield, Color.blue, 0, 0f, this)
-        };
+            statuses.Add(new StatusInfo(s, 0, 0f, this));
+        }
         this.statusesParent = statusesParent;
 
         // add SetStatusDisplay(...) to StatusChangeEvent, so that whenever
@@ -259,36 +241,36 @@ public class Entity : MonoBehaviour
     /// </summary>
     public void ApplyStatus(StatusModifier statusMod)
     {
-        if (statusMod.type == Status.StatusType.None || statusMod.stacks == 0)
+        if (statusMod.type == Card.Status.None || statusMod.stacks == 0)
         {
             return;
         }
 
-        Status status = GetStatus(statusMod.type);
+        StatusInfo status = GetStatus(statusMod.type);
         status.Stacks += statusMod.stacks;
 
         if (status.Stacks - statusMod.stacks == 0)
         {
             switch (statusMod.type)
             {
-                case Status.StatusType.Clumsy:
+                case Card.Status.Clumsy:
                     Debug.LogWarning("Clumsy not implemented");
                     // different for creature and player...
                     break;
 
-                case Status.StatusType.Wound:
+                case Card.Status.Wound:
                     ActionEvent += Wound;
                     break;
 
-                case Status.StatusType.Stun:
+                case Card.Status.Stun:
                     StartCoroutine(Stun());
                     break;
 
-                case Status.StatusType.Poison:
+                case Card.Status.Poison:
                     StartCoroutine(Poison());
                     break;
 
-                case Status.StatusType.Shield:
+                case Card.Status.Shield:
                     HealthChangeEvent += Shield;
                     break;
 
@@ -314,11 +296,11 @@ public class Entity : MonoBehaviour
                 MaxHealth = statMod.value;
                 break;
 
-            case Card.StatChange.IncreaseHealth:
+            case Card.StatChange.Health:
                 MaxHealth += statMod.value;
                 break;
 
-            case Card.StatChange.IncreaseSpeed:
+            case Card.StatChange.Speed:
                 Speed += statMod.value / 100f;
                 break;
 
@@ -334,7 +316,7 @@ public class Entity : MonoBehaviour
     /// Safely returns the Status (containing all the status property/values)
     /// based on the StatusType from this Entity's list of statuses.
     /// </summary>
-    private Status GetStatus(Status.StatusType type)
+    private StatusInfo GetStatus(Card.Status type)
     {
         int i = (int) type - 1;
         if (i < 0 || i > statuses.Count)
@@ -359,9 +341,9 @@ public class Entity : MonoBehaviour
     /// Updates the status display when the status is changed.
     /// (This is added onto StatusChangeEvent when Entity is initialized.)
     /// </summary>
-    private void SetStatusDisplay(Status.StatusType statusType, int oldStacks, int newStacks)
+    private void SetStatusDisplay(Card.Status statusType, int oldStacks, int newStacks)
     {
-        Status status = GetStatus(statusType);
+        StatusInfo status = GetStatus(statusType);
         TMP_Text statusDisplay;
         // try get reference to text component if it exists
         statusDisplays.TryGetValue(statusType, out statusDisplay);
@@ -373,7 +355,7 @@ public class Entity : MonoBehaviour
             GameObject statusObject = Instantiate(gameManager.statusPrefab, statusesParent);
             // set image color and reference to text
             Image statusImage = statusObject.GetComponent<Image>();
-            statusImage.color = status.color;
+            statusImage.color = status.status.GetDisplayColor();
             statusDisplay = statusObject.GetComponentInChildren<TMP_Text>();
             statusDisplays.Add(statusType, statusDisplay);
         }
@@ -429,7 +411,7 @@ public class Entity : MonoBehaviour
     /// <summary>
     /// Trigger any StackChange events if they exist.
     /// </summary>
-    private void OnStackChange(Status.StatusType statusType, int oldStacks, int newStacks)
+    private void OnStackChange(Card.Status statusType, int oldStacks, int newStacks)
     {
         if (StatusChangeEvent != null)
         {
@@ -443,7 +425,7 @@ public class Entity : MonoBehaviour
     /// </summary>
     private void Wound()
     {
-        Status status = GetStatus(Status.StatusType.Wound);
+        StatusInfo status = GetStatus(Card.Status.Wound);
         Health -= status.Stacks;
         status.Stacks--;
 
@@ -459,7 +441,7 @@ public class Entity : MonoBehaviour
     /// </summary>
     private IEnumerator Stun()
     {
-        Status status = GetStatus(Status.StatusType.Stun);
+        StatusInfo status = GetStatus(Card.Status.Stun);
         status.startTime = gameManager.timer.elapsedTime;
         Speed = 0;
 
@@ -482,7 +464,7 @@ public class Entity : MonoBehaviour
     /// </summary>
     private IEnumerator Poison()
     {
-        Status status = GetStatus(Status.StatusType.Poison);
+        StatusInfo status = GetStatus(Card.Status.Poison);
 
         while (status.Stacks > 0)
         {
@@ -502,7 +484,7 @@ public class Entity : MonoBehaviour
     /// </summary>
     private void Shield(int oldHP, int newHP)
     {
-        Status status = GetStatus(Status.StatusType.Shield);
+        StatusInfo status = GetStatus(Card.Status.Shield);
 
         // if damaged, negate
         if (newHP - oldHP < 0)

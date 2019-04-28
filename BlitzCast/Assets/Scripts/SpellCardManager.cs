@@ -1,35 +1,59 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
+/// <summary>
+/// Handles all of the displays and events that a card object does.
+/// Inherits from CardManager and deals with display/cast/action specific to
+/// SpellCards.
+/// The card itself is determined by Card.
+/// </summary>
+/// <seealso cref="Card"/>
+/// <seealso cref="CardManager"/>
+/// <seealso cref="CreatureCardManager"/>
 public class SpellCardManager: CardManager
 {
 
     [SerializeField] protected TrailRenderer trail;
-    [SerializeField] protected TMP_Text descriptionText;
 
     private SpellCard spellCard;
 
 
+    /// <summary>
+    /// Initialize this CardManager; set values and initiate displays.
+    /// Also initiate the trail, which is specific to Spells.
+    /// </summary>
+    /// <param name="card">
+    /// The card which defines the values and behavior of this card object.
+    /// </param>
+    /// <param name="slot">
+    /// The card hand slot which this card belongs to. DrawCard() will be
+    /// called to this hand slot.
+    /// </param>
+    /// <param name="player">
+    /// The reference to the player, which is needed to determine team.
+    /// </param>
     public override void Initialize(Card card, HandSlot slot, PlayerManager player)
     {
         base.Initialize(card, slot, player);
 
         spellCard = (SpellCard)card;
-        descriptionText.text = card.description;
         trail.startColor = card.color;
         trail.endColor = new Color(card.color.r, card.color.g, card.color.b, 0f);
     }
 
+    /// <summary>
+    /// Called every frame inside OnDrag(); for showing cast location through
+    /// cell highlighting.
+    /// </summary>
     public override void TryPreview()
     {
         GameObject target = GetCastLocation();
+        // if the current mouse position points to a valid cast target position...
         if (target != null)
         {
-            // snap position to target
+            // snap to target
             spriteMover.SetPosition(target.transform.position);
-
+            // add cell highlighting
             foreach (GameObject targetObject in GetCastTargets(target))
             {
                 Highlightable highlightable = targetObject.gameObject.GetComponent<Highlightable>();
@@ -39,7 +63,14 @@ public class SpellCardManager: CardManager
         }
     }
 
-
+    /// <summary>
+    /// Get the GameObject of a valid cast location based on where the
+    /// mouse cursor currently is.
+    /// For Spells, depends on the SpellTarget.
+    /// </summary>
+    /// <returns>
+    /// The GameObject of a valid cast location; otherwise, null.
+    /// </returns>
     public override GameObject GetCastLocation()
     {
         switch (spellCard.targetArea)
@@ -90,17 +121,23 @@ public class SpellCardManager: CardManager
         return null;
     }
 
-    //returns HashSet of GridCell Objects or Player Object
-    public override List<GameObject> GetCastTargets(GameObject target) {
+    /// <summary>
+    /// Get the targets for the cast based on the location of the cast and the
+    /// spell target shape/type.
+    /// </summary>
+    /// <returns>
+    /// List of GameObjects containing the target GameObjects.
+    /// </returns>
+    public override List<GameObject> GetCastTargets(GameObject locationObject) {
         List<GameObject> targets = new List<GameObject>();
-        GridCell cell = target.GetComponent<GridCell>();
+        GridCell cell = locationObject.GetComponent<GridCell>();
 
         switch (spellCard.targetArea)
         {
             case SpellCard.SpellTarget.Single:
-                if (target.GetComponent<Entity>() != null)
+                if (locationObject.GetComponent<Entity>() != null)
                 {
-                    targets.Add(target);
+                    targets.Add(locationObject);
                 }
                 else goto case SpellCard.SpellTarget.SingleCreature;
                 break;
@@ -208,10 +245,17 @@ public class SpellCardManager: CardManager
         return targets;
     }
 
-    public override HashSet<GameObject> GetActionTargets(GameObject location)
+    /// <summary>
+    /// Get the targets for the action based on the location GameObject and the
+    /// action type of this card.
+    /// </summary>
+    /// <returns>
+    /// List of GameObjects containing the target GameObjects.
+    /// </returns>
+    public override HashSet<GameObject> GetActionTargets(GameObject locationObject)
     {
         // GetCastTargets adds targets to our list based on the TargetArea
-        List<GameObject> locations = GetCastTargets(location);
+        List<GameObject> locations = GetCastTargets(locationObject);
 
         //turn locations into targets
         HashSet<GameObject> targets = new HashSet<GameObject>();
@@ -232,16 +276,21 @@ public class SpellCardManager: CardManager
         return targets;
     }
 
-    public override void Cast(GameObject location)
+    /// <summary>
+    /// Cast this card onto a valid location (which should have been determined
+    /// by GetCastLocation()).
+    /// For Spell, execute the action on all the spell targets.
+    /// </summary>
+    public override void Cast(GameObject locationObject)
     {
-        // First off, let's see if this boi even lands a hit
+        // (Mochel) First off, let's see if this boi even lands a hit
         if (Random.Range(0, 100) > spellCard.actionChance) {
             DestroySelf();
             Debug.Log(gameObject.name + " action failed, object destroyed");
             return;
         }
 
-        HashSet<GameObject> targets = GetActionTargets(location);
+        HashSet<GameObject> targets = GetActionTargets(locationObject);
         targets = FilterTargetsByCondition(targets);
         ExecuteActionOnTargets(targets);
 

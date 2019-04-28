@@ -63,6 +63,7 @@ public class Highlightable : MonoBehaviour
     private void Start()
     {
         gameTimer = FindObjectOfType<GameTimer>();
+        highlights = new List<Color>();
         if (image == null)
         {
             image = GetComponent<Image>();
@@ -70,19 +71,22 @@ public class Highlightable : MonoBehaviour
         defaultColor = image.color;
     }
 
-    // TODO: Color pulsing
-    // Should work? - Derek
-    /*
+    /// <summary>
+    /// Called by Unity. For every frame this component is active,
+    /// pulse color depending on pulse speed if there is more than one highlight
+    /// color.
+    /// </summary>
     private void Update()
     {
-        // could just be == 0
-        if (highlights.Count > 0 &&
-            gameTimer.elapsedTime % colorPulseSpeed < 0.001f)
-        {
-            image.color = highlights[colorIndex];
-            colorIndex = (colorIndex + 1) % highlights.Count;
-        }
+        //TODO: Implement
+
+        //// could just be == 0
+        //if (highlights.Count > 0 &&
+        //    gameTimer.elapsedTime % colorPulseSpeed < 0.001f)
+        //{
+        //    image.color = highlights[colorIndex];
+        //    colorIndex = (colorIndex + 1) % highlights.Count;
+        //}
     }
-    */
 
 }

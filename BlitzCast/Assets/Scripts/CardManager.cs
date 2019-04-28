@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using TMPro;
 
 /// <summary>
 /// The abstract CardManager that other CardManagers should inherit from.
@@ -13,7 +12,8 @@ using TMPro;
 /// <seealso cref="Card"/>
 /// <seealso cref="CreatureCardManager"/>
 /// <seealso cref="SpellCardManager"/>
-public abstract class CardManager : MonoBehaviour,
+public abstract class CardManager : Selectable,
+                           IDeselectHandler, ISelectHandler,
                            IBeginDragHandler, IDragHandler, IEndDragHandler
 {
 
@@ -27,40 +27,36 @@ public abstract class CardManager : MonoBehaviour,
 
     public Card card;
     public GameManager.Team team;
-    // smooth movements for moving our card (the peeking) and sprite (casting)
-    public SmoothMover cardMover;
+    // smooth movements for moving sprite (casting)
     public SmoothMover spriteMover;
 
     // These fields are references to our displayable components.
     // These are set through the Unity Editor and should already be set in the
     // prefab of the card.
-    [SerializeField] protected GameObject cardFront;
-    [SerializeField] protected GameObject cardBack;
-    [SerializeField] protected GameObject targetableZone;
     [SerializeField] protected SpriteSheetAnimator animator;
     [SerializeField] protected RectTransform castingSpriteParent;
     [SerializeField] protected Image sprite;
-    [SerializeField] protected Image artImage;
-    // TMP_Text is TextMeshPro text; much better than default Unity text
-    [SerializeField] protected TMP_Text nameText;
-    [SerializeField] protected TMP_Text raceText;
-    [SerializeField] protected TMP_Text redrawTimeText;
-    [SerializeField] protected TMP_Text castTimeText;
 
+    // offset for when dragging sprite
+    protected Vector2 spriteOffset;
     // references to useful objects
     protected GameManager gameManager;
     protected CreatureGrid grid;
     protected HandSlot slot;
+    protected HeldCardDisplay cardDisplay;
 
     // list of highlightable components we are currently highlighting for preview
     // this is needed so that we can remove our highlights after done
     protected List<Highlightable> previewHighlightables;
 
+    // references to useful things
     private PlayerManager player;
     private CircleTimer castTimer;
 
     // once we know we have casted, we want to be able to prevent some actions
     private bool casted = false;
+    private Color castingColor = new Color(0.2f, 0.2f, 1f, 0.5f);
+    private Color activeColor = new Color(1f, 1f, 0f, 0.5f);
 
     /// <summary>
     /// Get the GameObject of a valid cast location based on where the
@@ -138,9 +134,7 @@ public abstract class CardManager : MonoBehaviour,
         gameObject.layer = LayerMask.NameToLayer("Held");
 
         // set the display texts/colors to their proper values
-        nameText.text = card.cardName;
-        raceText.text = card.race.ToString();
-        artImage.color = card.color;
+        spriteOffset = Vector2.zero;
         sprite.color = card.color;
         animator.Initialize(
             card.name,
@@ -148,8 +142,12 @@ public abstract class CardManager : MonoBehaviour,
             card.spriteAnimateSpeed,
             null
         );
-        castTimeText.text = card.castTime.ToString();
-        redrawTimeText.text = card.redrawTime.ToString();
+        // add and initialize held card display
+        GameObject cardDisplayObject = Instantiate(gameManager.cardDisplayPrefab, transform);
+        cardDisplay = cardDisplayObject.GetComponent<HeldCardDisplay>();
+        cardDisplay.Initialize(this);
+        sprite.transform.SetParent(cardDisplay.spriteMaskParent);
+        sprite.transform.localPosition = Vector3.zero;
 
         castingSpriteParent.gameObject.SetActive(false);
     }
@@ -193,10 +191,12 @@ public abstract class CardManager : MonoBehaviour,
             // change layer to Active
             gameObject.layer = LayerMask.NameToLayer("Active");
             // highlight card to show selected
-            SetTint(new Color(1f, 1f, 0f, 0.5f));
+            cardDisplay.highlightable.Highlight(activeColor);
             // enable sprite for preview
             castingSpriteParent.gameObject.SetActive(true);
             // move sprite to dragging in hierarchy
+            sprite.transform.SetParent(castingSpriteParent);
+            sprite.transform.localPosition = Vector3.zero + (Vector3) spriteOffset;
             castingSpriteParent.SetParent(gameManager.dragLocationParent);
         }
     }
@@ -247,19 +247,16 @@ public abstract class CardManager : MonoBehaviour,
             // set our casted flag so that cannot cast twice/move this object
             casted = true;
 
-            //Finish the move before disabling the movers
-            cardMover.InstantMove();
+            // Finish the move before disabling the movers
             spriteMover.InstantMove();
-
-            //disable card and sprite movers so they can't move after casting
-            //might need to change for creature attack animations
-            cardMover.enabled = false;
+            // disable sprite movers so it cannot move after casting
+            // (might need to change for creature attack animations)
             spriteMover.enabled = false;
 
             // remove self from card slot
-            slot.slotObject = null;
+            slot.cardInSlot = null;
             // highlight card blue to show casting
-            SetTint(new Color (0.2f, 0.2f, 1f, 0.5f));
+            cardDisplay.highlightable.Highlight(castingColor);
 
             // tell player that card casted this frame
             player.entity.TriggerActionEvent();
@@ -272,13 +269,13 @@ public abstract class CardManager : MonoBehaviour,
             // change layer to Held
             gameObject.layer = LayerMask.NameToLayer("Held");
             // remove card highlight
-            SetTint(new Color(0, 0, 0, 0));
+            cardDisplay.highlightable.RemoveHighlight(castingColor);
             // move card back to slot
             transform.SetParent(slot.transform);
             transform.position = slot.transform.position;
             // return sprite location and disable
-            castingSpriteParent.transform.SetParent(transform);
-            castingSpriteParent.transform.localPosition = Vector3.zero;
+            sprite.transform.SetParent(cardDisplay.spriteMaskParent);
+            sprite.transform.localPosition = Vector3.zero;
             castingSpriteParent.gameObject.SetActive(false);
         }
 
@@ -375,9 +372,9 @@ public abstract class CardManager : MonoBehaviour,
 
                 case Card.Condition.Status:
                     valid = false;
-                    foreach (Entity.Status s in tEntity.statuses)
+                    foreach (Entity.StatusInfo s in tEntity.statuses)
                     {
-                        if ((int)s.statusType == card.conditionValue)
+                        if ((int)s.status == card.conditionValue)
                         {
                             valid = true;
                         }
@@ -447,11 +444,11 @@ public abstract class CardManager : MonoBehaviour,
                     tEntity.MaxHealth = card.statChangeValue;
                     break;
 
-                case Card.StatChange.IncreaseHealth:
+                case Card.StatChange.Health:
                     tEntity.MaxHealth += card.statChangeValue;
                     break;
 
-                case Card.StatChange.IncreaseSpeed:
+                case Card.StatChange.Speed:
                     tEntity.Speed += card.statChangeValue / 100f;
                     break;
 
@@ -467,15 +464,24 @@ public abstract class CardManager : MonoBehaviour,
         }
     }
 
+    /// <summary>
+    /// Called by EventManager; when selected, highlight.
+    /// </summary>
+    /// <param name="eventData">Event data.</param>
+    public override void OnSelect(BaseEventData eventData)
+    {
+        // highlight card
+        cardDisplay.highlightable.Highlight(activeColor);
+    }
 
     /// <summary>
-    /// Temporary display function which changes the color of the targetableZone
-    /// which overlays on top of the card. Cheap, but useful.
-    /// TODO: Replace this with an animation, possibly.
+    /// Called by EventManager; when deselected, remove highlight.
     /// </summary>
-    public void SetTint(Color color)
+    /// <param name="eventData">Event data.</param>
+    public override void OnDeselect(BaseEventData eventData)
     {
-        targetableZone.GetComponent<Image>().color = color;
+        // remove highlight from card
+        cardDisplay.highlightable.RemoveHighlight(activeColor);
     }
 
 }

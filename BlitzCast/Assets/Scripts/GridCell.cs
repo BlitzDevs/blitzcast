@@ -1,39 +1,29 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 /// <summary>
-/// GridCell containing some basic information
-/// Has its own coordinates in Vector2Int
-/// in row column format indexed from 0
-/// sprite is blank but lets us recolor sprite
-/// Highlightable to let us change colors
+/// GridCell defines a single cell on the CreatureGrid. This contains the
+/// coordinates (row, column; start on 0).
 /// </summary>
 public class GridCell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Vector2Int coordinates;
-    public Image sprite;
+    // can highlight this cell
     public Highlightable highlightable;
 
     public CreatureGrid grid;
 
     /// <summary>
-    /// Cell you're hovering becomes yellow
+    /// Called by EventSystem. When hovering this cell, highlight.
     /// </summary>
-    /// <param name="eventData">
-    /// pass in pointer info
-    /// </param>
     public void OnPointerEnter(PointerEventData eventData)
     {
         highlightable.Highlight(Color.yellow);
     }
 
     /// <summary>
-    /// so cell doesn't stay yellow
+    /// Called by EventSystem. When stop hovering this cell, remove highlight.
     /// </summary>
-    /// <param name="eventData">
-    /// pass in pointer info
-    /// </param>
     public void OnPointerExit(PointerEventData eventData)
     {
         highlightable.RemoveHighlight(Color.yellow);
