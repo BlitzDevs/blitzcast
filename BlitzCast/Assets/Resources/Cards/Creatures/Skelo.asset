@@ -13,22 +13,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Skelo
   description: spoopy
-  spriteAnimateSpeed: 1
-  color: {r: 0.6691177, g: 0.6691177, b: 0.6691177, a: 1}
+  race: 0
   castTime: 1
   redrawTime: 1
-  race: 0
-  action: 0
+  spriteAnimateSpeed: 1
+  color: {r: 0.6691177, g: 0.6691177, b: 0.6691177, a: 1}
+  action: 1
   actionValue: 0
   statChange: 0
   statChangeValue: 0
-  statusInflicted: 0
-  stacks: 0
+  statusInflicted: 4
+  stacks: 1
   actionChance: 100
   condition: 0
   conditionValue: 0
   health: 1
   actionTime: 3
   size: {x: 1, y: 1}
+  targetArea: 0
   statusModifiers: []
   statModifiers: []

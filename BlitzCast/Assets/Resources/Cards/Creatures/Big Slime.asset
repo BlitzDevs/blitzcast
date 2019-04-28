@@ -13,17 +13,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Big Slime
   description: squishy
-  spriteSheet: {fileID: 2800000, guid: e83a77e8d474c47988cca828cb7c616e, type: 3}
-  color: {r: 0.47397092, g: 0.7794118, b: 0.2980104, a: 1}
+  race: 0
   castTime: 1
   redrawTime: 1
-  race: 0
-  cardBehavior:
-    action: 0
-    actionValue: 0
-    targetArea: 0
-    statusInflicted: 0
-    stacks: 0
+  spriteAnimateSpeed: 30
+  color: {r: 0.47397092, g: 0.7794118, b: 0.2980104, a: 1}
+  action: 1
+  actionValue: 3
+  statChange: 0
+  statChangeValue: 0
+  statusInflicted: 0
+  stacks: 0
+  actionChance: 100
+  condition: 6
+  conditionValue: 0
   health: 5
   actionTime: 5
   size: {x: 2, y: 2}
+  targetArea: 0
+  statusModifiers: []
+  statModifiers: []

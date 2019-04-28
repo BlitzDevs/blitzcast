@@ -13,13 +13,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Slime
   description: squishy
-  spriteAnimateSpeed: 30
-  color: {r: 0.47397092, g: 0.7794118, b: 0.2980104, a: 1}
+  race: 0
   castTime: 1
   redrawTime: 1
-  race: 0
-  action: 0
-  actionValue: 0
+  spriteAnimateSpeed: 30
+  color: {r: 0.47397092, g: 0.7794118, b: 0.2980104, a: 1}
+  action: 1
+  actionValue: 1
   statChange: 0
   statChangeValue: 0
   statusInflicted: 0
@@ -30,5 +30,6 @@ MonoBehaviour:
   health: 2
   actionTime: 5
   size: {x: 1, y: 1}
+  targetArea: 0
   statusModifiers: []
   statModifiers: []

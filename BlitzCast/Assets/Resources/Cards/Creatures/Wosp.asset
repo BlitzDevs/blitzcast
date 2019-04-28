@@ -13,13 +13,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Wosp
   description: bzzzz
-  spriteAnimateSpeed: 10
-  color: {r: 1, g: 0.8482759, b: 0, a: 1}
+  race: 0
   castTime: 1
   redrawTime: 1
-  race: 0
-  action: 0
-  actionValue: 0
+  spriteAnimateSpeed: 10
+  color: {r: 1, g: 0.8482759, b: 0, a: 1}
+  action: 1
+  actionValue: 1
   statChange: 0
   statChangeValue: 0
   statusInflicted: 0
@@ -30,7 +30,8 @@ MonoBehaviour:
   health: 1
   actionTime: 2
   size: {x: 1, y: 1}
+  targetArea: 0
   statusModifiers: []
   statModifiers:
-  - statChange: 3
-    statChangeValue: 50
+  - type: 0
+    value: 0

@@ -9,27 +9,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3718d06e4808074db547e4a69a967fc, type: 3}
-  m_Name: Blokto
+  m_Name: Fire Slime
   m_EditorClassIdentifier: 
-  cardName: Blokto
-  description: blocky
+  cardName: Fire Slime
+  description: squishy
   race: 0
   castTime: 1
   redrawTime: 1
-  spriteAnimateSpeed: 3
-  color: {r: 0.6102941, g: 0.6102941, b: 0.6102941, a: 1}
+  spriteAnimateSpeed: 30
+  color: {r: 0.86764705, g: 0.18127312, b: 0.10207612, a: 1}
   action: 1
-  actionValue: 0
+  actionValue: 1
   statChange: 0
   statChangeValue: 0
-  statusInflicted: 0
-  stacks: 0
+  statusInflicted: 2
+  stacks: 1
   actionChance: 100
   condition: 0
   conditionValue: 0
-  health: 5
+  health: 2
   actionTime: 5
-  size: {x: 1, y: 2}
+  size: {x: 1, y: 1}
   targetArea: 0
   statusModifiers: []
   statModifiers: []
