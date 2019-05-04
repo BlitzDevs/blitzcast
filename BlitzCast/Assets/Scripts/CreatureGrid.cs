@@ -43,13 +43,13 @@ public class CreatureGrid : MonoBehaviour {
         //automatically determines offset between each cell
         // + 2 accounts for width of lines
         cellsGroupRect.sizeDelta = new Vector2(
-            cellsGroup.cellSize.x * size.y + 2,
-            cellsGroup.cellSize.y * size.x + 2
+            cellsGroup.cellSize.x * size.y + 1,
+            cellsGroup.cellSize.y * size.x + 1
         );
         //automatically determines offset between each line (hori and vert)
         //2 is weight of line, size specifies distance between each line
-        horiLinesGroup.cellSize = new Vector2(cellsGroupRect.rect.size.x, 2);
-        vertLinesGroup.cellSize = new Vector2(2, cellsGroupRect.rect.size.y);
+        horiLinesGroup.cellSize = new Vector2(cellsGroupRect.rect.size.x, 1);
+        vertLinesGroup.cellSize = new Vector2(1, cellsGroupRect.rect.size.y - 1);
         
         //Initializes Creature Dictionary
         creatures = new Dictionary<Vector2Int, CreatureCardManager>();

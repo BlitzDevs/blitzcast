@@ -89,9 +89,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6870c6f8f55524ebda249ba70550c5bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seconds: 3
+  time: 0
+  countdown: 0
+  entity: {fileID: 0}
   backgroundColor: {r: 0, g: 0, b: 0, a: 1}
-  fillColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  fillColor: {r: 0, g: 0.78431374, b: 1, a: 1}
   background: {fileID: 114992192035102466}
   fill: {fileID: 114930672099253014}
   text: {fileID: 114903960158809636}

@@ -17,7 +17,7 @@ MonoBehaviour:
   castTime: 1
   redrawTime: 1
   spriteAnimateSpeed: 30
-  color: {r: 0.47397092, g: 0.7794118, b: 0.2980104, a: 1}
+  color: {r: 0.33595335, g: 0.9191176, b: 0, a: 1}
   action: 1
   actionValue: 3
   statChange: 0

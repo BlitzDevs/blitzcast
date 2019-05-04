@@ -41,9 +41,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fdb91375223b402a86db607f19ebc3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 114965914356585680}
-  highlights: []
   colorPulseSpeed: 0.3
+  image: {fileID: 114965914356585680}
 --- !u!114 &114860057885525216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -56,7 +55,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coordinates: {x: 0, y: 0}
-  sprite: {fileID: 114965914356585680}
   highlightable: {fileID: 114655162897910718}
   grid: {fileID: 0}
 --- !u!114 &114965914356585680
@@ -71,7 +69,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
