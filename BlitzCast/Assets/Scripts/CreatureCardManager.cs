@@ -318,6 +318,30 @@ public class CreatureCardManager : CardManager
         HashSet<GameObject> targets = new HashSet<GameObject>();
         switch (creatureCard.targetArea)
         {
+            case CreatureCard.CreatureTarget.Front:
+                for (int row = coordinates.x - 1; row >= 0; row--)
+                {
+                    for (int col = coordinates.y; col < coordinates.y + creatureCard.size.x; col++)
+                    {
+                        CreatureCardManager temp = grid.GetCreature(new Vector2Int(row, col));
+                        if (temp != null)
+                        {
+                            targets.Add(temp.gameObject);
+                            if (temp.team != team)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    if (targets.Count > 0)
+                    {
+                        break;
+                    }
+                }
+                if (targets.Count == 0) {
+                    targets.Add(gameManager.GetPlayer(GameManager.Team.Enemy).gameObject);
+                }
+                break;
             default:
                 Debug.LogWarning("Creature Target Area not implemented");
                 break;
