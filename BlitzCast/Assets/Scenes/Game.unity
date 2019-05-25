@@ -4522,6 +4522,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 96129616680078228, guid: a08289f9e97ee44c4be60d535104ba8b,
+        type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
+      value: 0.36516762
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a08289f9e97ee44c4be60d535104ba8b, type: 3}
 --- !u!224 &1008428676 stripped
@@ -5181,6 +5186,10 @@ PrefabInstance:
     - target: {fileID: 1246807055575976, guid: ddf7de7c3a13a4f9185b7e9a176c9a13, type: 3}
       propertyPath: m_Name
       value: Creature Card
+      objectReference: {fileID: 0}
+    - target: {fileID: 1246807055575976, guid: ddf7de7c3a13a4f9185b7e9a176c9a13, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224683478630416758, guid: ddf7de7c3a13a4f9185b7e9a176c9a13,
         type: 3}

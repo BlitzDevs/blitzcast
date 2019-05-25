@@ -89,6 +89,11 @@ public static class EnumExtensions
            .GetType()
            .GetField(value.ToString())
            .GetCustomAttributes(typeof(DisplayAttribute), false);
+        for (int i = 0; i < attributes.Length; i++)
+        {
+            Debug.Log(i.ToString() + attributes[i].LongName);
+            Debug.Log(attributes[0].Color);
+        }
         return attributes.Length > 0 ? attributes[0].Color : Color.magenta;
     }
 

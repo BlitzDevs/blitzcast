@@ -343,7 +343,7 @@ public class Entity : MonoBehaviour
     /// </summary>
     private void SetStatusDisplay(Card.Status statusType, int oldStacks, int newStacks)
     {
-        StatusInfo status = GetStatus(statusType);
+        StatusInfo statusInfo = GetStatus(statusType);
         TMP_Text statusDisplay;
         // try get reference to text component if it exists
         statusDisplays.TryGetValue(statusType, out statusDisplay);
@@ -355,7 +355,7 @@ public class Entity : MonoBehaviour
             GameObject statusObject = Instantiate(gameManager.statusPrefab, statusesParent);
             // set image color and reference to text
             Image statusImage = statusObject.GetComponent<Image>();
-            statusImage.color = status.status.GetDisplayColor();
+            statusImage.color = statusInfo.status.GetDisplayColor();
             statusDisplay = statusObject.GetComponentInChildren<TMP_Text>();
             statusDisplays.Add(statusType, statusDisplay);
         }
