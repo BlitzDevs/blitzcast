@@ -342,6 +342,59 @@ public class CreatureCardManager : CardManager
                     targets.Add(gameManager.GetPlayer(GameManager.Team.Enemy).gameObject);
                 }
                 break;
+            //directly adjacent, no diagonals
+            case CreatureCard.CreatureTarget.Adjacent:
+                for (int row = coordinates.x; row < coordinates.x + creatureCard.size.x; row++)
+                {
+                    for (int col = coordinates.y; col < coordinates.y + creatureCard.size.y; col++)
+                    {
+                        Vector2Int tile = new Vector2Int(row, col);
+                        CreatureCardManager possible = grid.GetCreature(tile + Vector2Int.up);
+                        if (possible != null && possible != this) targets.Add(possible.gameObject);
+                        possible = grid.GetCreature(tile + Vector2Int.down);
+                        if (possible != null && possible != this) targets.Add(possible.gameObject);
+                        possible = grid.GetCreature(tile + Vector2Int.left);
+                        if (possible != null && possible != this) targets.Add(possible.gameObject);
+                        possible = grid.GetCreature(tile + Vector2Int.right);
+                        if (possible != null && possible != this) targets.Add(possible.gameObject);
+                    }
+                }
+                break;
+            case CreatureCard.CreatureTarget.Column:
+                for (int col = coordinates.y; col < coordinates.y + creatureCard.size.y; col++)
+                {
+                    for (int row = 0; row < grid.size.x; row++)
+                    {
+                        CreatureCardManager possible = grid.GetCreature(new Vector2Int(row, col));
+                        if (possible != null && possible != this) targets.Add(possible.gameObject);
+                    }
+                }
+                break;
+            case CreatureCard.CreatureTarget.Row:
+                for (int row = coordinates.x; row < coordinates.x + creatureCard.size.x; row++)
+                {
+                    for (int col = 0; col < grid.size.y; col++)
+                    {
+                        CreatureCardManager possible = grid.GetCreature(new Vector2Int(row, col));
+                        if (possible != null && possible != this) targets.Add(possible.gameObject);
+                    }
+                }
+                break;
+            case CreatureCard.CreatureTarget.All:
+                targets.Add(gameManager.GetPlayer(GameManager.Team.Enemy).gameObject);
+                targets.Add(gameManager.GetPlayer(GameManager.Team.Friendly).gameObject);
+                goto case CreatureCard.CreatureTarget.AllCreatures;
+
+            case CreatureCard.CreatureTarget.AllCreatures:
+                foreach (CreatureCardManager possible in grid.GetAllCreatures())
+                {
+                    if (possible != null && possible != this)
+                    {
+                        targets.Add(possible.gameObject);
+                    }
+                }
+                break;
+            
             default:
                 Debug.LogWarning("Creature Target Area not implemented");
                 break;

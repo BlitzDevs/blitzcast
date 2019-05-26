@@ -10,27 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3718d06e4808074db547e4a69a967fc, type: 3}
-  m_Name: Skelo
+  m_Name: Test Adjacent
   m_EditorClassIdentifier: 
-  cardName: Skelo
-  description: spoopy
+  cardName: TestAdjacent
+  description: 'See above '
   race: 0
   castTime: 1
   redrawTime: 1
-  spriteAnimateSpeed: 1
-  color: {r: 1, g: 1, b: 1, a: 1}
-  action: 1
+  spriteAnimateSpeed: 30
+  color: {r: 0.6938939, g: 1, b: 0, a: 1}
+  action: 2
   actionValue: 1
   statChange: 0
   statChangeValue: 0
-  statusInflicted: 4
-  stacks: 1
+  statusInflicted: 0
+  stacks: 0
   actionChance: 100
-  condition: 0
+  condition: 5
   conditionValue: 0
-  health: 1
-  actionTime: 3
-  size: {x: 1, y: 1}
-  targetArea: 0
+  health: 4
+  actionTime: 2
+  size: {x: 1, y: 2}
+  targetArea: 1
   statusModifiers: []
   statModifiers: []

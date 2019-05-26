@@ -408,6 +408,8 @@ public abstract class CardManager : Selectable,
         // Execute Card Action on our list of valid targets
         foreach (GameObject t in targets)
         {
+            //some error trapping
+            if (t == null) continue;
             Entity tEntity = t.GetComponent<Entity>();
             CardManager tCard = t.GetComponent<CardManager>();
 
