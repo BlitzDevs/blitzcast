@@ -17,7 +17,7 @@ public class Highlightable : MonoBehaviour
     public float colorPulseSpeed = 1f;
 
     // reference to image component
-    [SerializeField] private Image image;
+    [SerializeField] private List<Image> images;
 
     // reference to GameTimer, which all time should be based on
     private GameTimer gameTimer;
@@ -35,7 +35,10 @@ public class Highlightable : MonoBehaviour
     public void Highlight(Color color)
     {
         highlights.Insert(0, color);
-        image.color = color;
+        foreach (Image image in images)
+        {
+            image.color = color;
+        }
         colorIndex = 0;
     }
 
@@ -47,11 +50,17 @@ public class Highlightable : MonoBehaviour
         highlights.Remove(color);
         if (highlights.Count > 0)
         {
-            image.color = highlights[0];
+            foreach (Image image in images)
+            {
+                image.color = highlights[0];
+            }
         }
         else
         {
-            image.color = defaultColor;
+            foreach (Image image in images)
+            {
+                image.color = defaultColor;
+            }
         }
     }
 
@@ -64,11 +73,19 @@ public class Highlightable : MonoBehaviour
     {
         gameTimer = FindObjectOfType<GameTimer>();
         highlights = new List<Color>();
-        if (image == null)
+        if (images == null)
         {
-            image = GetComponent<Image>();
+            images = new List<Image>();
         }
-        defaultColor = image.color;
+        if (images.Count == 0)
+        {
+            Image imageOnObject = GetComponent<Image>();
+            if (imageOnObject != null)
+            {
+                images.Add(imageOnObject);
+            }
+        }
+        defaultColor = images.Count > 0 ? images[0].color : Color.white;
     }
 
     /// <summary>

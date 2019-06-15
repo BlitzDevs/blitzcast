@@ -85,7 +85,6 @@ GameObject:
   m_Component:
   - component: {fileID: 224093752316129996}
   - component: {fileID: 222142494896983902}
-  - component: {fileID: 6677435999778842058}
   - component: {fileID: 3559124983946162919}
   m_Layer: 0
   m_Name: Stacks Text
@@ -121,14 +120,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1999756141069632}
   m_CullTransparentMesh: 0
---- !u!33 &6677435999778842058
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1999756141069632}
-  m_Mesh: {fileID: 0}
 --- !u!114 &3559124983946162919
 MonoBehaviour:
   m_ObjectHideFlags: 0

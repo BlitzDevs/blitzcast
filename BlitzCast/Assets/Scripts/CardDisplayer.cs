@@ -5,7 +5,7 @@ using TMPro;
 /// <summary>
 /// Mini displayer for held cards.
 /// </summary>
-public class HeldCardDisplay : MonoBehaviour
+public class CardDisplayer : MonoBehaviour
 {
 
     // FOR REFERENCE:

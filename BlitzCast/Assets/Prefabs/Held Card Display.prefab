@@ -354,12 +354,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1114005657856742}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9debda879beba421b8a430cfc61e7d9e, type: 3}
+  m_Script: {fileID: 11500000, guid: 390ad514d2f334933b1a66dc02ab6a28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spriteMaskParent: {fileID: 224123815499484592}
   highlightable: {fileID: 114140499576021798}
-  backgroundImage: {fileID: 114167942422821608}
+  backgroundImage: {fileID: 114385642945244090}
   timeCostsParent: {fileID: 1607424098658570}
   castTimeText: {fileID: 1172959997}
   drawTimeText: {fileID: 1172959996}
@@ -376,7 +376,7 @@ MonoBehaviour:
   conditionParent: {fileID: 1889638484536652}
   conditionIcon: {fileID: 114755428254543724}
   conditionText: {fileID: 1172959986}
-  creatureStatsParent: {fileID: 1805084464979056}
+  creatureStatsParent: {fileID: 1120662192484134}
   healthText: {fileID: 1172960000}
   speedText: {fileID: 1172959998}
 --- !u!222 &222985060009662842
@@ -429,7 +429,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorPulseSpeed: 1
-  image: {fileID: 114385642945244090}
+  images:
+  - {fileID: 114820530453317676}
+  - {fileID: 114385642945244090}
 --- !u!1 &1114904837074224
 GameObject:
   m_ObjectHideFlags: 0

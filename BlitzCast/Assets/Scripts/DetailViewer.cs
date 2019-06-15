@@ -1,9 +1,27 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using TMPro;
 
 /// <summary>
 /// Shows the detailed view of a selected object.
 /// </summary>
 public class DetailViewer : MonoBehaviour
 {
-    //TODO: Implement this
+
+    // References to display components
+    [SerializeField] private CardDisplayer cardDisplayer;
+
+    /// <summary>
+    /// Set detail view info.
+    /// </summary>
+    public void Set()
+    {
+       Debug.Log("set detail view info");
+    }
+
+
+
 }

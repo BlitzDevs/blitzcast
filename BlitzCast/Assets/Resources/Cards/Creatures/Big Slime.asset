@@ -3,8 +3,9 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -16,7 +17,7 @@ MonoBehaviour:
   race: 0
   castTime: 1
   redrawTime: 1
-  spriteAnimateSpeed: 30
+  spriteAnimateSpeed: 15
   color: {r: 0.33595335, g: 0.9191176, b: 0, a: 1}
   action: 1
   actionValue: 3

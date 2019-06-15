@@ -12,8 +12,7 @@ using UnityEngine.EventSystems;
 /// <seealso cref="Card"/>
 /// <seealso cref="CreatureCardManager"/>
 /// <seealso cref="SpellCardManager"/>
-public abstract class CardManager : Selectable,
-                           IDeselectHandler, ISelectHandler,
+public abstract class CardManager : DetailViewable,
                            IBeginDragHandler, IDragHandler, IEndDragHandler
 {
 
@@ -43,7 +42,7 @@ public abstract class CardManager : Selectable,
     protected GameManager gameManager;
     protected CreatureGrid grid;
     protected HandSlot slot;
-    protected HeldCardDisplay cardDisplay;
+    protected CardDisplayer cardDisplay;
 
     // list of highlightable components we are currently highlighting for preview
     // this is needed so that we can remove our highlights after done
@@ -56,7 +55,6 @@ public abstract class CardManager : Selectable,
     // once we know we have casted, we want to be able to prevent some actions
     private bool casted = false;
     private Color castingColor = new Color(0.2f, 0.2f, 1f, 0.5f);
-    private Color activeColor = new Color(1f, 1f, 0f, 0.5f);
 
     /// <summary>
     /// Get the GameObject of a valid cast location based on where the
@@ -144,8 +142,9 @@ public abstract class CardManager : Selectable,
         );
         // add and initialize held card display
         GameObject cardDisplayObject = Instantiate(gameManager.cardDisplayPrefab, transform);
-        cardDisplay = cardDisplayObject.GetComponent<HeldCardDisplay>();
+        cardDisplay = cardDisplayObject.GetComponent<CardDisplayer>();
         cardDisplay.Initialize(this);
+        highlightable = cardDisplay.highlightable;
         sprite.transform.SetParent(cardDisplay.spriteMaskParent);
         sprite.transform.localPosition = Vector3.zero;
 
@@ -190,8 +189,6 @@ public abstract class CardManager : Selectable,
         if (gameObject.layer == LayerMask.NameToLayer("Held")) {
             // change layer to Active
             gameObject.layer = LayerMask.NameToLayer("Active");
-            // highlight card to show selected
-            cardDisplay.highlightable.Highlight(activeColor);
             // enable sprite for preview
             castingSpriteParent.gameObject.SetActive(true);
             // move sprite to dragging in hierarchy
@@ -256,7 +253,7 @@ public abstract class CardManager : Selectable,
             // remove self from card slot
             slot.cardInSlot = null;
             // highlight card blue to show casting
-            cardDisplay.highlightable.Highlight(castingColor);
+            //cardDisplay.highlightable.Highlight(castingColor);
 
             // tell player that card casted this frame
             player.entity.TriggerActionEvent();
@@ -269,7 +266,7 @@ public abstract class CardManager : Selectable,
             // change layer to Held
             gameObject.layer = LayerMask.NameToLayer("Held");
             // remove card highlight
-            cardDisplay.highlightable.RemoveHighlight(castingColor);
+            //cardDisplay.highlightable.RemoveHighlight(castingColor);
             // move card back to slot
             transform.SetParent(slot.transform);
             transform.position = slot.transform.position;
@@ -464,26 +461,6 @@ public abstract class CardManager : Selectable,
                 card.stacks
             ));
         }
-    }
-
-    /// <summary>
-    /// Called by EventManager; when selected, highlight.
-    /// </summary>
-    /// <param name="eventData">Event data.</param>
-    public override void OnSelect(BaseEventData eventData)
-    {
-        // highlight card
-        cardDisplay.highlightable.Highlight(activeColor);
-    }
-
-    /// <summary>
-    /// Called by EventManager; when deselected, remove highlight.
-    /// </summary>
-    /// <param name="eventData">Event data.</param>
-    public override void OnDeselect(BaseEventData eventData)
-    {
-        // remove highlight from card
-        cardDisplay.highlightable.RemoveHighlight(activeColor);
     }
 
 }

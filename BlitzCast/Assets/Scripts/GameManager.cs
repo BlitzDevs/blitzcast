@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     // References to important components
     public Vector2Int creatureGridSize;
     public CreatureGrid creatureGrid;
+    public DetailViewer detailViewer;
+    public GameLogger gameLogger;
     public GameTimer timer;
     public PlayerManager playerA;
     public PlayerManager playerB;

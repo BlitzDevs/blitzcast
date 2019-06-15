@@ -29,7 +29,6 @@ public class CreatureCardManager : CardManager
     [SerializeField] private TMP_Text gridHealthText;
     [SerializeField] private TMP_Text gridActionValueText;
     [SerializeField] private TMP_Text gridSpeedText;
-    [SerializeField] private Highlightable gridDisplayHighlightable;
     [SerializeField] private RectTransform gridDisplayRect;
     [SerializeField] private RectTransform gridStatusesParent;
     [SerializeField] private CircleTimer actionTimer;
@@ -312,8 +311,6 @@ public class CreatureCardManager : CardManager
     {
         // location is the upper left grid cell our creature is in
 
-        //TODO: implement Creature Target Area
-
         //turn locations into targets
         HashSet<GameObject> targets = new HashSet<GameObject>();
         switch (creatureCard.targetArea)
@@ -324,7 +321,7 @@ public class CreatureCardManager : CardManager
                     for (int col = coordinates.y; col < coordinates.y + creatureCard.size.x; col++)
                     {
                         CreatureCardManager temp = grid.GetCreature(new Vector2Int(row, col));
-                        if (temp != null)
+                        if (temp != null && temp.entity != null)
                         {
                             targets.Add(temp.gameObject);
                             if (temp.team != team)
@@ -342,6 +339,7 @@ public class CreatureCardManager : CardManager
                     targets.Add(gameManager.GetPlayer(GameManager.Team.Enemy).gameObject);
                 }
                 break;
+
             //directly adjacent, no diagonals
             case CreatureCard.CreatureTarget.Adjacent:
                 for (int row = coordinates.x; row < coordinates.x + creatureCard.size.x; row++)
@@ -360,6 +358,7 @@ public class CreatureCardManager : CardManager
                     }
                 }
                 break;
+
             case CreatureCard.CreatureTarget.Column:
                 for (int col = coordinates.y; col < coordinates.y + creatureCard.size.y; col++)
                 {
@@ -370,6 +369,7 @@ public class CreatureCardManager : CardManager
                     }
                 }
                 break;
+
             case CreatureCard.CreatureTarget.Row:
                 for (int row = coordinates.x; row < coordinates.x + creatureCard.size.x; row++)
                 {
@@ -380,6 +380,7 @@ public class CreatureCardManager : CardManager
                     }
                 }
                 break;
+
             case CreatureCard.CreatureTarget.All:
                 targets.Add(gameManager.GetPlayer(GameManager.Team.Enemy).gameObject);
                 targets.Add(gameManager.GetPlayer(GameManager.Team.Friendly).gameObject);

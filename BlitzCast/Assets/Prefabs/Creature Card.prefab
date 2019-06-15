@@ -482,6 +482,7 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
+  highlightable: {fileID: 114428139228026810}
   card: {fileID: 0}
   team: 0
   spriteMover: {fileID: 114372662002745306}

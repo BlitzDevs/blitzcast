@@ -7,7 +7,7 @@ using TMPro;
 /// Handles all of the displays and events related to the player.
 /// The player information is determined by Player.
 /// </summary>
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : DetailViewable
 {
     public Player player;
     public Entity entity;
@@ -21,7 +21,6 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Transform handSlotParent;
     [SerializeField] private Transform statusesParent;
-    [SerializeField] private Highlightable highlightable;
     [SerializeField] private SpriteSheetAnimator animator;
 
     private GameManager gameManager;
