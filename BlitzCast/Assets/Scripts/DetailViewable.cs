@@ -29,11 +29,8 @@ public class DetailViewable : Selectable
     /// <param name="eventData">Event data.</param>
     public override void OnSelect(BaseEventData eventData)
     {
-        // highlight card
         highlightable.Highlight(activeColor);
-
-        // Send info to detail viewer
-        detailViewer.Set();
+        detailViewer.Set(gameObject);
     }
 
     /// <summary>
@@ -42,7 +39,7 @@ public class DetailViewable : Selectable
     /// <param name="eventData">Event data.</param>
     public override void OnDeselect(BaseEventData eventData)
     {
-        // remove highlight from card
         highlightable.RemoveHighlight(activeColor);
+        detailViewer.Set(null);
     }
 }

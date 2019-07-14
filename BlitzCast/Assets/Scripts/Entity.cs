@@ -318,12 +318,14 @@ public class Entity : MonoBehaviour
     /// </summary>
     private StatusInfo GetStatus(Card.Status type)
     {
-        int i = (int) type - 1;
-        if (i < 0 || i > statuses.Count)
+        foreach (StatusInfo s in statuses)
         {
-            return null;
+            if (s.status == type)
+            {
+                return s;
+            }
         }
-        return statuses[(int) type - 1];
+        return null;
     }
 
     /// <summary>
@@ -331,10 +333,7 @@ public class Entity : MonoBehaviour
     /// </summary>
     public void TriggerActionEvent()
     {
-        if (ActionEvent != null)
-        {
-            ActionEvent();
-        }
+        ActionEvent?.Invoke();
     }
 
     /// <summary>

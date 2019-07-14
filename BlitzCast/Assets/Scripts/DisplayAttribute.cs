@@ -37,7 +37,7 @@ public class DisplayAttribute : Attribute
     {
         LongName = longName;
         ShortName = shortName;
-        Color = new Color(r, g, b);
+        Color = new Color(r/255f, g/255f, b/255f);
     }
 
     // Properties of this attribute (get only)
@@ -89,11 +89,6 @@ public static class EnumExtensions
            .GetType()
            .GetField(value.ToString())
            .GetCustomAttributes(typeof(DisplayAttribute), false);
-        for (int i = 0; i < attributes.Length; i++)
-        {
-            Debug.Log(i.ToString() + attributes[i].LongName);
-            Debug.Log(attributes[0].Color);
-        }
         return attributes.Length > 0 ? attributes[0].Color : Color.magenta;
     }
 

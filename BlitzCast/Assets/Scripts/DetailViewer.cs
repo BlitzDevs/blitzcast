@@ -12,14 +12,35 @@ public class DetailViewer : MonoBehaviour
 {
 
     // References to display components
+    [SerializeField] private GameObject display;
     [SerializeField] private CardDisplayer cardDisplayer;
+    private EventSystem eventSystem;
+
+    private void Start()
+    {
+        eventSystem = FindObjectOfType<EventSystem>();
+        Set(null);
+    }
+
 
     /// <summary>
     /// Set detail view info.
     /// </summary>
-    public void Set()
+    public void Set(GameObject thing)
     {
-       Debug.Log("set detail view info");
+        if (thing == null)
+        {
+            display.SetActive(false);
+            return;
+        }
+
+        display.SetActive(true);
+
+        CardManager cardManager = thing.GetComponent<CardManager>();
+        if (cardManager.card != null)
+        {
+            cardDisplayer.Set(cardManager.card);
+        }
     }
 
 

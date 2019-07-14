@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -32,6 +33,7 @@ public class CreatureCardManager : CardManager
     [SerializeField] private RectTransform gridDisplayRect;
     [SerializeField] private RectTransform gridStatusesParent;
     [SerializeField] private CircleTimer actionTimer;
+    [SerializeField] private Image background;
 
     // size and offset for displaying
     private Vector2 spriteSize;
@@ -93,6 +95,7 @@ public class CreatureCardManager : CardManager
         // now set the actual size to the calculated size
         castingSpriteParent.sizeDelta = grid.cellsGroup.cellSize;
         sprite.rectTransform.sizeDelta = spriteSize;
+        background.rectTransform.sizeDelta = spriteSize;
         // add the calculated offset to local position
         sprite.transform.localPosition += (Vector3) spriteOffset;
 
@@ -118,9 +121,9 @@ public class CreatureCardManager : CardManager
             // add cell highlighting
             foreach (GameObject targetObject in GetCastTargets(target))
             {
-                Highlightable highlightable = targetObject.gameObject.GetComponent<Highlightable>();
-                previewHighlightables.Add(highlightable);
-                highlightable.Highlight(card.color);
+                Highlightable h = targetObject.gameObject.GetComponent<Highlightable>();
+                previewHighlightables.Add(h);
+                h.Highlight(card.color);
             }
         }
         else
@@ -142,9 +145,8 @@ public class CreatureCardManager : CardManager
     public override GameObject GetCastLocation()
     {
         // Get first GridCell under cursor
-        GameObject cellObject = gameManager.GetFirstUnderCursor<GridCell>();
-        GridCell cell = cellObject != null ?
-            cellObject.GetComponent<GridCell>() : null;
+        GameObject cellObject = player.GetFirstUnderCursor<GridCell>();
+        GridCell cell = cellObject?.GetComponent<GridCell>();
 
         // ensure cell is valid (cell exists, player side, creature fits)
         if (cell != null && (team == GameManager.Team.Friendly ?
@@ -254,7 +256,7 @@ public class CreatureCardManager : CardManager
         creatureRect.sizeDelta = spriteSize;
         // move out of the hierarchy
         castingSpriteParent.transform.SetParent(gridDisplayRect);
-        castingSpriteParent.SetAsFirstSibling();
+        castingSpriteParent.SetSiblingIndex(1);
         castingSpriteParent.transform.localPosition = Vector3.zero;
         sprite.transform.localPosition = Vector3.zero;
         transform.SetParent(grid.playerCreaturesParent);
@@ -262,7 +264,7 @@ public class CreatureCardManager : CardManager
         transform.localPosition += (Vector3) spriteOffset;
 
         // Disable Card display
-        cardDisplay.gameObject.SetActive(false);
+        cardDisplayer.gameObject.SetActive(false);
         // Enable Grid Creature display
         gridDisplayRect.gameObject.SetActive(true);
         gridHealthText.text = creatureCard.health.ToString();

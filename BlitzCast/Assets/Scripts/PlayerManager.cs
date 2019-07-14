@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
 /// <summary>
@@ -13,6 +14,7 @@ public class PlayerManager : DetailViewable
     public Entity entity;
     public GameManager.Team team;
     public List<Card> playingDeck; // deck in play
+    public GameObject focusedObject;
 
     // References to displayable components
     [SerializeField] private TMP_Text usernameText;
@@ -24,6 +26,8 @@ public class PlayerManager : DetailViewable
     [SerializeField] private SpriteSheetAnimator animator;
 
     private GameManager gameManager;
+    private EventSystem eventSystem;
+    private GraphicRaycaster raycaster;
 
     /// <summary>
     /// Initialize the player with the specified team, health and handSize.
@@ -34,6 +38,8 @@ public class PlayerManager : DetailViewable
     public void Initialize(GameManager.Team team, int health, int handSize)
     {
         gameManager = FindObjectOfType<GameManager>();
+        raycaster = FindObjectOfType<GraphicRaycaster>();
+        eventSystem = FindObjectOfType<EventSystem>();
 
         this.team = team;
 
@@ -108,6 +114,59 @@ public class PlayerManager : DetailViewable
             playingDeck[i] = playingDeck[j];
             playingDeck[j] = temp;
         }
+    }
+
+
+    /// <summary>
+    /// Gets all GameObjects under cursor.
+    /// </summary>
+    public List<GameObject> GetAllUnderCursor()
+    {
+        List<GameObject> results = new List<GameObject>();
+        PointerEventData pointerEventData = new PointerEventData(eventSystem);
+        pointerEventData.position = Input.mousePosition;
+
+        List<RaycastResult> rayCast = new List<RaycastResult>();
+        raycaster.Raycast(pointerEventData, rayCast);
+
+        foreach (RaycastResult r in rayCast)
+        {
+            results.Add(r.gameObject);
+        }
+        return results;
+    }
+
+    /// <summary>
+    /// Gets the first GameObject under cursor with the specified component.
+    /// </summary>
+    public GameObject GetFirstUnderCursor<T>()
+    {
+        List<GameObject> hitObjects = GetAllUnderCursor();
+        foreach (GameObject g in hitObjects)
+        {
+            T t = g.GetComponent<T>();
+            if (t != null)
+            {
+                return g;
+            }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Gets the first GameObject under cursor in the specified layer.
+    /// </summary>
+    public GameObject GetFirstUnderCursor(int layer)
+    {
+        List<GameObject> hitObjects = GetAllUnderCursor();
+        foreach (GameObject g in hitObjects)
+        {
+            if (g.layer == layer)
+            {
+                return g;
+            }
+        }
+        return null;
     }
 
     /// <summary>

@@ -12,8 +12,9 @@ public class CardDisplayer : MonoBehaviour
     // TMP_Text is TextMeshPro text; much better than default Unity text
 
     public Transform spriteMaskParent;
-    public Highlightable highlightable;
     // References to display components
+    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text raceText;
     [SerializeField] private Image backgroundImage;
     [SerializeField] private GameObject timeCostsParent;
     [SerializeField] private TMP_Text castTimeText;
@@ -36,20 +37,23 @@ public class CardDisplayer : MonoBehaviour
     [SerializeField] private TMP_Text speedText;
 
     /// <summary>
-    /// Initialize this HeldCardDisplay; set values and initiate displays.
+    /// Set this CardDisplayer; show values according to card.
     /// </summary>
-    /// <param name="cardManager">
-    /// The CardManager controlling this card object.
-    /// </param>
-    public virtual void Initialize(CardManager cardManager)
+    public void Set(Card card)
     {
-        Card card = cardManager.card;
-
         // always have time costs
         timeCostsParent.SetActive(true);
         castTimeText.text = card.castTime.ToString();
         drawTimeText.text = card.redrawTime.ToString();
 
+        if (nameText != null)
+        {
+            nameText.text = card.cardName;
+        }
+        if (raceText != null)
+        {
+            raceText.text = card.race.GetLongName();
+        }
         // if card has action, show
         if (card.action != Card.Action.None)
         {
@@ -106,9 +110,8 @@ public class CardDisplayer : MonoBehaviour
             conditionParent.SetActive(false);
         }
         // if card is Creature, show health/speed
-        if (card is CreatureCard)
+        if (card is CreatureCard creatureCard)
         {
-            CreatureCard creatureCard = (CreatureCard) card;
             creatureStatsParent.SetActive(true);
             healthText.text = creatureCard.health.ToString();
             speedText.text = creatureCard.actionTime.ToString();

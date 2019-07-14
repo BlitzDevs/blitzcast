@@ -35,6 +35,7 @@ public abstract class CardManager : DetailViewable,
     [SerializeField] protected SpriteSheetAnimator animator;
     [SerializeField] protected RectTransform castingSpriteParent;
     [SerializeField] protected Image sprite;
+    [SerializeField] protected CardDisplayer cardDisplayer;
 
     // offset for when dragging sprite
     protected Vector2 spriteOffset;
@@ -42,19 +43,17 @@ public abstract class CardManager : DetailViewable,
     protected GameManager gameManager;
     protected CreatureGrid grid;
     protected HandSlot slot;
-    protected CardDisplayer cardDisplay;
+    protected PlayerManager player;
+    protected CircleTimer castTimer;
 
     // list of highlightable components we are currently highlighting for preview
     // this is needed so that we can remove our highlights after done
     protected List<Highlightable> previewHighlightables;
 
-    // references to useful things
-    private PlayerManager player;
-    private CircleTimer castTimer;
-
     // once we know we have casted, we want to be able to prevent some actions
     private bool casted = false;
     private Color castingColor = new Color(0.2f, 0.2f, 1f, 0.5f);
+    private Transform spriteMaskParent;
 
     /// <summary>
     /// Get the GameObject of a valid cast location based on where the
@@ -140,15 +139,9 @@ public abstract class CardManager : DetailViewable,
             card.spriteAnimateSpeed,
             null
         );
-        // add and initialize held card display
-        GameObject cardDisplayObject = Instantiate(gameManager.cardDisplayPrefab, transform);
-        cardDisplay = cardDisplayObject.GetComponent<CardDisplayer>();
-        cardDisplay.Initialize(this);
-        highlightable = cardDisplay.highlightable;
-        sprite.transform.SetParent(cardDisplay.spriteMaskParent);
-        sprite.transform.localPosition = Vector3.zero;
-
-        castingSpriteParent.gameObject.SetActive(false);
+        // initialize held card display
+        cardDisplayer.Set(card);
+        spriteMaskParent = castingSpriteParent.parent;
     }
 
     /// <summary>
@@ -271,7 +264,7 @@ public abstract class CardManager : DetailViewable,
             transform.SetParent(slot.transform);
             transform.position = slot.transform.position;
             // return sprite location and disable
-            sprite.transform.SetParent(cardDisplay.spriteMaskParent);
+            sprite.transform.SetParent(spriteMaskParent);
             sprite.transform.localPosition = Vector3.zero;
             castingSpriteParent.gameObject.SetActive(false);
         }

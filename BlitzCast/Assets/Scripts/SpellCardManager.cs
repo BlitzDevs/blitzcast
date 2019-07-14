@@ -39,6 +39,7 @@ public class SpellCardManager: CardManager
         spellCard = (SpellCard)card;
         trail.startColor = card.color;
         trail.endColor = new Color(card.color.r, card.color.g, card.color.b, 0f);
+        trail.enabled = false;
     }
 
     /// <summary>
@@ -47,6 +48,10 @@ public class SpellCardManager: CardManager
     /// </summary>
     public override void TryPreview()
     {
+        if (!trail.enabled)
+        {
+            trail.enabled = true;
+        }
         GameObject target = GetCastLocation();
         // if the current mouse position points to a valid cast target position...
         if (target != null)
@@ -82,21 +87,21 @@ public class SpellCardManager: CardManager
                     case Card.Action.Damage:
                     case Card.Action.Heal:
                         // Target Creature or Player
-                        GameObject cellObject = gameManager.GetFirstUnderCursor<GridCell>();
+                        GameObject cellObject = player.GetFirstUnderCursor<GridCell>();
                         if (cellObject != null)
                         {
                             return cellObject;
                         }
-                        return gameManager.GetFirstUnderCursor<PlayerManager>();
+                        return player.GetFirstUnderCursor<PlayerManager>();
 
                     case Card.Action.Counter:
                         // Target Casting Cards
                         int targetLayer = SortingLayer
                             .GetLayerValueFromName("Casting");
-                        return gameManager.GetFirstUnderCursor(targetLayer);
+                        return player.GetFirstUnderCursor(targetLayer);
 
                     case Card.Action.Destroy:
-                        return gameManager.GetFirstUnderCursor<GridCell>();
+                        return player.GetFirstUnderCursor<GridCell>();
                 }
                 break;
 
@@ -106,12 +111,12 @@ public class SpellCardManager: CardManager
             case SpellCard.SpellTarget.Row:
             case SpellCard.SpellTarget.Column:
             case SpellCard.SpellTarget.SingleCreature:
-                return gameManager.GetFirstUnderCursor<GridCell>();
+                return player.GetFirstUnderCursor<GridCell>();
 
             case SpellCard.SpellTarget.AllCreatures:
             case SpellCard.SpellTarget.All:
                 int castAllZoneLayer = LayerMask.NameToLayer("Cast All Zone");
-                return gameManager.GetFirstUnderCursor(castAllZoneLayer);
+                return player.GetFirstUnderCursor(castAllZoneLayer);
 
             default:
                 Debug.LogWarning("Card Target Area is undefined");

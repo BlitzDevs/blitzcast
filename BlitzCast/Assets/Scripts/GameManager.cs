@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
 
 /// <summary>
 /// The GameManager contains references to important game settings, components
@@ -32,8 +29,6 @@ public class GameManager : MonoBehaviour
     public PlayerManager playerA;
     public PlayerManager playerB;
     public Camera mainCamera;
-    public GraphicRaycaster raycaster;
-    public EventSystem eventSystem;
     public Transform dragLocationParent;
 
     // Prefabs
@@ -60,7 +55,6 @@ public class GameManager : MonoBehaviour
 
     /// <summary>
     /// Create a new circle timer.
-    /// (I put
     /// </summary>
     public CircleTimer NewCircleTimer(Transform parent)
     {
@@ -69,58 +63,6 @@ public class GameManager : MonoBehaviour
         cTimer = timerObject.GetComponent<CircleTimer>();
         cTimer.gameObject.SetActive(false);
         return cTimer;
-    }
-
-    /// <summary>
-    /// Gets all GameObjects under cursor.
-    /// </summary>
-    public List<GameObject> GetAllUnderCursor()
-    {
-        List<GameObject> results = new List<GameObject>();
-        PointerEventData pointerEventData = new PointerEventData(eventSystem);
-        pointerEventData.position = Input.mousePosition;
-
-        List<RaycastResult> rayCast = new List<RaycastResult>();
-        raycaster.Raycast(pointerEventData, rayCast);
-
-        foreach (RaycastResult r in rayCast)
-        {
-            results.Add(r.gameObject);
-        }
-        return results;
-    }
-
-    /// <summary>
-    /// Gets the first GameObject under cursor with the specified component.
-    /// </summary>
-    public GameObject GetFirstUnderCursor<T>()
-    {
-        List<GameObject> hitObjects = GetAllUnderCursor();
-        foreach (GameObject g in hitObjects)
-        {
-            T t = g.GetComponent<T>();
-            if (t != null)
-            {
-                return g;
-            }
-        }
-        return null;
-    }
-
-    /// <summary>
-    /// Gets the first GameObject under cursor in the specified layer.
-    /// </summary>
-    public GameObject GetFirstUnderCursor(int layer)
-    {
-        List<GameObject> hitObjects = GetAllUnderCursor();
-        foreach (GameObject g in hitObjects)
-        {
-            if (g.layer == layer)
-            {
-                return g;
-            }
-        }
-        return null;
     }
 
     /// <summary>
