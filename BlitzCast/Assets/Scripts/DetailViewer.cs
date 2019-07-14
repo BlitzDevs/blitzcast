@@ -37,9 +37,9 @@ public class DetailViewer : MonoBehaviour
         display.SetActive(true);
 
         CardManager cardManager = thing.GetComponent<CardManager>();
-        if (cardManager.card != null)
+        if (cardManager)
         {
-            cardDisplayer.Set(cardManager.card);
+            cardDisplayer.Set(cardManager);
         }
     }
 

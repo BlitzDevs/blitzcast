@@ -40,15 +40,17 @@ public class SpriteSheetAnimator : MonoBehaviour
     private float time;
     private Entity entity;
 
-
-    /// <summary>
-    /// Initialize this SpriteSheetAnimator; get references to needed objects.
-    /// </summary>
-    public void Initialize(string name, string category, float speed, Entity entity)
+    private void Start()
     {
         image = GetComponent<Image>();
         gameTimer = FindObjectOfType<GameTimer>();
+    }
 
+    /// <summary>
+    /// Fully initialize this SpriteSheetAnimator; get references to needed objects.
+    /// </summary>
+    public void Initialize(string name, string category, float speed, Entity entity)
+    {
         this.speed = speed;
         this.entity = entity;
 
@@ -68,15 +70,17 @@ public class SpriteSheetAnimator : MonoBehaviour
             spritesDict.Add(s, sprites);
         }
         spritesDict.TryGetValue(state, out currentSprites);
+    }
 
-        if (image == null)
-        {
-            Debug.LogWarning("No image component on " + gameObject.name);
-        }
-        if (currentSprites == null)
-        {
-            Debug.LogWarning("Sprite sheet not set on " + gameObject.name);
-        }
+    /// <summary>
+    /// Copy the sprites of another SpriteSheetAnimator.
+    /// </summary>
+    public void Copy(SpriteSheetAnimator original)
+    {
+        speed = original.speed;
+        spritesDict = original.GetSprites();
+        spritesDict.TryGetValue(state, out currentSprites);
+        time = 1f;
     }
 
 
@@ -100,6 +104,10 @@ public class SpriteSheetAnimator : MonoBehaviour
                 time = 0f;
             }
         }
+    }
 
+    public Dictionary<State, Sprite[]> GetSprites()
+    {
+        return spritesDict;
     }
 }

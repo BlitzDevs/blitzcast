@@ -11,11 +11,12 @@ public class CardDisplayer : MonoBehaviour
     // FOR REFERENCE:
     // TMP_Text is TextMeshPro text; much better than default Unity text
 
-    public Transform spriteMaskParent;
     // References to display components
+    [SerializeField] private Image spriteImage;
+    [SerializeField] private SpriteSheetAnimator spriteAnimator;
+    [SerializeField] private Image backgroundImage;
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text raceText;
-    [SerializeField] private Image backgroundImage;
     [SerializeField] private GameObject timeCostsParent;
     [SerializeField] private TMP_Text castTimeText;
     [SerializeField] private TMP_Text drawTimeText;
@@ -39,13 +40,32 @@ public class CardDisplayer : MonoBehaviour
     /// <summary>
     /// Set this CardDisplayer; show values according to card.
     /// </summary>
-    public void Set(Card card)
+    public void Set(CardManager cardManager)
     {
+        Card card = cardManager.card;
+
+        CreatureCard creatureCard = null;
+        if (card is CreatureCard)
+        {
+            creatureCard = (CreatureCard) card;
+        }
+
         // always have time costs
         timeCostsParent.SetActive(true);
         castTimeText.text = card.castTime.ToString();
         drawTimeText.text = card.redrawTime.ToString();
 
+        if (spriteImage != null && spriteAnimator != null)
+        {
+            spriteImage.color = card.color;
+            spriteAnimator.Copy(cardManager.spriteAnimator);
+            Vector2 size = (card is CreatureCard) ? new Vector2(creatureCard.size.y, creatureCard.size.x) : Vector2.one;
+            spriteImage.rectTransform.sizeDelta = size * 40;
+        }
+        if (backgroundImage != null)
+        {
+            //TODO: set background
+        }
         if (nameText != null)
         {
             nameText.text = card.cardName;
@@ -110,7 +130,7 @@ public class CardDisplayer : MonoBehaviour
             conditionParent.SetActive(false);
         }
         // if card is Creature, show health/speed
-        if (card is CreatureCard creatureCard)
+        if (card is CreatureCard)
         {
             creatureStatsParent.SetActive(true);
             healthText.text = creatureCard.health.ToString();

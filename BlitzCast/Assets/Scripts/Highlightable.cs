@@ -24,7 +24,7 @@ public class Highlightable : MonoBehaviour
     // list of current highlights
     private List<Color> highlights;
     // original color of the image
-    private Color defaultColor;
+    private List<Color> defaultColors = new List<Color>();
     // index of current color; for color pulsing
     private int colorIndex;
 
@@ -57,9 +57,9 @@ public class Highlightable : MonoBehaviour
         }
         else
         {
-            foreach (Image image in images)
+            for (int i = 0; i < images.Count; i++)
             {
-                image.color = defaultColor;
+                images[i].color = defaultColors[i];
             }
         }
     }
@@ -85,7 +85,10 @@ public class Highlightable : MonoBehaviour
                 images.Add(imageOnObject);
             }
         }
-        defaultColor = images.Count > 0 ? images[0].color : Color.white;
+        foreach (Image image in images)
+        {
+            defaultColors.Add(image.color);
+        }
     }
 
     /// <summary>

@@ -27,8 +27,9 @@ public class SmoothMover : MonoBehaviour
     /// Set the target position.
     /// </summary>
     /// <param name="targetPosition">Target position.</param>
-    public void SetPosition(Vector3 targetPosition)
+    public void SetPosition(Vector3 targetPosition, bool useLocal)
     {
+        useLocalPosition = useLocal;
         this.targetPosition = targetPosition;
     }
 
@@ -66,5 +67,11 @@ public class SmoothMover : MonoBehaviour
             transform.position = Vector3Int.RoundToInt(Vector3.SmoothDamp(
                 transform.position, targetPosition, ref velocity, smoothTime));
         }
+    }
+
+    private void OnEnable()
+    {
+        useLocalPosition = true;
+        targetPosition = transform.localPosition;
     }
 }

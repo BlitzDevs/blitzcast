@@ -28,14 +28,14 @@ public abstract class CardManager : DetailViewable,
     public GameManager.Team team;
     // smooth movements for moving sprite (casting)
     public SmoothMover spriteMover;
+    public SpriteSheetAnimator spriteAnimator;
 
     // These fields are references to our displayable components.
     // These are set through the Unity Editor and should already be set in the
     // prefab of the card.
-    [SerializeField] protected SpriteSheetAnimator animator;
     [SerializeField] protected RectTransform castingSpriteParent;
-    [SerializeField] protected Image sprite;
-    [SerializeField] protected CardDisplayer cardDisplayer;
+    [SerializeField] protected Image artSprite;
+    public CardDisplayer cardDisplayer;
 
     // offset for when dragging sprite
     protected Vector2 spriteOffset;
@@ -132,15 +132,15 @@ public abstract class CardManager : DetailViewable,
 
         // set the display texts/colors to their proper values
         spriteOffset = Vector2.zero;
-        sprite.color = card.color;
-        animator.Initialize(
+        artSprite.color = card.color;
+        spriteAnimator.Initialize(
             card.name,
             "Cards/" + (card is CreatureCard ? "Creatures" : "Spells"),
             card.spriteAnimateSpeed,
             null
         );
         // initialize held card display
-        cardDisplayer.Set(card);
+        cardDisplayer.Set(this);
         spriteMaskParent = castingSpriteParent.parent;
     }
 
@@ -185,9 +185,11 @@ public abstract class CardManager : DetailViewable,
             // enable sprite for preview
             castingSpriteParent.gameObject.SetActive(true);
             // move sprite to dragging in hierarchy
-            sprite.transform.SetParent(castingSpriteParent);
-            sprite.transform.localPosition = Vector3.zero + (Vector3) spriteOffset;
+            artSprite.transform.SetParent(castingSpriteParent);
+            artSprite.transform.localPosition = spriteOffset;
             castingSpriteParent.SetParent(gameManager.dragLocationParent);
+            // enable sprite (smooth) mover
+            spriteMover.enabled = true;
         }
     }
 
@@ -210,7 +212,7 @@ public abstract class CardManager : DetailViewable,
             eventData.position.y,
             gameManager.mainCamera.nearClipPlane
         );
-        spriteMover.SetPosition(gameManager.mainCamera.ScreenToWorldPoint(pointPosition));
+        spriteMover.SetPosition(gameManager.mainCamera.ScreenToWorldPoint(pointPosition), false);
 
         // update the cell highlighting/preview as we move mouse
         ClearPreview();
@@ -258,15 +260,11 @@ public abstract class CardManager : DetailViewable,
         {
             // change layer to Held
             gameObject.layer = LayerMask.NameToLayer("Held");
-            // remove card highlight
-            //cardDisplay.highlightable.RemoveHighlight(castingColor);
-            // move card back to slot
-            transform.SetParent(slot.transform);
-            transform.position = slot.transform.position;
             // return sprite location and disable
-            sprite.transform.SetParent(spriteMaskParent);
-            sprite.transform.localPosition = Vector3.zero;
-            castingSpriteParent.gameObject.SetActive(false);
+            spriteMover.enabled = false;
+            castingSpriteParent.transform.SetParent(spriteMaskParent);
+            castingSpriteParent.transform.localPosition = Vector3.zero;
+            artSprite.transform.localPosition = Vector3.zero;
         }
 
     }

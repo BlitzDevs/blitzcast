@@ -122,7 +122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -147,7 +147,6 @@ GameObject:
   m_Component:
   - component: {fileID: 224903628760028874}
   - component: {fileID: 222743537732675670}
-  - component: {fileID: 1172960001}
   - component: {fileID: 1172959997}
   m_Layer: 0
   m_Name: Cast Time Text
@@ -183,14 +182,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1065673004619044}
   m_CullTransparentMesh: 0
---- !u!33 &1172960001
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1065673004619044}
-  m_Mesh: {fileID: 0}
 --- !u!114 &1172959997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -357,9 +348,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 390ad514d2f334933b1a66dc02ab6a28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteMaskParent: {fileID: 224123815499484592}
-  highlightable: {fileID: 114140499576021798}
+  spriteImage: {fileID: 0}
+  spriteAnimator: {fileID: 0}
   backgroundImage: {fileID: 114385642945244090}
+  nameText: {fileID: 0}
+  raceText: {fileID: 0}
   timeCostsParent: {fileID: 1607424098658570}
   castTimeText: {fileID: 1172959997}
   drawTimeText: {fileID: 1172959996}
@@ -376,7 +369,7 @@ MonoBehaviour:
   conditionParent: {fileID: 1889638484536652}
   conditionIcon: {fileID: 114755428254543724}
   conditionText: {fileID: 1172959986}
-  creatureStatsParent: {fileID: 1120662192484134}
+  creatureStatsParent: {fileID: 1805084464979056}
   healthText: {fileID: 1172960000}
   speedText: {fileID: 1172959998}
 --- !u!222 &222985060009662842
@@ -442,7 +435,6 @@ GameObject:
   m_Component:
   - component: {fileID: 224319996876273470}
   - component: {fileID: 222978195926799148}
-  - component: {fileID: 1172960005}
   - component: {fileID: 1172960000}
   m_Layer: 0
   m_Name: Health Text
@@ -478,14 +470,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1114904837074224}
   m_CullTransparentMesh: 0
---- !u!33 &1172960005
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1114904837074224}
-  m_Mesh: {fileID: 0}
 --- !u!114 &1172960000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -658,7 +642,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1239,7 +1223,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0.78431374, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1314,7 +1298,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1388,7 +1372,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0.78431374, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1413,7 +1397,6 @@ GameObject:
   m_Component:
   - component: {fileID: 224590745943609364}
   - component: {fileID: 222565930040187128}
-  - component: {fileID: 1172959991}
   - component: {fileID: 1172959990}
   m_Layer: 0
   m_Name: Stacks Text
@@ -1449,14 +1432,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1537025486955550}
   m_CullTransparentMesh: 0
---- !u!33 &1172959991
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1537025486955550}
-  m_Mesh: {fileID: 0}
 --- !u!114 &1172959990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1694,7 +1669,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1767,14 +1742,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 06f58528876f64921b9f480e43deffda, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2014,7 +1989,6 @@ GameObject:
   m_Component:
   - component: {fileID: 224577745581388586}
   - component: {fileID: 222227999553235358}
-  - component: {fileID: 1172959993}
   - component: {fileID: 1172959992}
   m_Layer: 0
   m_Name: Status Text
@@ -2050,14 +2024,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1761192384500898}
   m_CullTransparentMesh: 0
---- !u!33 &1172959993
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1761192384500898}
-  m_Mesh: {fileID: 0}
 --- !u!114 &1172959992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2181,7 +2147,6 @@ GameObject:
   m_Component:
   - component: {fileID: 224933836315628332}
   - component: {fileID: 222308800517145094}
-  - component: {fileID: 1172959999}
   - component: {fileID: 1172959996}
   m_Layer: 0
   m_Name: Draw Time Text
@@ -2217,14 +2182,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1778443630604518}
   m_CullTransparentMesh: 0
---- !u!33 &1172959999
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1778443630604518}
-  m_Mesh: {fileID: 0}
 --- !u!114 &1172959996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2525,7 +2482,6 @@ GameObject:
   m_Component:
   - component: {fileID: 224938064151692942}
   - component: {fileID: 222650401790824364}
-  - component: {fileID: 1172959989}
   - component: {fileID: 1172959988}
   m_Layer: 0
   m_Name: Stat Modifier Value Text
@@ -2561,14 +2517,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1837035367771792}
   m_CullTransparentMesh: 0
---- !u!33 &1172959989
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1837035367771792}
-  m_Mesh: {fileID: 0}
 --- !u!114 &1172959988
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2805,7 +2753,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0.78431374, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2830,7 +2778,6 @@ GameObject:
   m_Component:
   - component: {fileID: 224357517699386584}
   - component: {fileID: 222998375976087100}
-  - component: {fileID: 1172960003}
   - component: {fileID: 1172959998}
   m_Layer: 0
   m_Name: Speed Text
@@ -2866,14 +2813,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1995371290267496}
   m_CullTransparentMesh: 0
---- !u!33 &1172960003
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1995371290267496}
-  m_Mesh: {fileID: 0}
 --- !u!114 &1172959998
 MonoBehaviour:
   m_ObjectHideFlags: 0

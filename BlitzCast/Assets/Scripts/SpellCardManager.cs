@@ -39,7 +39,7 @@ public class SpellCardManager: CardManager
         spellCard = (SpellCard)card;
         trail.startColor = card.color;
         trail.endColor = new Color(card.color.r, card.color.g, card.color.b, 0f);
-        trail.enabled = false;
+        trail.enabled = true;
     }
 
     /// <summary>
@@ -48,16 +48,12 @@ public class SpellCardManager: CardManager
     /// </summary>
     public override void TryPreview()
     {
-        if (!trail.enabled)
-        {
-            trail.enabled = true;
-        }
         GameObject target = GetCastLocation();
         // if the current mouse position points to a valid cast target position...
         if (target != null)
         {
             // snap to target
-            spriteMover.SetPosition(target.transform.position);
+            spriteMover.SetPosition(target.transform.position, false);
             // add cell highlighting
             foreach (GameObject targetObject in GetCastTargets(target))
             {

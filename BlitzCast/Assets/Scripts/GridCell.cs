@@ -8,10 +8,14 @@ using UnityEngine.EventSystems;
 public class GridCell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Vector2Int coordinates;
-    // can highlight this cell
     public Highlightable highlightable;
-
     public CreatureGrid grid;
+    private EventSystem eventSystem;
+
+    private void Start()
+    {
+        eventSystem = FindObjectOfType<EventSystem>();
+    }
 
     /// <summary>
     /// Called by EventSystem. When hovering this cell, highlight.
@@ -19,6 +23,11 @@ public class GridCell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         highlightable.Highlight(Color.yellow);
+        CreatureCardManager creatureInSlot = GetCreature();
+        if (creatureInSlot != null)
+        {
+            eventSystem.SetSelectedGameObject(creatureInSlot.gameObject);
+        }
     }
 
     /// <summary>
@@ -27,6 +36,11 @@ public class GridCell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerExit(PointerEventData eventData)
     {
         highlightable.RemoveHighlight(Color.yellow);
+        CreatureCardManager creatureInSlot = GetCreature();
+        if (creatureInSlot != null)
+        {
+            eventSystem.SetSelectedGameObject(null);
+        }
     }
 
     /// <summary>

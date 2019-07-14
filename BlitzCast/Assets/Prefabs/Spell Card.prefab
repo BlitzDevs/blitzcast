@@ -123,7 +123,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 14.000005, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 42, y: 42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &114030333121574944
@@ -230,9 +230,9 @@ MonoBehaviour:
   card: {fileID: 0}
   team: 0
   spriteMover: {fileID: 114030333121574944}
-  animator: {fileID: 114901886944774134}
+  spriteAnimator: {fileID: 114901886944774134}
   castingSpriteParent: {fileID: 224803010889557788}
-  sprite: {fileID: 114954199193815760}
+  artSprite: {fileID: 114954199193815760}
   cardDisplayer: {fileID: 1896130775918728877}
   trail: {fileID: 1616516183440602507}
 --- !u!114 &4348890842288490509

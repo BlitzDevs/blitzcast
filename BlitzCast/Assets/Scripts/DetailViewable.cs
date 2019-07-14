@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 public class DetailViewable : Selectable
 {
     [SerializeField] protected Highlightable highlightable;
-    private Color activeColor = new Color(1f, 1f, 0f, 0.5f);
+    private Color activeColor = new Color32(10, 100, 255, 255);
 
     private GameManager gameManager;
     private DetailViewer detailViewer;

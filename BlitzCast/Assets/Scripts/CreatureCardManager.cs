@@ -76,14 +76,15 @@ public class CreatureCardManager : CardManager
         // cellSize is based on the size of the grid cells
         // (and creature card size; ex. 2x1 -> 84x42)
         Vector2 cellSize = new Vector2(
-            grid.cellsGroup.cellSize.x * creatureCard.size.y,
-            grid.cellsGroup.cellSize.y * creatureCard.size.x
+            grid.cellsGroup.cellSize.x * creatureCard.size.y + (creatureCard.size.y),
+            grid.cellsGroup.cellSize.y * creatureCard.size.x + (creatureCard.size.x)
         );
+
         // spriteSize is based on the original size of our sprite
         // (and creature card size; ex. 2x1 -> 80x40)
         spriteSize = new Vector2(
-            sprite.rectTransform.rect.width * creatureCard.size.y,
-            sprite.rectTransform.rect.height * creatureCard.size.x
+            artSprite.rectTransform.rect.width * creatureCard.size.y,
+            artSprite.rectTransform.rect.height * creatureCard.size.x
         );
         // sizeOffset is needed to calculate position shifted so that the pivot
         // is the top left corner of the sprite
@@ -94,10 +95,8 @@ public class CreatureCardManager : CardManager
 
         // now set the actual size to the calculated size
         castingSpriteParent.sizeDelta = grid.cellsGroup.cellSize;
-        sprite.rectTransform.sizeDelta = spriteSize;
-        background.rectTransform.sizeDelta = spriteSize;
-        // add the calculated offset to local position
-        sprite.transform.localPosition += (Vector3) spriteOffset;
+        artSprite.rectTransform.sizeDelta = spriteSize;
+        background.rectTransform.sizeDelta = spriteSize + new Vector2(creatureCard.size.y - 1, creatureCard.size.x - 1);
 
         gridStatusesParent.sizeDelta = new Vector2(cellSize.x, gridStatusesParent.rect.y);
         gridDisplayRect.sizeDelta = cellSize;
@@ -115,9 +114,9 @@ public class CreatureCardManager : CardManager
         if (target != null)
         {
             // set color/transparency ("shadow" sprite; black with transparency)
-            sprite.color = new Color(0, 0, 0, 0.5f);
+            artSprite.color = new Color(0, 0, 0, 0.5f);
             // snap to target
-            spriteMover.SetPosition(target.transform.position);
+            spriteMover.SetPosition(target.transform.position, false);
             // add cell highlighting
             foreach (GameObject targetObject in GetCastTargets(target))
             {
@@ -129,7 +128,7 @@ public class CreatureCardManager : CardManager
         else
         {
             // reset the sprite color to normal (not "shadow")
-            sprite.color = card.color;
+            artSprite.color = card.color;
         }
     }
 
@@ -258,7 +257,7 @@ public class CreatureCardManager : CardManager
         castingSpriteParent.transform.SetParent(gridDisplayRect);
         castingSpriteParent.SetSiblingIndex(1);
         castingSpriteParent.transform.localPosition = Vector3.zero;
-        sprite.transform.localPosition = Vector3.zero;
+        artSprite.transform.localPosition = Vector3.zero;
         transform.SetParent(grid.playerCreaturesParent);
         transform.position = locationObject.transform.position;
         transform.localPosition += (Vector3) spriteOffset;
@@ -272,14 +271,14 @@ public class CreatureCardManager : CardManager
         gridStatusesParent.sizeDelta = new Vector2(spriteSize.x, 8);
         actionTimer.entity = entity;
         actionTimer.StartTimer(actionTime);
-        animator.Initialize(
+        spriteAnimator.Initialize(
             card.name,
             "Cards/" + (card is CreatureCard ? "Creatures" : "Spells"),
             card.spriteAnimateSpeed,
             entity
         );
-        sprite.gameObject.SetActive(true);
-        sprite.color = card.color;
+        artSprite.gameObject.SetActive(true);
+        artSprite.color = card.color;
 
         // Start action timer coroutine
         StartCoroutine(ActionLoop());
