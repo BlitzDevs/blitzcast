@@ -16,6 +16,7 @@ public class CardDisplayer : MonoBehaviour
     [SerializeField] private SpriteSheetAnimator spriteAnimator;
     [SerializeField] private Image backgroundImage;
     [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text raceText;
     [SerializeField] private GameObject timeCostsParent;
     [SerializeField] private TMP_Text castTimeText;
@@ -69,6 +70,10 @@ public class CardDisplayer : MonoBehaviour
         if (nameText != null)
         {
             nameText.text = card.cardName;
+        }
+        if (nameText != null)
+        {
+            descriptionText.text = card.description;
         }
         if (raceText != null)
         {

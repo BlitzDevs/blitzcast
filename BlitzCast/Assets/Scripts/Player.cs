@@ -12,16 +12,16 @@ public class Player : ScriptableObject
     /// <summary>
     /// Holds the sprites to define a card skin.
     /// </summary>
-    [Serializable]
-    public struct CardSkin
-    {
-        public Sprite creatureCard;
-        public Sprite spellCard;
-        public Sprite handSlot;
-    }
+    //[Serializable]
+    //public struct CardSkin
+    //{
+    //    public Sprite creatureCard;
+    //    public Sprite spellCard;
+    //    public Sprite handSlot;
+    //}
 
     public string username;
     public Caster caster;
     public List<Card> deck;
-    public CardSkin skin;
+    public Color color;
 }

@@ -23,6 +23,7 @@ public class PlayerManager : DetailViewable
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Transform handSlotParent;
     [SerializeField] private Transform statusesParent;
+    [SerializeField] private Image spriteImage;
     [SerializeField] private SpriteSheetAnimator animator;
 
     private GameManager gameManager;
@@ -50,6 +51,7 @@ public class PlayerManager : DetailViewable
         entity.SpeedChangeEvent += SetSpeedDisplay;
 
         // initialize animator
+        spriteImage.color = player.color;
         animator.Initialize(
             player.caster.name,
             "Casters",

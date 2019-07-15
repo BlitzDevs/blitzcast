@@ -1,16 +1,42 @@
 fileFormatVersion: 2
 guid: 7fd90c59642b54bb1a11b1524a9aa7ff
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: fireball_0
-    21300002: fireball_1
-    21300004: fireball_2
-    21300006: fireball_3
-    21300008: fireball_4
-    21300010: fireball_5
-    21300012: fireball_6
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: fireball_0
+  - first:
+      213: 21300002
+    second: fireball_1
+  - first:
+      213: 21300004
+    second: fireball_2
+  - first:
+      213: 21300006
+    second: fireball_3
+  - first:
+      213: 21300008
+    second: fireball_4
+  - first:
+      213: 21300010
+    second: fireball_5
+  - first:
+      213: 21300012
+    second: fireball_6
+  - first:
+      213: -2441339273742925259
+    second: default-idle_0
+  - first:
+      213: 3766455190711264947
+    second: default-idle_1
+  - first:
+      213: -6205319651162244966
+    second: default-idle_2
+  - first:
+      213: -7548367928654883506
+    second: default-idle_3
   externalObjects: {}
-  serializedVersion: 4
+  serializedVersion: 10
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -28,6 +54,8 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -38,7 +66,7 @@ TextureImporter:
     serializedVersion: 2
     filterMode: 0
     aniso: -1
-    mipBias: -1
+    mipBias: -100
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -58,11 +86,13 @@ TextureImporter:
   spriteTessellationDetail: -1
   textureType: 8
   textureShape: 1
+  singleChannelComponent: 0
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
   platformSettings:
-  - buildTarget: DefaultTexturePlatform
+  - serializedVersion: 2
+    buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -72,7 +102,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - buildTarget: Standalone
+  - serializedVersion: 2
+    buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -86,106 +117,102 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: fireball_0
+      name: default-idle_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 84
-        width: 42
-        height: 42
+        y: 40
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: 580a4cb032a4c49ecafc0593001645ad
+      internalID: -2441339273742925259
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
-      name: fireball_1
+      name: default-idle_1
       rect:
         serializedVersion: 2
-        x: 42
-        y: 84
-        width: 42
-        height: 42
+        x: 40
+        y: 40
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: b7d324dd450474e5fab33ec66f735199
+      internalID: 3766455190711264947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
-      name: fireball_2
-      rect:
-        serializedVersion: 2
-        x: 84
-        y: 84
-        width: 42
-        height: 42
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: fireball_3
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 42
-        width: 42
-        height: 42
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: fireball_4
-      rect:
-        serializedVersion: 2
-        x: 42
-        y: 42
-        width: 42
-        height: 42
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: fireball_5
-      rect:
-        serializedVersion: 2
-        x: 84
-        y: 42
-        width: 42
-        height: 42
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: fireball_6
+      name: default-idle_2
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 42
-        height: 42
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: 49a7ba0aa3bbc43439128638f8bdb4de
+      internalID: -6205319651162244966
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: default-idle_3
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 0
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c0f4784f54044d06b8a82bebd13dca0
+      internalID: -7548367928654883506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
+    bones: []
+    spriteID: 07b5e12822b364057865b4417cda7093
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
   spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

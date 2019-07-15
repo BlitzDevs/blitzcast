@@ -3,8 +3,9 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -13,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Toxic
   description: Apply 3 poison
-  spriteAnimateSpeed: 30
-  color: {r: 0.53103447, g: 0, b: 1, a: 1}
+  race: 0
   castTime: 1
   redrawTime: 1
-  race: 0
+  spriteAnimateSpeed: 12
+  color: {r: 0.53103447, g: 0, b: 1, a: 1}
   action: 0
   actionValue: 0
   statChange: 0

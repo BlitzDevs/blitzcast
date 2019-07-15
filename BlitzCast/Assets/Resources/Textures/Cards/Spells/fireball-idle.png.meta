@@ -1,16 +1,36 @@
 fileFormatVersion: 2
-guid: 1c7bc148ef4cd49c2bb639b06afaab69
+guid: 9883ce92216944cc5b91ecf288cde5bb
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: fireball_0
-    21300002: fireball_1
-    21300004: fireball_2
-    21300006: fireball_3
-    21300008: fireball_4
-    21300010: fireball_5
-    21300012: fireball_6
+  internalIDToNameTable:
+  - first:
+      213: -919748225836172744
+    second: fireball-idle_0
+  - first:
+      213: 4091981605788528311
+    second: fireball-idle_1
+  - first:
+      213: 433034163969692387
+    second: fireball-idle_2
+  - first:
+      213: -3345848642590568681
+    second: fireball-idle_3
+  - first:
+      213: -4561747806905537724
+    second: fireball-idle_4
+  - first:
+      213: -395854078913839064
+    second: fireball-idle_5
+  - first:
+      213: -5225537814508190348
+    second: fireball-idle_6
+  - first:
+      213: 1631876932371729269
+    second: fireball-idle_7
+  - first:
+      213: 1234687041657530538
+    second: fireball-idle_8
   externalObjects: {}
-  serializedVersion: 4
+  serializedVersion: 10
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -28,6 +48,8 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -38,7 +60,7 @@ TextureImporter:
     serializedVersion: 2
     filterMode: 0
     aniso: -1
-    mipBias: -1
+    mipBias: -100
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -58,25 +80,28 @@ TextureImporter:
   spriteTessellationDetail: -1
   textureType: 8
   textureShape: 1
+  singleChannelComponent: 0
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
   platformSettings:
-  - buildTarget: DefaultTexturePlatform
+  - serializedVersion: 2
+    buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - buildTarget: Standalone
+  - serializedVersion: 2
+    buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -86,106 +111,207 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: fireball_0
+      name: fireball-idle_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 84
-        width: 42
-        height: 42
+        y: 80
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: 5871d7d2b3d3c408d84558eed0b065be
+      internalID: -919748225836172744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
-      name: fireball_1
+      name: fireball-idle_1
       rect:
         serializedVersion: 2
-        x: 42
-        y: 84
-        width: 42
-        height: 42
+        x: 40
+        y: 80
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: c8cf1842bc17045f1868c6ccd0fa5cca
+      internalID: 4091981605788528311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
-      name: fireball_2
+      name: fireball-idle_2
       rect:
         serializedVersion: 2
-        x: 84
-        y: 84
-        width: 42
-        height: 42
+        x: 80
+        y: 80
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: b0fdf7ccb2ed94e90b7a8f6def29cc00
+      internalID: 433034163969692387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
-      name: fireball_3
+      name: fireball-idle_3
       rect:
         serializedVersion: 2
         x: 0
-        y: 42
-        width: 42
-        height: 42
+        y: 40
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: 4e306ac6b64924855b80ef5f94405efa
+      internalID: -3345848642590568681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
-      name: fireball_4
+      name: fireball-idle_4
       rect:
         serializedVersion: 2
-        x: 42
-        y: 42
-        width: 42
-        height: 42
+        x: 40
+        y: 40
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: fdab94ccab6034480a5e90ec45d14472
+      internalID: -4561747806905537724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
-      name: fireball_5
+      name: fireball-idle_5
       rect:
         serializedVersion: 2
-        x: 84
-        y: 42
-        width: 42
-        height: 42
+        x: 80
+        y: 40
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: ac44ccfc4c02f4b65b6c5cd3f9cf4dc6
+      internalID: -395854078913839064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
-      name: fireball_6
+      name: fireball-idle_6
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 42
-        height: 42
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: 880ec5218f5d74b2cbb14bc2906e63db
+      internalID: -5225537814508190348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fireball-idle_7
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 0
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 23905326f3b384775a40015bc16218b2
+      internalID: 1631876932371729269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fireball-idle_8
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 0
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e96366f113b6a4137b7c58d87c8287b8
+      internalID: 1234687041657530538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
+    bones: []
+    spriteID: 008aed21d81124e1ea9dfdcab9782ac2
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
   spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

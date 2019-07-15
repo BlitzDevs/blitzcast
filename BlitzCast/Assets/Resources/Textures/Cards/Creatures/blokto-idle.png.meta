@@ -1,13 +1,21 @@
 fileFormatVersion: 2
 guid: 39dae6221b7fa4ce9aa4a70dbf018667
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: blokto_0
-    21300002: blokto_1
-    21300004: blokto_2
-    21300006: blokto_3
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: blokto_0
+  - first:
+      213: 21300002
+    second: blokto_1
+  - first:
+      213: 21300004
+    second: blokto_2
+  - first:
+      213: 21300006
+    second: blokto_3
   externalObjects: {}
-  serializedVersion: 4
+  serializedVersion: 10
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -25,6 +33,8 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -35,7 +45,7 @@ TextureImporter:
     serializedVersion: 2
     filterMode: 0
     aniso: -1
-    mipBias: -1
+    mipBias: -100
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -55,11 +65,13 @@ TextureImporter:
   spriteTessellationDetail: -1
   textureType: 8
   textureShape: 1
+  singleChannelComponent: 0
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
   platformSettings:
-  - buildTarget: DefaultTexturePlatform
+  - serializedVersion: 2
+    buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -69,7 +81,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - buildTarget: Standalone
+  - serializedVersion: 2
+    buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -96,6 +109,13 @@ TextureImporter:
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: 2740b23cad3a54eb38a910e1e7f1ea97
+      internalID: 21300000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: blokto_1
       rect:
@@ -110,6 +130,13 @@ TextureImporter:
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: 110a4ae175ec64d71ae6e3292aa6345a
+      internalID: 21300002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: blokto_2
       rect:
@@ -124,6 +151,13 @@ TextureImporter:
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: 8f22a5b2c6dac49e39da8cf3bfb544f4
+      internalID: 21300004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: blokto_3
       rect:
@@ -138,9 +172,26 @@ TextureImporter:
       outline: []
       physicsShape: []
       tessellationDetail: 0
+      bones: []
+      spriteID: 043a7bf8fe42b470c9c1e2248266a65e
+      internalID: 21300006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
   spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

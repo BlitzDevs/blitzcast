@@ -7,9 +7,8 @@
 [CreateAssetMenu(fileName = "New Caster", menuName = "Caster")]
 public class Caster : ScriptableObject {
 
-    public string casterName = "???";
-    public float spriteAnimateSpeed = 30f;
-    public Color color = Color.white;
+    public string casterName;
+    public float spriteAnimateSpeed;
 
     //TODO: Fully implement the "passive" effect
     // public void DoYourThing() ?

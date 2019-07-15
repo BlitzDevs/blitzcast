@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Skelo
   description: spoopy
-  race: 0
+  race: 2
   castTime: 1
   redrawTime: 1
   spriteAnimateSpeed: 1

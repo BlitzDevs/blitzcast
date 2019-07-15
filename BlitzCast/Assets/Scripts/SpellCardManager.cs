@@ -13,8 +13,6 @@ using UnityEngine;
 public class SpellCardManager: CardManager
 {
 
-    [SerializeField] protected TrailRenderer trail;
-
     private SpellCard spellCard;
 
 
@@ -37,9 +35,6 @@ public class SpellCardManager: CardManager
         base.Initialize(card, slot, player);
 
         spellCard = (SpellCard)card;
-        trail.startColor = card.color;
-        trail.endColor = new Color(card.color.r, card.color.g, card.color.b, 0f);
-        trail.enabled = true;
     }
 
     /// <summary>

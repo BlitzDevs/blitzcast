@@ -1,13 +1,19 @@
 fileFormatVersion: 2
-guid: fefb5595e0d124fc9a1a9d55d9f99dfe
+guid: 7be73b20e930b417a9a74bf8c4a3be95
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 21300000
-    second: wosp-idle_0
+      213: 8992480466155698640
+    second: energy-ball-idle_0
   - first:
-      213: 21300002
-    second: wosp-idle_1
+      213: 7628911001206680448
+    second: energy-ball-idle_1
+  - first:
+      213: 1272734658320647996
+    second: energy-ball-idle_2
+  - first:
+      213: -3310939483426676397
+    second: energy-ball-idle_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -90,7 +96,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: wosp-idle_0
+      name: energy-ball-idle_0
       rect:
         serializedVersion: 2
         x: 0
@@ -104,14 +110,35 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 31ca17f5d17a041059849265fda23980
-      internalID: 21300000
+      spriteID: f1edef0edb40443a7822274d43acfa11
+      internalID: 8992480466155698640
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wosp-idle_1
+      name: energy-ball-idle_1
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 40
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e352cdca520848b2b109ecd3d354db5
+      internalID: 7628911001206680448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: energy-ball-idle_2
       rect:
         serializedVersion: 2
         x: 0
@@ -125,8 +152,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 421849542cb3a46db8dc672c29c5f4ee
-      internalID: 21300002
+      spriteID: 7f8020f34e849430298685e9bcc22304
+      internalID: 1272734658320647996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: energy-ball-idle_3
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 0
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acab679fa68114903890e7b3d5fc9249
+      internalID: -3310939483426676397
       vertices: []
       indices: 
       edges: []
@@ -134,7 +182,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: ec4a0d942e3d243be8207a458b3b9fec
     internalID: 0
     vertices: []
     indices: 
