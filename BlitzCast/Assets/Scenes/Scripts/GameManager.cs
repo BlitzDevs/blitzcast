@@ -47,14 +47,14 @@ public class GameManager : MonoBehaviour
 
 
     /// <summary>
-    /// Called by Unity. First frame this component is active,
-    /// initialize CreatureGrid and PlayerManagers.
+    /// Initialize CreatureGrid and PlayerManagers.
     /// </summary>
-    void Start()
+    void StartGame()
     {
-        // Initialize CreatureGrid
+        timer.gameObject.SetActive(true);
+        playerA.gameObject.SetActive(true);
+        playerB.gameObject.SetActive(true);
         creatureGrid.Initialize(creatureGridSize);
-        // Initialize Players
         playerA.Initialize(Team.Friendly, playerHealth, cardHandSize);
         playerB.Initialize(Team.Enemy, playerHealth, cardHandSize);
     }

@@ -6,7 +6,6 @@ using TMPro;
 /// </summary>
 public class GameTimer : MonoBehaviour
 {
-    // total elapsed time
     public float elapsedTime;
     // change in time for current frame
     public float deltaTime;
