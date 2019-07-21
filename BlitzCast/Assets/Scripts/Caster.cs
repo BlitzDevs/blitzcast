@@ -10,6 +10,7 @@ public class Caster : ScriptableObject {
     public string casterName;
     public float spriteAnimateSpeed;
 
+
     //TODO: Fully implement the "passive" effect
     // public void DoYourThing() ?
 }

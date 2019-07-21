@@ -271,6 +271,8 @@ public class CreatureCardManager : CardManager
         gridStatusesParent.sizeDelta = new Vector2(spriteSize.x, 8);
         actionTimer.entity = entity;
         actionTimer.StartTimer(actionTime);
+
+        spriteAnimator.enabled = true;
         spriteAnimator.Initialize(
             card.name,
             "Cards/" + (card is CreatureCard ? "Creatures" : "Spells"),

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a96f8359dd5944f568320e83d1ded95c, type: 3}
   m_Name: Moonky
   m_EditorClassIdentifier: 
-  casterName: Moonkey
+  casterName: Moonky
   spriteAnimateSpeed: 5

@@ -222,8 +222,8 @@ public class SpellCardManager: CardManager
                 break;
 
             case SpellCard.SpellTarget.All:
-                targets.Add(gameManager.playerA.gameObject);
-                targets.Add(gameManager.playerB.gameObject);
+                targets.Add(gameManager.localPlayerManager.gameObject);
+                targets.Add(gameManager.enemyPlayerManager.gameObject);
                 goto case SpellCard.SpellTarget.AllCreatures;
 
             case SpellCard.SpellTarget.AllCreatures:

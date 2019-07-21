@@ -133,6 +133,7 @@ public abstract class CardManager : DetailViewable,
         // set the display texts/colors to their proper values
         spriteOffset = Vector2.zero;
         artSprite.color = card.color;
+        spriteAnimator.enabled = true;
         spriteAnimator.Initialize(
             card.name,
             "Cards/" + (card is CreatureCard ? "Creatures" : "Spells"),

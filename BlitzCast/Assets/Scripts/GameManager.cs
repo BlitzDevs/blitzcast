@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
+using Mirror;
+using System.Collections.Generic;
 
 /// <summary>
 /// The GameManager contains references to important game settings, components
 /// and prefabs. It also has utility functions and handles the start and end of
 /// the game.
 /// </summary>
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     /// <summary>
     /// Team; used to distinguish between players.
@@ -26,8 +28,8 @@ public class GameManager : MonoBehaviour
     public DetailViewer detailViewer;
     public GameLogger gameLogger;
     public GameTimer timer;
-    public PlayerManager playerA;
-    public PlayerManager playerB;
+    public PlayerManager localPlayerManager;
+    public PlayerManager enemyPlayerManager;
     public Camera mainCamera;
     public Transform dragLocationParent;
 
@@ -39,18 +41,17 @@ public class GameManager : MonoBehaviour
     public GameObject cardDisplayPrefab;
     public GameObject statusPrefab;
 
-
     /// <summary>
-    /// Called by Unity. First frame this component is active,
-    /// initialize CreatureGrid and PlayerManagers.
+    /// Initialize CreatureGrid and PlayerManagers.
     /// </summary>
-    void Start()
+    [ClientRpc]
+    public void RpcStartGame()
     {
         // Initialize CreatureGrid
         creatureGrid.Initialize(creatureGridSize);
         // Initialize Players
-        playerA.Initialize(Team.Friendly, playerHealth, cardHandSize);
-        playerB.Initialize(Team.Enemy, playerHealth, cardHandSize);
+        localPlayerManager.Initialize(Team.Friendly, playerHealth, cardHandSize);
+        enemyPlayerManager.Initialize(Team.Enemy, playerHealth, cardHandSize);
     }
 
     /// <summary>
@@ -70,7 +71,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public PlayerManager GetPlayer(Team team)
     {
-        return team == Team.Friendly ? playerA : playerB;
+        return team == Team.Friendly ? localPlayerManager : enemyPlayerManager;
     }
 
 }

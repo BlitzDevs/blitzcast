@@ -3,12 +3,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using Mirror;
 
 /// <summary>
 /// Handles all of the displays and events related to the player.
 /// The player information is determined by Player.
 /// </summary>
-public class PlayerManager : DetailViewable
+public class PlayerManager : NetworkBehaviour
 {
     public Player player;
     public Entity entity;
@@ -42,6 +43,7 @@ public class PlayerManager : DetailViewable
         raycaster = FindObjectOfType<GraphicRaycaster>();
         eventSystem = FindObjectOfType<EventSystem>();
 
+        this.player = player;
         this.team = team;
 
         // initialize Player Entity
@@ -51,6 +53,7 @@ public class PlayerManager : DetailViewable
         entity.SpeedChangeEvent += SetSpeedDisplay;
 
         // initialize animator
+        animator.enabled = true;
         spriteImage.color = player.color;
         animator.Initialize(
             player.caster.name,
@@ -61,16 +64,21 @@ public class PlayerManager : DetailViewable
         // set text
         usernameText.text = player.username;
 
-        CloneDeck();
-        Shuffle();
-
-        // create and initialize HandSlots
-        for (int i = 0; i < handSize; i++)
+        // only initialize cards if local
+        if (team == GameManager.Team.Friendly)
         {
-            GameObject handSlotObject = Instantiate(gameManager.handSlotPrefab, handSlotParent);
-            HandSlot handSlot = handSlotObject.GetComponent<HandSlot>();
-            handSlot.Initialize(this);
+            CloneDeck();
+            Shuffle();
+
+            // create and initialize HandSlots
+            for (int i = 0; i < handSize; i++)
+            {
+                GameObject handSlotObject = Instantiate(gameManager.handSlotPrefab, handSlotParent);
+                HandSlot handSlot = handSlotObject.GetComponent<HandSlot>();
+                handSlot.Initialize(this);
+            }
         }
+
     }
 
     /// <summary>
